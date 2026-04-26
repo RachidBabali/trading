@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard Responsive</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --green: #22c55e;
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --text: #f8fafc;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- ZONE DE JEU PRINCIPALE --- */
+        .main-game {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px; 
+        }
+
+        #timer { 
+            font-size: 2rem; 
+            color: #fbbf24; 
+            font-weight: 800; 
+            font-family: monospace;
+        }
+
+        .score-box { 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            background: rgba(0,0,0,0.3); 
+            padding: 8px 15px; 
+            border-radius: 10px; 
+        }
+
+        .active-chart {
+            background: #0b1220;
+            height: 250px;
+            border-radius: 15px;
+            border: 2px solid #334155;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        canvas { width: 100%; height: 100%; display: block; }
+
+        /* BOUTONS RESPONSIVE */
+        .btns { 
+            display: flex; 
+            gap: 10px; 
+        }
+
+        button {
+            flex: 1; 
+            padding: 15px 10px; 
+            border: none; 
+            border-radius: 12px;
+            color: white; 
+            font-weight: 900; 
+            cursor: pointer; 
+            transition: 0.2s;
+            text-transform: uppercase; 
+            font-size: 0.9rem;
+        }
+
+        .b-buy { background: var(--green); border-bottom: 4px solid #166534; }
+        .b-sell { background: var(--red); border-bottom: 4px solid #991b1b; }
+        .b-hold { background: var(--blue); border-bottom: 4px solid #1e40af; }
+
+        button:disabled { opacity: 0.2; filter: grayscale(1); }
+        button.selected { outline: 4px solid white; outline-offset: -4px; }
+
+        /* --- DASHBOARD SECTION --- */
+        .dashboard-section {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        h2 { color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-left: 5px;}
+
+        /* GRILLE ADAPTATIVE */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur PC */
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .history-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #334155;
+            transition: transform 0.3s;
+        }
+
+        .card-meta { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 8px; font-weight: bold; }
+        .win-txt { color: var(--green); }
+        .loss-txt { color: var(--red); }
+
+        .mini-canvas {
+            background: #0b1220;
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+        }
+
+        /* --- MEDIA QUERIES (POUR MOBILE) --- */
+        @media (max-width: 768px) {
+            .history-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur Tablette */
+            }
+            #timer { font-size: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .btns { 
+                flex-direction: column; /* Boutons l'un sur l'autre sur Mobile */
+            }
+            .history-grid {
+                grid-template-columns: 1fr; /* 1 colonne sur Mobile */
+            }
+            .active-chart { height: 200px; }
+            .score-box { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-game">
+    <div class="header">
+        <div class="score-box">Score: <span id="val-score">0</span></div>
+        <div id="timer">10</div>
+    </div>
+
+    <div class="active-chart">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="btns">
+        <button class="b-buy" id="btn-acheter" onclick="parier('acheter')">Acheter</button>
+        <button class="b-sell" id="btn-vendre" onclick="parier('vendre')">Vendre</button>
+        <button class="b-hold" id="btn-garder" onclick="parier('garder')">Garder (Bleu)</button>
+    </div>
+</div>
+
+<div class="dashboard-section">
+    <h2>Dashboard Historique</h2>
+    <div class="history-grid" id="historyGrid"></div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let score = 0;
+    let seconds = 10;
+    let userChoice = null;
+    let signalColor = "";
+    let candles = [];
+    let gameID = 0;
+
+    function newRound() {
+        seconds = 10;
+        userChoice = null;
+        candles = [];
+        document.getElementById('timer').innerText = seconds;
+        resetButtons();
+
+        // Historique fixe
+        let p = 50;
+        for(let i=0; i<18; i++) {
+            let o = p; p = o + (Math.random()-0.5)*15;
+            candles.push({o, c: p, h: Math.max(o,p)+4, l: Math.min(o,p)-4});
+        }
+
+        const types = ['acheter', 'vendre', 'garder'];
+        signalColor = types[Math.floor(Math.random()*3)];
+
+        render(canvas, candles, false);
+
+        let countdown = setInterval(() => {
+            seconds--;
+            document.getElementById('timer').innerText = seconds;
+            if(seconds <= 0) {
+                clearInterval(countdown);
+                finishRound();
+            }
+        }, 1000);
+    }
+
+    function render(targetCanvas, data, showSignal) {
+        // Redimensionnement dynamique pour le responsive
+        targetCanvas.width = targetCanvas.offsetWidth;
+        targetCanvas.height = targetCanvas.offsetHeight;
+        const tCtx = targetCanvas.getContext('2d');
+        const w = targetCanvas.width / 22;
+        const scale = targetCanvas.height / 100; 
+        const offset = targetCanvas.height / 1.5;
+
+        data.forEach((can, i) => {
+            let x = i * w + (w);
+            tCtx.strokeStyle = "#475569";
+            tCtx.lineWidth = 1;
+            tCtx.beginPath(); tCtx.moveTo(x, offset-can.h*scale); tCtx.lineTo(x, offset-can.l*scale); tCtx.stroke();
+            tCtx.fillStyle = "#334155";
+            tCtx.fillRect(x-w/3, offset-Math.max(can.o,can.c)*scale, (w/3)*2, Math.max(Math.abs(can.o-can.c)*scale, 2));
+        });
+
+        if(showSignal) {
+            let last = data[data.length-1].c;
+            let col = (signalColor==='acheter') ? "#22c55e" : (signalColor==='vendre' ? "#ef4444" : "#3b82f6");
+            let x = data.length * w + (w);
+            tCtx.strokeStyle = col;
+            tCtx.lineWidth = 2;
+            tCtx.beginPath(); tCtx.moveTo(x, offset-(last+15)*scale); tCtx.lineTo(x, offset-(last-15)*scale); tCtx.stroke();
+            tCtx.fillStyle = col;
+            tCtx.shadowBlur = 15; tCtx.shadowColor = col;
+            tCtx.fillRect(x-w/3, offset-Math.max(last,last+8)*scale, (w/3)*2, 15);
+        }
+    }
+
+    function parier(c) {
+        if(userChoice) return;
+        userChoice = c;
+        document.querySelectorAll('.btns button').forEach(b => b.disabled = true);
+        document.getElementById('btn-'+c).classList.add('selected');
+        document.getElementById('btn-'+c).disabled = false;
+    }
+
+    function finishRound() {
+        gameID++;
+        render(canvas, candles, true);
+        let win = (userChoice === signalColor);
+        if(win) score += 10;
+        document.getElementById('val-score').innerText = score;
+
+        addToDashboard(win);
+        setTimeout(newRound, 3000);
+    }
+
+    function addToDashboard(win) {
+        const grid = document.getElementById('historyGrid');
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        const resLabel = win ? 'GAGNÉ' : 'PERDU';
+        const resClass = win ? 'win-txt' : 'loss-txt';
+
+        card.innerHTML = `
+            <div class="card-meta">
+                <span>SESSION #${gameID}</span>
+                <span class="${resClass}">${resLabel}</span>
+            </div>
+            <canvas id="hist-${gameID}" class="mini-canvas"></canvas>
+            <div style="font-size:0.7rem; margin-top:8px; opacity:0.7">
+                Signal: ${signalColor.toUpperCase()} | Choix: ${userChoice || 'NONE'}
+            </div>
+        `;
+        grid.prepend(card);
+        setTimeout(() => {
+            const mini = document.getElementById(`hist-${gameID}`);
+            render(mini, candles, true);
+        }, 50);
+    }
+
+    function resetButtons() {
+        document.querySelectorAll('.btns button').forEach(b => {
+            b.disabled = false;
+            b.classList.remove('selected');
+        });
+    }
+
+    // Gérer le redimensionnement de la fenêtre
+    window.addEventListener('resize', () => render(canvas, candles, false));
+
+    newRound();
+</script>
+</body>
+</html>
