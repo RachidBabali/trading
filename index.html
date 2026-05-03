@@ -2,141 +2,273 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aviator Pro · Mon Revenu</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Barlow+Condensed:ital,wght@0,400;0,700;1,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root { --bg:#05080f; --red:#ff2d55; --orange:#ff6b00; --gold:#ffcc00; --green:#00e676; --dim:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07); }
-        *,*::before,*::after { box-sizing:border-box; margin:0; }
-        body { background:var(--bg); font-family:'Barlow Condensed',sans-serif; color:#fff; min-height:100vh; overflow-x:hidden; }
-        .bg-sky { position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,45,85,0.08) 0%,transparent 65%),radial-gradient(ellipse 60% 50% at 90% 110%,rgba(255,107,0,0.05) 0%,transparent 60%),linear-gradient(180deg,#05080f 0%,#080d1a 100%); }
-        .stars { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 35% 60%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 55% 10%,rgba(255,255,255,0.35) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(255,255,255,0.25) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 25% 80%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 65% 75%,rgba(255,255,255,0.2) 0%,transparent 100%); }
-        .clouds { position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 200px 40px at 10% 70%,rgba(255,255,255,0.015) 0%,transparent 100%),radial-gradient(ellipse 150px 30px at 40% 50%,rgba(255,255,255,0.01) 0%,transparent 100%); }
+        :root {
+            --bg:#05080f; --red:#ff2d55; --orange:#ff6b00;
+            --gold:#ffcc00; --green:#00e676;
+            --dim:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07);
+        }
+        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+        /* ── LAYOUT FIXE PLEIN ÉCRAN ── */
+        html, body {
+            width:100%; height:100%;
+            overflow:hidden; /* AUCUN scroll */
+            background:var(--bg);
+            font-family:'Barlow Condensed',sans-serif;
+            color:#fff;
+        }
+
+        /* Fond */
+        .bg-sky { position:fixed;inset:0;z-index:0;pointer-events:none;
+            background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,45,85,0.08) 0%,transparent 65%),
+                       radial-gradient(ellipse 60% 50% at 90% 110%,rgba(255,107,0,0.05) 0%,transparent 60%),
+                       linear-gradient(180deg,#05080f 0%,#080d1a 100%); }
+        .stars { position:fixed;inset:0;z-index:0;pointer-events:none;
+            background-image:
+                radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,0.4) 0%,transparent 100%),
+                radial-gradient(1px 1px at 35% 60%,rgba(255,255,255,0.3) 0%,transparent 100%),
+                radial-gradient(1px 1px at 55% 10%,rgba(255,255,255,0.35) 0%,transparent 100%),
+                radial-gradient(1px 1px at 75% 45%,rgba(255,255,255,0.25) 0%,transparent 100%),
+                radial-gradient(1.5px 1.5px at 25% 80%,rgba(255,255,255,0.3) 0%,transparent 100%); }
+
         .font-gaming { font-family:'Orbitron',sans-serif; }
-        nav { position:sticky;top:0;z-index:100;background:rgba(5,8,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border); }
-        .balance-badge { background:linear-gradient(135deg,rgba(255,45,85,0.1),rgba(255,45,85,0.03));border:1px solid rgba(255,45,85,0.25);border-radius:12px; }
 
-        /* Historique — PAS d'animation sur le conteneur */
-        .hist-badge {
-            font-family:'DM Mono',monospace;
-            font-size:11px;font-weight:500;
-            padding:4px 12px;
-            border-radius:100px;
-            border:1px solid var(--border);
-            background:var(--dim);
+        /* ── STRUCTURE PRINCIPALE ── */
+        #app {
+            position:fixed; inset:0; z-index:1;
+            display:flex; flex-direction:column;
+        }
+
+        /* NAVBAR */
+        #navbar {
             flex-shrink:0;
+            background:rgba(5,8,15,0.9);
+            backdrop-filter:blur(20px);
+            border-bottom:1px solid var(--border);
+            padding:6px 12px;
+            display:flex; justify-content:space-between; align-items:center;
         }
-        /* Animation UNIQUEMENT sur le nouveau badge ajouté */
-        .hist-badge-new {
-            animation: slideLeft .35s ease forwards;
+        .nav-logo { display:flex;align-items:center;gap:6px; }
+        .nav-logo svg { width:20px;height:20px;color:#ff2d55; }
+        .nav-title { font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;text-transform:uppercase; }
+        .balance-badge {
+            background:linear-gradient(135deg,rgba(255,45,85,0.12),rgba(255,45,85,0.03));
+            border:1px solid rgba(255,45,85,0.3); border-radius:10px;
+            padding:5px 10px; display:flex; align-items:center; gap:6px;
         }
-        @keyframes slideLeft { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
+        .balance-badge span { font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900; }
+        .back-btn {
+            display:flex;align-items:center;gap:4px;
+            color:rgba(255,255,255,0.4);font-family:'Orbitron',sans-serif;
+            font-size:9px;text-transform:uppercase;letter-spacing:.1em;
+            text-decoration:none;transition:color .2s;
+        }
+        .back-btn:hover { color:white; }
 
-        .arena { background:linear-gradient(180deg,#080d1a 0%,#050810 100%);border:1px solid var(--border);border-radius:28px;position:relative;overflow:hidden; }
-        .grid-lines { position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px; }
-        #mult-display { font-family:'Orbitron',sans-serif;font-size:clamp(56px,10vw,100px);font-weight:900;line-height:1;transition:color .2s; }
-        #plane { position:absolute;transition:left .28s linear,bottom .28s linear;z-index:10;filter:drop-shadow(0 0 12px rgba(255,45,85,0.8)); }
+        /* HISTORIQUE */
+        #hist-row {
+            flex-shrink:0;
+            padding:4px 12px;
+            display:flex; align-items:center; gap:8px;
+            background:rgba(5,8,15,0.6);
+            border-bottom:1px solid var(--border);
+        }
+        .hist-label { font-family:'Orbitron',sans-serif;font-size:8px;text-transform:uppercase;color:rgba(255,255,255,0.2);flex-shrink:0; }
+        #history-bar { display:flex;gap:6px;overflow-x:auto;flex:1; }
+        #history-bar::-webkit-scrollbar { display:none; }
+        .hist-badge { font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;border:1px solid var(--border);background:var(--dim);flex-shrink:0; }
+        .hist-badge-new { animation:slideLeft .3s ease forwards; }
+        @keyframes slideLeft { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:none} }
+        .online-info { display:flex;align-items:center;gap:4px;flex-shrink:0; }
+        .online-dot { width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);animation:blink 2s infinite; }
+        @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
+        #online-count { font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,0.3); }
+
+        /* ARENA */
+        #arena {
+            flex:1; /* Prend tout l'espace restant */
+            position:relative; overflow:hidden;
+            background:linear-gradient(180deg,#080d1a 0%,#050810 100%);
+        }
+        .grid-lines {
+            position:absolute;inset:0;pointer-events:none;
+            background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),
+                             linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+            background-size:50px 50px;
+        }
         #trail { position:absolute;bottom:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5; }
-        #crash-overlay { position:absolute;inset:0;z-index:30;display:none;background:rgba(255,45,85,0.06);backdrop-filter:blur(4px);align-items:center;justify-content:center; }
-        #crash-overlay.show { display:flex; }
-        .crash-text { font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:clamp(40px,8vw,80px);color:var(--red);text-shadow:0 0 40px rgba(255,45,85,0.6); }
+        #plane { position:absolute;z-index:10;filter:drop-shadow(0 0 10px rgba(255,45,85,0.8));transition:left .28s linear,bottom .28s linear; }
 
-        /* Overlay countdown WAITING (avant décollage) */
-        #cnt-overlay { position:absolute;inset:0;z-index:25;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(5,8,15,0.5);backdrop-filter:blur(2px); }
-        #cnt-overlay.show { display:flex; }
-        #cnt-num { font-family:'Orbitron',sans-serif;font-size:clamp(70px,14vw,130px);font-weight:900;color:var(--gold);text-shadow:0 0 50px rgba(255,204,0,0.6); }
+        #mult-wrap {
+            position:absolute;inset:0;z-index:10;pointer-events:none;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+        }
+        #mult-display {
+            font-family:'Orbitron',sans-serif;font-size:clamp(44px,9vw,90px);
+            font-weight:900;line-height:1;transition:color .2s;
+        }
+        #live-gain { font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;margin-top:6px;transition:color .2s; }
 
-        /* Overlay countdown CRASHED (attente 10s) */
-        #crash-cnt-overlay { position:absolute;inset:0;z-index:28;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(5,8,15,0.7);backdrop-filter:blur(3px); }
-        #crash-cnt-overlay.show { display:flex; }
-        .crash-cnt-text { font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:clamp(36px,7vw,70px);color:var(--red);text-shadow:0 0 30px rgba(255,45,85,0.5); }
-        #crash-cnt-num { font-family:'Orbitron',sans-serif;font-size:clamp(50px,10vw,90px);font-weight:900;color:var(--gold);text-shadow:0 0 40px rgba(255,204,0,0.5); }
+        /* Overlays arena */
+        .arena-overlay {
+            position:absolute;inset:0;z-index:20;display:none;
+            flex-direction:column;align-items:center;justify-content:center;gap:8px;
+        }
+        .arena-overlay.show { display:flex; }
+        #cnt-overlay { background:rgba(5,8,15,0.55);backdrop-filter:blur(3px); }
+        #cnt-num { font-family:'Orbitron',sans-serif;font-size:clamp(60px,12vw,110px);font-weight:900;color:var(--gold);text-shadow:0 0 40px rgba(255,204,0,0.6); }
+        #crash-cnt-overlay { background:rgba(5,8,15,0.75);backdrop-filter:blur(4px);z-index:22; }
+        .crash-big { font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:clamp(32px,7vw,65px);color:var(--red);text-shadow:0 0 30px rgba(255,45,85,0.6); }
+        #crash-cnt-num { font-family:'Orbitron',sans-serif;font-size:clamp(44px,9vw,80px);font-weight:900;color:var(--gold); }
 
-        .bet-panel { background:rgba(5,8,15,0.9);border-top:1px solid var(--border);backdrop-filter:blur(10px); }
-        .mise-input { background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:14px;color:white;font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;text-align:center;outline:none;transition:border-color .3s;width:100%;padding:14px 16px; }
+        .runway { position:absolute;bottom:0;left:8%;right:8%;height:2px;background:linear-gradient(90deg,transparent,rgba(255,45,85,0.4),rgba(255,107,0,0.4),transparent);border-radius:2px; }
+
+        /* PANNEAU BAS */
+        #bet-panel {
+            flex-shrink:0;
+            background:rgba(5,8,15,0.95);
+            border-top:1px solid var(--border);
+            padding:8px 10px;
+        }
+
+        /* Grille panneau — 3 colonnes sur large, 1 sur mobile */
+        #panel-grid {
+            display:grid;
+            grid-template-columns:1fr 1fr 1fr;
+            gap:8px;
+            align-items:start;
+        }
+        @media(max-width:600px) {
+            #panel-grid { grid-template-columns:1fr 1fr; }
+            .col-action { grid-column:1/-1; }
+        }
+
+        .panel-label { font-family:'Orbitron',sans-serif;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px; }
+
+        .mise-input {
+            width:100%;background:rgba(0,0,0,0.5);border:1px solid var(--border);
+            border-radius:10px;color:white;font-family:'Orbitron',sans-serif;
+            font-size:15px;font-weight:700;text-align:center;outline:none;
+            padding:9px 10px;transition:border-color .3s;
+        }
         .mise-input:focus { border-color:rgba(255,45,85,0.5); }
-        .qbtn { background:var(--dim);border:1px solid var(--border);border-radius:10px;color:rgba(255,255,255,0.45);font-family:'DM Mono',monospace;font-size:11px;padding:8px 10px;cursor:pointer;transition:all .2s; }
+        input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; }
+
+        .btn-row { display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3px; }
+        .qbtn {
+            background:var(--dim);border:1px solid var(--border);border-radius:7px;
+            color:rgba(255,255,255,0.45);font-family:'DM Mono',monospace;font-size:10px;
+            padding:5px 2px;cursor:pointer;transition:all .2s;text-align:center;
+        }
         .qbtn:hover { background:rgba(255,45,85,0.08);border-color:rgba(255,45,85,0.3);color:var(--red); }
         .qbtn-minus:hover { background:rgba(255,107,0,0.08);border-color:rgba(255,107,0,0.3);color:var(--orange); }
-        #main-btn { font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:18px;padding:18px 32px;width:100%;transition:all .3s; }
-        #main-btn.state-bet { background:linear-gradient(135deg,#ff2d55,#c0152b);color:white;box-shadow:0 8px 30px rgba(255,45,85,0.35); }
-        #main-btn.state-bet:hover { transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,45,85,0.5); }
-        #main-btn.state-cashout { background:linear-gradient(135deg,#00e676,#00b860);color:#000;box-shadow:0 8px 30px rgba(0,230,118,0.4);animation:cashPulse .8s ease infinite alternate; }
-        @keyframes cashPulse { from{box-shadow:0 8px 30px rgba(0,230,118,0.35)} to{box-shadow:0 8px 50px rgba(0,230,118,0.7)} }
+
+        .auto-input {
+            width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--border);
+            border-radius:10px;color:white;font-family:'DM Mono',monospace;
+            font-size:13px;text-align:center;outline:none;padding:9px 10px;
+            transition:border-color .3s;
+        }
+        .auto-input:focus { border-color:rgba(255,204,0,0.5); }
+
+        .auto-row { display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:3px; }
+
+        .pot-chip {
+            background:var(--dim);border:1px solid var(--border);border-radius:8px;
+            padding:5px 8px;display:flex;justify-content:space-between;align-items:center;
+            margin-top:3px;
+        }
+        .pot-chip span:first-child { font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,0.3);text-transform:uppercase; }
+        .pot-chip span:last-child  { font-family:'DM Mono',monospace;font-size:12px;color:white;font-weight:700; }
+
+        #main-btn {
+            width:100%;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;
+            letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;
+            border-radius:12px;padding:14px 8px;transition:all .3s;
+        }
+        #main-btn.state-bet { background:linear-gradient(135deg,#ff2d55,#c0152b);color:white;box-shadow:0 6px 20px rgba(255,45,85,0.35); }
+        #main-btn.state-bet:hover { transform:translateY(-1px);box-shadow:0 10px 28px rgba(255,45,85,0.5); }
+        #main-btn.state-cashout { background:linear-gradient(135deg,#00e676,#00b860);color:#000;animation:cashPulse .8s ease infinite alternate; }
+        @keyframes cashPulse { from{box-shadow:0 6px 20px rgba(0,230,118,0.35)} to{box-shadow:0 6px 35px rgba(0,230,118,0.7)} }
         #main-btn.state-wait { background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);cursor:not-allowed; }
         #main-btn:disabled { cursor:not-allowed; }
-        #cancel-btn { display:none;width:100%;margin-top:8px;padding:12px;border-radius:14px;background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.25);color:var(--red);font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s; }
-        #cancel-btn:hover { background:rgba(255,45,85,0.18);border-color:rgba(255,45,85,0.5); }
-        #live-gain { font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;transition:color .2s; }
-        .auto-input { background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;color:white;font-family:'DM Mono',monospace;font-size:13px;text-align:center;outline:none;padding:8px 12px;width:100%;transition:border-color .3s; }
-        .auto-input:focus { border-color:rgba(255,204,0,0.5); }
-        .toast { position:fixed;top:80px;right:20px;z-index:200;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;padding:14px 22px;border-radius:14px;border:1px solid;animation:toastIn .4s ease forwards;max-width:280px; }
-        .toast-win { background:rgba(0,230,118,0.1);border-color:rgba(0,230,118,0.4);color:var(--green); }
+
+        #cancel-btn {
+            display:none;width:100%;margin-top:5px;padding:9px;border-radius:10px;
+            background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.25);
+            color:var(--red);font-family:'Orbitron',sans-serif;font-size:9px;
+            font-weight:900;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;
+        }
+        #cancel-btn:hover { background:rgba(255,45,85,0.18); }
+
+        /* TOASTS */
+        .toast {
+            position:fixed;top:70px;right:12px;z-index:300;
+            font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;
+            padding:10px 16px;border-radius:12px;border:1px solid;
+            animation:toastIn .35s ease forwards;max-width:240px;
+        }
+        .toast-win  { background:rgba(0,230,118,0.1);border-color:rgba(0,230,118,0.4);color:var(--green); }
         .toast-lose { background:rgba(255,45,85,0.1);border-color:rgba(255,45,85,0.4);color:var(--red); }
-        @keyframes toastIn { from{opacity:0;transform:translateX(30px) scale(0.95)} to{opacity:1;transform:none} }
-        .stat-chip { background:var(--dim);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-family:'DM Mono',monospace; }
-        @keyframes floatIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
-        .float-in { animation:floatIn .5s ease forwards;opacity:0; }
-        .d1{animation-delay:.1s} .d2{animation-delay:.2s} .d3{animation-delay:.3s}
-        .no-scrollbar::-webkit-scrollbar { display:none; }
-        .runway { height:3px;background:linear-gradient(90deg,transparent,rgba(255,45,85,0.4),rgba(255,107,0,0.4),transparent);border-radius:2px;box-shadow:0 0 15px rgba(255,45,85,0.2); }
-        .online-dot { width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;display:inline-block; }
-        @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
+        @keyframes toastIn { from{opacity:0;transform:translateX(24px) scale(0.95)} to{opacity:1;transform:none} }
     </style>
 </head>
 <body>
 <div class="bg-sky"></div>
 <div class="stars"></div>
-<div class="clouds"></div>
 
-<nav>
-    <div class="max-w-5xl mx-auto px-5 py-3.5 flex justify-between items-center">
-        <a href="/monrevenu/joueur/dashboard_jeu.php" class="flex items-center gap-2 text-gray-500 hover:text-white transition font-gaming text-xs uppercase tracking-widest">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+<div id="app">
+
+    <!-- NAVBAR -->
+    <div id="navbar">
+        <a href="#" class="back-btn">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
             Retour
         </a>
-        <div class="flex items-center gap-2">
-            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.13c-.32.17-.71.17-1.03 0l-7.97-4.13C5.21 17.21 5 16.88 5 16.5V12c0-.38.21-.71.53-.88l7.97-4.13c.32-.17.71-.17 1.03 0l7.97 4.13c.32.17.53.5.53.88v4.5z"/></svg>
-            <span class="font-gaming font-black text-lg uppercase">AVIATOR <span style="color:var(--red)">PRO</span></span>
+        <div class="nav-logo">
+            <svg fill="currentColor" viewBox="0 0 24 24" style="color:var(--red)"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.13c-.32.17-.71.17-1.03 0l-7.97-4.13C5.21 17.21 5 16.88 5 16.5V12c0-.38.21-.71.53-.88l7.97-4.13c.32-.17.71-.17 1.03 0l7.97 4.13c.32.17.53.5.53.88v4.5z"/></svg>
+            <span class="nav-title font-gaming">AVIATOR <span style="color:var(--red)">PRO</span></span>
         </div>
-        <div class="balance-badge px-4 py-2">
-            <p class="text-[8px] uppercase font-bold tracking-widest" style="color:var(--red);opacity:.7">Solde</p>
-            <p id="balance-display" class="font-gaming font-black text-base text-white leading-none">
-                <?= $balance ?> <span style="color:var(--red);font-size:9px">KMF</span>
-            </p>
+        <div class="balance-badge">
+            <span id="balance-display" style="color:white">50.000</span>
+            <span style="color:var(--red);font-size:9px;font-family:'Orbitron',sans-serif">KMF</span>
         </div>
     </div>
-</nav>
 
-<main class="max-w-5xl mx-auto px-4 py-5 relative z-10 space-y-4">
-
-    <!-- Historique + joueurs -->
-    <div class="flex items-center justify-between float-in d1">
-        <div class="flex items-center gap-3 min-w-0">
-            <span class="text-gray-700 text-xs font-gaming uppercase tracking-widest flex-shrink-0">Historique</span>
-            <div id="history-bar" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+    <!-- HISTORIQUE -->
+    <div id="hist-row">
+        <span class="hist-label">Hist.</span>
+        <div id="history-bar">
+            <span class="hist-badge" style="color:var(--red)">1.20x</span>
+            <span class="hist-badge" style="color:#00e676">5.40x</span>
+            <span class="hist-badge" style="color:#ffcc00">2.10x</span>
         </div>
-        <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+        <div class="online-info">
             <div class="online-dot"></div>
-            <span id="online-count" class="font-mono text-xs text-gray-600">—</span>
+            <span id="online-count">124 joueurs</span>
         </div>
     </div>
 
     <!-- ARENA -->
-    <div class="arena float-in d2" style="height:clamp(280px,45vh,440px)">
+    <div id="arena">
         <div class="grid-lines"></div>
+
         <svg id="trail" viewBox="0 0 100 100" preserveAspectRatio="none">
             <defs>
-                <linearGradient id="trail-grad" x1="0" y1="1" x2="1" y2="0">
+                <linearGradient id="tg" x1="0" y1="1" x2="1" y2="0">
                     <stop offset="0%" stop-color="rgba(255,45,85,0)"/>
                     <stop offset="100%" stop-color="rgba(255,45,85,0.4)"/>
                 </linearGradient>
             </defs>
-            <path id="trail-path" d="" fill="none" stroke="url(#trail-grad)" stroke-width="0.5"/>
+            <path id="trail-path" d="" fill="none" stroke="url(#tg)" stroke-width="0.6"/>
         </svg>
+
         <div id="plane" style="bottom:12%;left:6%;display:none;">
-            <svg width="60" height="44" viewBox="0 0 60 44" fill="none">
+            <svg width="50" height="36" viewBox="0 0 60 44" fill="none">
                 <ellipse cx="30" cy="22" rx="22" ry="7" fill="#ff2d55"/>
                 <path d="M50 22 L58 19 L56 22 L58 25 Z" fill="#ff6b00"/>
                 <path d="M28 22 L18 8 L38 16 Z" fill="#c0152b"/>
@@ -146,152 +278,114 @@
                 <ellipse cx="4" cy="22" rx="3" ry="2" fill="rgba(255,204,0,0.3)"/>
             </svg>
         </div>
-        <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
-            <div id="mult-display" style="color:rgba(255,255,255,0.3)">—</div>
-            <div id="live-gain" class="mt-3" style="color:rgba(255,255,255,0.3)">Connexion...</div>
+
+        <div id="mult-wrap">
+            <div id="mult-display" style="color:rgba(255,255,255,0.3)">1.00x</div>
+            <div id="live-gain" style="color:rgba(255,255,255,0.3)">Prêt pour le décollage</div>
         </div>
 
-        <!-- Overlay crash -->
-        <div id="crash-overlay">
-            <div class="text-center">
-                <div class="crash-text">ENVOLÉ !</div>
-                <div id="crash-val" class="font-mono text-gray-400 text-xl mt-2">à —</div>
-            </div>
+        <!-- Overlay countdown waiting -->
+        <div class="arena-overlay show" id="cnt-overlay">
+            <div id="cnt-num">10</div>
+            <div class="font-gaming" style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,0.35)">Décollage imminent</div>
         </div>
 
-        <!-- Overlay countdown WAITING (avant décollage) -->
-        <div id="cnt-overlay">
-            <div id="cnt-num">8</div>
-            <div class="font-gaming text-xs uppercase tracking-widest" style="color:rgba(255,255,255,0.4)">Décollage imminent</div>
-        </div>
-
-        <!-- Overlay countdown CRASHED (10s entre parties) -->
-        <div id="crash-cnt-overlay">
-            <div class="crash-cnt-text">ENVOLÉ !</div>
-            <div id="crash-val2" class="font-mono text-gray-400 text-lg">à —</div>
+        <!-- Overlay crashed -->
+        <div class="arena-overlay" id="crash-cnt-overlay">
+            <div class="crash-big">ENVOLÉ !</div>
+            <div id="crash-val2" style="font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,0.5)">à —</div>
             <div id="crash-cnt-num">10</div>
-            <div class="font-gaming text-xs uppercase tracking-widest" style="color:rgba(255,204,0,0.5)">Prochaine partie</div>
+            <div class="font-gaming" style="font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,204,0,0.5)">Prochaine partie</div>
         </div>
 
-        <div class="absolute bottom-0 left-0 right-0 mx-6 mb-3">
-            <div class="runway"></div>
-        </div>
+        <div class="runway"></div>
     </div>
 
     <!-- PANNEAU MISE -->
-    <div class="bet-panel rounded-2xl p-5 float-in d3">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-            <div class="space-y-2">
-                <label class="text-[9px] font-black uppercase tracking-widest" style="color:var(--red)">Mise (KMF)</label>
+    <div id="bet-panel">
+        <div id="panel-grid">
+
+            <!-- Colonne 1 : Mise -->
+            <div>
+                <div class="panel-label" style="color:var(--red)">Mise (KMF)</div>
                 <input type="number" id="mise-input" class="mise-input" value="1000" min="100" max="100000">
-                <div class="grid grid-cols-4 gap-1.5">
+                <div class="btn-row">
                     <button class="qbtn qbtn-minus" onclick="adjustMise(-100)">−100</button>
                     <button class="qbtn qbtn-minus" onclick="adjustMise(-50)">−50</button>
                     <button class="qbtn" onclick="adjustMise(50)">+50</button>
                     <button class="qbtn" onclick="adjustMise(100)">+100</button>
                 </div>
-                <div class="grid grid-cols-4 gap-1.5">
+                <div class="btn-row" style="margin-top:3px">
                     <button class="qbtn" onclick="setMise(500)">500</button>
                     <button class="qbtn" onclick="setMise(1000)">1K</button>
                     <button class="qbtn" onclick="setMise(5000)">5K</button>
                     <button class="qbtn" onclick="setMise(10000)">10K</button>
                 </div>
             </div>
-            <div class="space-y-2">
-                <label class="text-[9px] font-black uppercase tracking-widest text-yellow-600">Auto Cashout (×)</label>
+
+            <!-- Colonne 2 : Auto cashout -->
+            <div>
+                <div class="panel-label" style="color:var(--gold)">Auto Cashout ×</div>
                 <input type="number" id="auto-input" class="auto-input" value="2.00" min="1.10" max="1000" step="0.10">
-                
-                <div class="stat-chip flex justify-between items-center">
-                    <span class="text-[9px] text-gray-600 uppercase">Gain potentiel</span>
-                    <span id="pot-gain" class="font-mono text-white text-sm font-bold">2 000 KMF</span>
+                <div class="auto-row">
+                    <button class="qbtn" onclick="setAuto(1.5)">1.5×</button>
+                    <button class="qbtn" onclick="setAuto(2)">2×</button>
+                    <button class="qbtn" onclick="setAuto(5)">5×</button>
+                    <button class="qbtn" onclick="setAuto(10)">10×</button>
+                </div>
+                <div class="pot-chip">
+                    <span>Gain pot.</span>
+                    <span id="pot-gain">2 000 KMF</span>
                 </div>
             </div>
-            <div class="space-y-2">
-                <label class="text-[9px] font-black uppercase tracking-widest text-gray-600">Action</label>
-                <button id="main-btn" class="state-wait" disabled onclick="handleAction()">⏳ Connexion...</button>
+
+            <!-- Colonne 3 : Action -->
+            <div class="col-action">
+                <div class="panel-label" style="color:rgba(255,255,255,0.3)">Action</div>
+                <button id="main-btn" class="state-bet" onclick="handleDemoAction()">🚀 MISER</button>
                 <button id="cancel-btn" onclick="cancelBet()">✕ ANNULER LA MISE</button>
             </div>
+
         </div>
     </div>
 
-</main>
+</div>
 
 <script>
-// ════════════════════════════════════
-const planeEl   = document.getElementById('plane');
-const multEl    = document.getElementById('mult-display');
-const trailPath = document.getElementById('trail-path');
+    /* Simulation Front-end sans PHP/Backend */
+    const miseInput = document.getElementById('mise-input');
+    const autoInput = document.getElementById('auto-input');
+    const mainBtn = document.getElementById('main-btn');
+    const potGain = document.getElementById('pot-gain');
 
-let multiplier = 1.00;
-let interval   = null;
-let trailPts   = [];
-let frameN     = 0;
+    function updatePotGain() {
+        const v = parseInt(miseInput.value) || 0;
+        const auto = parseFloat(autoInput.value) || 0;
+        potGain.textContent = Math.floor(v * auto).toLocaleString('fr') + ' KMF';
+    }
+    
+    miseInput.addEventListener('input', updatePotGain);
+    autoInput.addEventListener('input', updatePotGain);
 
-// 🚀 Lancer le vol automatiquement
-startFlight();
+    function setMise(v) { miseInput.value = v; updatePotGain(); }
+    function adjustMise(d) { miseInput.value = Math.max(100, (parseInt(miseInput.value)||0) + d); updatePotGain(); }
+    function setAuto(v) { autoInput.value = v.toFixed(2); updatePotGain(); }
 
-function startFlight() {
-    multiplier = 1.00;
-    planeEl.style.display = 'block';
-    planeEl.style.left = '6%';
-    planeEl.style.bottom = '12%';
-
-    trailPts = [];
-    trailPath.setAttribute('d', '');
-
-    interval = setInterval(() => {
-        multiplier += 0.02;
-
-        // afficher multiplicateur
-        multEl.textContent = multiplier.toFixed(2) + 'x';
-
-        // déplacer avion
-        movePlane(multiplier);
-
-        // crash aléatoire
-        if (Math.random() < 0.01) {
-            crash();
-        }
-
-    }, 50);
-}
-
-// ✈️ Mouvement avion
-function movePlane(m) {
-    frameN++;
-
-    const t  = Math.min((m - 1) / 8, 1);
-    const px = 6 + t * 70;
-    const py = 12 + Math.pow(t, 1.4) * 60;
-
-    planeEl.style.left   = px + '%';
-    planeEl.style.bottom = py + '%';
-
-    // traînée
-    if (frameN % 2 === 0) {
-        trailPts.push([px, 100 - py]);
-        if (trailPts.length > 80) trailPts.shift();
-
-        if (trailPts.length > 2) {
-            trailPath.setAttribute(
-                'd',
-                'M ' + trailPts.map(p => p.join(',')).join(' L ')
-            );
+    function handleDemoAction() {
+        if(mainBtn.classList.contains('state-bet')) {
+            mainBtn.className = 'state-wait';
+            mainBtn.textContent = '✅ MISE POSÉE';
+            showToast('Mise enregistrée (Démo)', 'win');
         }
     }
-}
 
-// 💥 Crash
-function crash() {
-    clearInterval(interval);
-
-    multEl.textContent = multiplier.toFixed(2) + 'x 💥';
-    planeEl.style.display = 'none';
-
-    setTimeout(() => {
-        startFlight(); // relancer automatiquement
-    }, 3000);
-}
+    function showToast(msg, type) {
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
 </script>
 </body>
 </html>
