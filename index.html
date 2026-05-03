@@ -3,304 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Dashboard Responsive</title>
+    <title>Aviator Pro · Mon Revenu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Barlow+Condensed:ital,wght@0,400;0,700;1,900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --green: #22c55e;
-            --red: #ef4444;
-            --blue: #3b82f6;
-            --text: #f8fafc;
+        :root { --bg:#05080f; --red:#ff2d55; --orange:#ff6b00; --gold:#ffcc00; --green:#00e676; --dim:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.07); }
+        *,*::before,*::after { box-sizing:border-box; margin:0; }
+        body { background:var(--bg); font-family:'Barlow Condensed',sans-serif; color:#fff; min-height:100vh; overflow-x:hidden; }
+        .bg-sky { position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,45,85,0.08) 0%,transparent 65%),radial-gradient(ellipse 60% 50% at 90% 110%,rgba(255,107,0,0.05) 0%,transparent 60%),linear-gradient(180deg,#05080f 0%,#080d1a 100%); }
+        .stars { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,0.4) 0%,transparent 100%),radial-gradient(1px 1px at 35% 60%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 55% 10%,rgba(255,255,255,0.35) 0%,transparent 100%),radial-gradient(1px 1px at 75% 45%,rgba(255,255,255,0.25) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 25% 80%,rgba(255,255,255,0.3) 0%,transparent 100%),radial-gradient(1px 1px at 65% 75%,rgba(255,255,255,0.2) 0%,transparent 100%); }
+        .clouds { position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 200px 40px at 10% 70%,rgba(255,255,255,0.015) 0%,transparent 100%),radial-gradient(ellipse 150px 30px at 40% 50%,rgba(255,255,255,0.01) 0%,transparent 100%); }
+        .font-gaming { font-family:'Orbitron',sans-serif; }
+        nav { position:sticky;top:0;z-index:100;background:rgba(5,8,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border); }
+        .balance-badge { background:linear-gradient(135deg,rgba(255,45,85,0.1),rgba(255,45,85,0.03));border:1px solid rgba(255,45,85,0.25);border-radius:12px; }
+
+        /* Historique — PAS d'animation sur le conteneur */
+        .hist-badge {
+            font-family:'DM Mono',monospace;
+            font-size:11px;font-weight:500;
+            padding:4px 12px;
+            border-radius:100px;
+            border:1px solid var(--border);
+            background:var(--dim);
+            flex-shrink:0;
         }
-
-        * { box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+        /* Animation UNIQUEMENT sur le nouveau badge ajouté */
+        .hist-badge-new {
+            animation: slideLeft .35s ease forwards;
         }
+        @keyframes slideLeft { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:none} }
 
-        /* --- ZONE DE JEU PRINCIPALE --- */
-        .main-game {
-            width: 100%;
-            max-width: 1000px;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
-        }
+        .arena { background:linear-gradient(180deg,#080d1a 0%,#050810 100%);border:1px solid var(--border);border-radius:28px;position:relative;overflow:hidden; }
+        .grid-lines { position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px; }
+        #mult-display { font-family:'Orbitron',sans-serif;font-size:clamp(56px,10vw,100px);font-weight:900;line-height:1;transition:color .2s; }
+        #plane { position:absolute;transition:left .28s linear,bottom .28s linear;z-index:10;filter:drop-shadow(0 0 12px rgba(255,45,85,0.8)); }
+        #trail { position:absolute;bottom:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5; }
+        #crash-overlay { position:absolute;inset:0;z-index:30;display:none;background:rgba(255,45,85,0.06);backdrop-filter:blur(4px);align-items:center;justify-content:center; }
+        #crash-overlay.show { display:flex; }
+        .crash-text { font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:clamp(40px,8vw,80px);color:var(--red);text-shadow:0 0 40px rgba(255,45,85,0.6); }
 
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 15px; 
-        }
+        /* Overlay countdown WAITING (avant décollage) */
+        #cnt-overlay { position:absolute;inset:0;z-index:25;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(5,8,15,0.5);backdrop-filter:blur(2px); }
+        #cnt-overlay.show { display:flex; }
+        #cnt-num { font-family:'Orbitron',sans-serif;font-size:clamp(70px,14vw,130px);font-weight:900;color:var(--gold);text-shadow:0 0 50px rgba(255,204,0,0.6); }
 
-        #timer { 
-            font-size: 2rem; 
-            color: #fbbf24; 
-            font-weight: 800; 
-            font-family: monospace;
-        }
+        /* Overlay countdown CRASHED (attente 10s) */
+        #crash-cnt-overlay { position:absolute;inset:0;z-index:28;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(5,8,15,0.7);backdrop-filter:blur(3px); }
+        #crash-cnt-overlay.show { display:flex; }
+        .crash-cnt-text { font-family:'Barlow Condensed',sans-serif;font-style:italic;font-weight:900;font-size:clamp(36px,7vw,70px);color:var(--red);text-shadow:0 0 30px rgba(255,45,85,0.5); }
+        #crash-cnt-num { font-family:'Orbitron',sans-serif;font-size:clamp(50px,10vw,90px);font-weight:900;color:var(--gold);text-shadow:0 0 40px rgba(255,204,0,0.5); }
 
-        .score-box { 
-            font-size: 1.2rem; 
-            font-weight: bold; 
-            background: rgba(0,0,0,0.3); 
-            padding: 8px 15px; 
-            border-radius: 10px; 
-        }
-
-        .active-chart {
-            background: #0b1220;
-            height: 250px;
-            border-radius: 15px;
-            border: 2px solid #334155;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        canvas { width: 100%; height: 100%; display: block; }
-
-        /* BOUTONS RESPONSIVE */
-        .btns { 
-            display: flex; 
-            gap: 10px; 
-        }
-
-        button {
-            flex: 1; 
-            padding: 15px 10px; 
-            border: none; 
-            border-radius: 12px;
-            color: white; 
-            font-weight: 900; 
-            cursor: pointer; 
-            transition: 0.2s;
-            text-transform: uppercase; 
-            font-size: 0.9rem;
-        }
-
-        .b-buy { background: var(--green); border-bottom: 4px solid #166534; }
-        .b-sell { background: var(--red); border-bottom: 4px solid #991b1b; }
-        .b-hold { background: var(--blue); border-bottom: 4px solid #1e40af; }
-
-        button:disabled { opacity: 0.2; filter: grayscale(1); }
-        button.selected { outline: 4px solid white; outline-offset: -4px; }
-
-        /* --- DASHBOARD SECTION --- */
-        .dashboard-section {
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        h2 { color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-left: 5px;}
-
-        /* GRILLE ADAPTATIVE */
-        .history-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 colonnes sur PC */
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .history-card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid #334155;
-            transition: transform 0.3s;
-        }
-
-        .card-meta { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 8px; font-weight: bold; }
-        .win-txt { color: var(--green); }
-        .loss-txt { color: var(--red); }
-
-        .mini-canvas {
-            background: #0b1220;
-            width: 100%;
-            height: 100px;
-            border-radius: 8px;
-        }
-
-        /* --- MEDIA QUERIES (POUR MOBILE) --- */
-        @media (max-width: 768px) {
-            .history-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur Tablette */
-            }
-            #timer { font-size: 1.5rem; }
-        }
-
-        @media (max-width: 480px) {
-            .btns { 
-                flex-direction: column; /* Boutons l'un sur l'autre sur Mobile */
-            }
-            .history-grid {
-                grid-template-columns: 1fr; /* 1 colonne sur Mobile */
-            }
-            .active-chart { height: 200px; }
-            .score-box { font-size: 1rem; }
-        }
+        .bet-panel { background:rgba(5,8,15,0.9);border-top:1px solid var(--border);backdrop-filter:blur(10px); }
+        .mise-input { background:rgba(0,0,0,0.5);border:1px solid var(--border);border-radius:14px;color:white;font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;text-align:center;outline:none;transition:border-color .3s;width:100%;padding:14px 16px; }
+        .mise-input:focus { border-color:rgba(255,45,85,0.5); }
+        .qbtn { background:var(--dim);border:1px solid var(--border);border-radius:10px;color:rgba(255,255,255,0.45);font-family:'DM Mono',monospace;font-size:11px;padding:8px 10px;cursor:pointer;transition:all .2s; }
+        .qbtn:hover { background:rgba(255,45,85,0.08);border-color:rgba(255,45,85,0.3);color:var(--red); }
+        .qbtn-minus:hover { background:rgba(255,107,0,0.08);border-color:rgba(255,107,0,0.3);color:var(--orange); }
+        #main-btn { font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;border-radius:18px;padding:18px 32px;width:100%;transition:all .3s; }
+        #main-btn.state-bet { background:linear-gradient(135deg,#ff2d55,#c0152b);color:white;box-shadow:0 8px 30px rgba(255,45,85,0.35); }
+        #main-btn.state-bet:hover { transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,45,85,0.5); }
+        #main-btn.state-cashout { background:linear-gradient(135deg,#00e676,#00b860);color:#000;box-shadow:0 8px 30px rgba(0,230,118,0.4);animation:cashPulse .8s ease infinite alternate; }
+        @keyframes cashPulse { from{box-shadow:0 8px 30px rgba(0,230,118,0.35)} to{box-shadow:0 8px 50px rgba(0,230,118,0.7)} }
+        #main-btn.state-wait { background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);cursor:not-allowed; }
+        #main-btn:disabled { cursor:not-allowed; }
+        #cancel-btn { display:none;width:100%;margin-top:8px;padding:12px;border-radius:14px;background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.25);color:var(--red);font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s; }
+        #cancel-btn:hover { background:rgba(255,45,85,0.18);border-color:rgba(255,45,85,0.5); }
+        #live-gain { font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;transition:color .2s; }
+        .auto-input { background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;color:white;font-family:'DM Mono',monospace;font-size:13px;text-align:center;outline:none;padding:8px 12px;width:100%;transition:border-color .3s; }
+        .auto-input:focus { border-color:rgba(255,204,0,0.5); }
+        .toast { position:fixed;top:80px;right:20px;z-index:200;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;padding:14px 22px;border-radius:14px;border:1px solid;animation:toastIn .4s ease forwards;max-width:280px; }
+        .toast-win { background:rgba(0,230,118,0.1);border-color:rgba(0,230,118,0.4);color:var(--green); }
+        .toast-lose { background:rgba(255,45,85,0.1);border-color:rgba(255,45,85,0.4);color:var(--red); }
+        @keyframes toastIn { from{opacity:0;transform:translateX(30px) scale(0.95)} to{opacity:1;transform:none} }
+        .stat-chip { background:var(--dim);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-family:'DM Mono',monospace; }
+        @keyframes floatIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+        .float-in { animation:floatIn .5s ease forwards;opacity:0; }
+        .d1{animation-delay:.1s} .d2{animation-delay:.2s} .d3{animation-delay:.3s}
+        .no-scrollbar::-webkit-scrollbar { display:none; }
+        .runway { height:3px;background:linear-gradient(90deg,transparent,rgba(255,45,85,0.4),rgba(255,107,0,0.4),transparent);border-radius:2px;box-shadow:0 0 15px rgba(255,45,85,0.2); }
+        .online-dot { width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;display:inline-block; }
+        @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
     </style>
 </head>
 <body>
+<div class="bg-sky"></div>
+<div class="stars"></div>
+<div class="clouds"></div>
 
-<div class="main-game">
-    <div class="header">
-        <div class="score-box">Score: <span id="val-score">0</span></div>
-        <div id="timer">10</div>
+<nav>
+    <div class="max-w-5xl mx-auto px-5 py-3.5 flex justify-between items-center">
+        <a href="/monrevenu/joueur/dashboard_jeu.php" class="flex items-center gap-2 text-gray-500 hover:text-white transition font-gaming text-xs uppercase tracking-widest">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+        </a>
+        <div class="flex items-center gap-2">
+            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.13c-.32.17-.71.17-1.03 0l-7.97-4.13C5.21 17.21 5 16.88 5 16.5V12c0-.38.21-.71.53-.88l7.97-4.13c.32-.17.71-.17 1.03 0l7.97 4.13c.32.17.53.5.53.88v4.5z"/></svg>
+            <span class="font-gaming font-black text-lg uppercase">AVIATOR <span style="color:var(--red)">PRO</span></span>
+        </div>
+        <div class="balance-badge px-4 py-2">
+            <p class="text-[8px] uppercase font-bold tracking-widest" style="color:var(--red);opacity:.7">Solde</p>
+            <p id="balance-display" class="font-gaming font-black text-base text-white leading-none">
+                <?= $balance ?> <span style="color:var(--red);font-size:9px">KMF</span>
+            </p>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-5 relative z-10 space-y-4">
+
+    <!-- Historique + joueurs -->
+    <div class="flex items-center justify-between float-in d1">
+        <div class="flex items-center gap-3 min-w-0">
+            <span class="text-gray-700 text-xs font-gaming uppercase tracking-widest flex-shrink-0">Historique</span>
+            <div id="history-bar" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0 ml-4">
+            <div class="online-dot"></div>
+            <span id="online-count" class="font-mono text-xs text-gray-600">—</span>
+        </div>
     </div>
 
-    <div class="active-chart">
-        <canvas id="gameCanvas"></canvas>
+    <!-- ARENA -->
+    <div class="arena float-in d2" style="height:clamp(280px,45vh,440px)">
+        <div class="grid-lines"></div>
+        <svg id="trail" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="trail-grad" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0%" stop-color="rgba(255,45,85,0)"/>
+                    <stop offset="100%" stop-color="rgba(255,45,85,0.4)"/>
+                </linearGradient>
+            </defs>
+            <path id="trail-path" d="" fill="none" stroke="url(#trail-grad)" stroke-width="0.5"/>
+        </svg>
+        <div id="plane" style="bottom:12%;left:6%;display:none;">
+            <svg width="60" height="44" viewBox="0 0 60 44" fill="none">
+                <ellipse cx="30" cy="22" rx="22" ry="7" fill="#ff2d55"/>
+                <path d="M50 22 L58 19 L56 22 L58 25 Z" fill="#ff6b00"/>
+                <path d="M28 22 L18 8 L38 16 Z" fill="#c0152b"/>
+                <path d="M28 22 L18 36 L38 28 Z" fill="#c0152b"/>
+                <path d="M12 22 L8 12 L20 20 Z" fill="#ff2d55"/>
+                <ellipse cx="8" cy="22" rx="5" ry="3" fill="rgba(255,107,0,0.5)"/>
+                <ellipse cx="4" cy="22" rx="3" ry="2" fill="rgba(255,204,0,0.3)"/>
+            </svg>
+        </div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+            <div id="mult-display" style="color:rgba(255,255,255,0.3)">—</div>
+            <div id="live-gain" class="mt-3" style="color:rgba(255,255,255,0.3)">Connexion...</div>
+        </div>
+
+        <!-- Overlay crash -->
+        <div id="crash-overlay">
+            <div class="text-center">
+                <div class="crash-text">ENVOLÉ !</div>
+                <div id="crash-val" class="font-mono text-gray-400 text-xl mt-2">à —</div>
+            </div>
+        </div>
+
+        <!-- Overlay countdown WAITING (avant décollage) -->
+        <div id="cnt-overlay">
+            <div id="cnt-num">8</div>
+            <div class="font-gaming text-xs uppercase tracking-widest" style="color:rgba(255,255,255,0.4)">Décollage imminent</div>
+        </div>
+
+        <!-- Overlay countdown CRASHED (10s entre parties) -->
+        <div id="crash-cnt-overlay">
+            <div class="crash-cnt-text">ENVOLÉ !</div>
+            <div id="crash-val2" class="font-mono text-gray-400 text-lg">à —</div>
+            <div id="crash-cnt-num">10</div>
+            <div class="font-gaming text-xs uppercase tracking-widest" style="color:rgba(255,204,0,0.5)">Prochaine partie</div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 mx-6 mb-3">
+            <div class="runway"></div>
+        </div>
     </div>
 
-    <div class="btns">
-        <button class="b-buy" id="btn-acheter" onclick="parier('acheter')">Acheter</button>
-        <button class="b-sell" id="btn-vendre" onclick="parier('vendre')">Vendre</button>
-        <button class="b-hold" id="btn-garder" onclick="parier('garder')">Garder (Bleu)</button>
+    <!-- PANNEAU MISE -->
+    <div class="bet-panel rounded-2xl p-5 float-in d3">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+            <div class="space-y-2">
+                <label class="text-[9px] font-black uppercase tracking-widest" style="color:var(--red)">Mise (KMF)</label>
+                <input type="number" id="mise-input" class="mise-input" value="1000" min="100" max="100000">
+                <div class="grid grid-cols-4 gap-1.5">
+                    <button class="qbtn qbtn-minus" onclick="adjustMise(-100)">−100</button>
+                    <button class="qbtn qbtn-minus" onclick="adjustMise(-50)">−50</button>
+                    <button class="qbtn" onclick="adjustMise(50)">+50</button>
+                    <button class="qbtn" onclick="adjustMise(100)">+100</button>
+                </div>
+                <div class="grid grid-cols-4 gap-1.5">
+                    <button class="qbtn" onclick="setMise(500)">500</button>
+                    <button class="qbtn" onclick="setMise(1000)">1K</button>
+                    <button class="qbtn" onclick="setMise(5000)">5K</button>
+                    <button class="qbtn" onclick="setMise(10000)">10K</button>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[9px] font-black uppercase tracking-widest text-yellow-600">Auto Cashout (×)</label>
+                <input type="number" id="auto-input" class="auto-input" value="2.00" min="1.10" max="1000" step="0.10">
+                
+                <div class="stat-chip flex justify-between items-center">
+                    <span class="text-[9px] text-gray-600 uppercase">Gain potentiel</span>
+                    <span id="pot-gain" class="font-mono text-white text-sm font-bold">2 000 KMF</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[9px] font-black uppercase tracking-widest text-gray-600">Action</label>
+                <button id="main-btn" class="state-wait" disabled onclick="handleAction()">⏳ Connexion...</button>
+                <button id="cancel-btn" onclick="cancelBet()">✕ ANNULER LA MISE</button>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="dashboard-section">
-    <h2>Dashboard Historique</h2>
-    <div class="history-grid" id="historyGrid"></div>
-</div>
+</main>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    let score = 0;
-    let seconds = 10;
-    let userChoice = null;
-    let signalColor = "";
-    let candles = [];
-    let gameID = 0;
+// ════════════════════════════════════
+const planeEl   = document.getElementById('plane');
+const multEl    = document.getElementById('mult-display');
+const trailPath = document.getElementById('trail-path');
 
-    function newRound() {
-        seconds = 10;
-        userChoice = null;
-        candles = [];
-        document.getElementById('timer').innerText = seconds;
-        resetButtons();
+let multiplier = 1.00;
+let interval   = null;
+let trailPts   = [];
+let frameN     = 0;
 
-        // Historique fixe
-        let p = 50;
-        for(let i=0; i<18; i++) {
-            let o = p; p = o + (Math.random()-0.5)*15;
-            candles.push({o, c: p, h: Math.max(o,p)+4, l: Math.min(o,p)-4});
+// 🚀 Lancer le vol automatiquement
+startFlight();
+
+function startFlight() {
+    multiplier = 1.00;
+    planeEl.style.display = 'block';
+    planeEl.style.left = '6%';
+    planeEl.style.bottom = '12%';
+
+    trailPts = [];
+    trailPath.setAttribute('d', '');
+
+    interval = setInterval(() => {
+        multiplier += 0.02;
+
+        // afficher multiplicateur
+        multEl.textContent = multiplier.toFixed(2) + 'x';
+
+        // déplacer avion
+        movePlane(multiplier);
+
+        // crash aléatoire
+        if (Math.random() < 0.01) {
+            crash();
         }
 
-        const types = ['acheter', 'vendre', 'garder'];
-        signalColor = types[Math.floor(Math.random()*3)];
+    }, 50);
+}
 
-        render(canvas, candles, false);
+// ✈️ Mouvement avion
+function movePlane(m) {
+    frameN++;
 
-        let countdown = setInterval(() => {
-            seconds--;
-            document.getElementById('timer').innerText = seconds;
-            if(seconds <= 0) {
-                clearInterval(countdown);
-                finishRound();
-            }
-        }, 1000);
-    }
+    const t  = Math.min((m - 1) / 8, 1);
+    const px = 6 + t * 70;
+    const py = 12 + Math.pow(t, 1.4) * 60;
 
-    function render(targetCanvas, data, showSignal) {
-        // Redimensionnement dynamique pour le responsive
-        targetCanvas.width = targetCanvas.offsetWidth;
-        targetCanvas.height = targetCanvas.offsetHeight;
-        const tCtx = targetCanvas.getContext('2d');
-        const w = targetCanvas.width / 22;
-        const scale = targetCanvas.height / 100; 
-        const offset = targetCanvas.height / 1.5;
+    planeEl.style.left   = px + '%';
+    planeEl.style.bottom = py + '%';
 
-        data.forEach((can, i) => {
-            let x = i * w + (w);
-            tCtx.strokeStyle = "#475569";
-            tCtx.lineWidth = 1;
-            tCtx.beginPath(); tCtx.moveTo(x, offset-can.h*scale); tCtx.lineTo(x, offset-can.l*scale); tCtx.stroke();
-            tCtx.fillStyle = "#334155";
-            tCtx.fillRect(x-w/3, offset-Math.max(can.o,can.c)*scale, (w/3)*2, Math.max(Math.abs(can.o-can.c)*scale, 2));
-        });
+    // traînée
+    if (frameN % 2 === 0) {
+        trailPts.push([px, 100 - py]);
+        if (trailPts.length > 80) trailPts.shift();
 
-        if(showSignal) {
-            let last = data[data.length-1].c;
-            let col = (signalColor==='acheter') ? "#22c55e" : (signalColor==='vendre' ? "#ef4444" : "#3b82f6");
-            let x = data.length * w + (w);
-            tCtx.strokeStyle = col;
-            tCtx.lineWidth = 2;
-            tCtx.beginPath(); tCtx.moveTo(x, offset-(last+15)*scale); tCtx.lineTo(x, offset-(last-15)*scale); tCtx.stroke();
-            tCtx.fillStyle = col;
-            tCtx.shadowBlur = 15; tCtx.shadowColor = col;
-            tCtx.fillRect(x-w/3, offset-Math.max(last,last+8)*scale, (w/3)*2, 15);
+        if (trailPts.length > 2) {
+            trailPath.setAttribute(
+                'd',
+                'M ' + trailPts.map(p => p.join(',')).join(' L ')
+            );
         }
     }
+}
 
-    function parier(c) {
-        if(userChoice) return;
-        userChoice = c;
-        document.querySelectorAll('.btns button').forEach(b => b.disabled = true);
-        document.getElementById('btn-'+c).classList.add('selected');
-        document.getElementById('btn-'+c).disabled = false;
-    }
+// 💥 Crash
+function crash() {
+    clearInterval(interval);
 
-    function finishRound() {
-        gameID++;
-        render(canvas, candles, true);
-        let win = (userChoice === signalColor);
-        if(win) score += 10;
-        document.getElementById('val-score').innerText = score;
+    multEl.textContent = multiplier.toFixed(2) + 'x 💥';
+    planeEl.style.display = 'none';
 
-        addToDashboard(win);
-        setTimeout(newRound, 3000);
-    }
-
-    function addToDashboard(win) {
-        const grid = document.getElementById('historyGrid');
-        const card = document.createElement('div');
-        card.className = 'history-card';
-        const resLabel = win ? 'GAGNÉ' : 'PERDU';
-        const resClass = win ? 'win-txt' : 'loss-txt';
-
-        card.innerHTML = `
-            <div class="card-meta">
-                <span>SESSION #${gameID}</span>
-                <span class="${resClass}">${resLabel}</span>
-            </div>
-            <canvas id="hist-${gameID}" class="mini-canvas"></canvas>
-            <div style="font-size:0.7rem; margin-top:8px; opacity:0.7">
-                Signal: ${signalColor.toUpperCase()} | Choix: ${userChoice || 'NONE'}
-            </div>
-        `;
-        grid.prepend(card);
-        setTimeout(() => {
-            const mini = document.getElementById(`hist-${gameID}`);
-            render(mini, candles, true);
-        }, 50);
-    }
-
-    function resetButtons() {
-        document.querySelectorAll('.btns button').forEach(b => {
-            b.disabled = false;
-            b.classList.remove('selected');
-        });
-    }
-
-    // Gérer le redimensionnement de la fenêtre
-    window.addEventListener('resize', () => render(canvas, candles, false));
-
-    newRound();
+    setTimeout(() => {
+        startFlight(); // relancer automatiquement
+    }, 3000);
+}
 </script>
 </body>
 </html>
