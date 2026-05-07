@@ -3,308 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Mon Revenu</title>
+    <title>Gaming Zone · Mon Revenu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); }
-        body { background-color: #050a15; color: white; overflow-x: hidden; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .pulse-dot { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+            50%       { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
         }
-        .notification-slide-in { animation: slideIn 0.3s ease-out; }
-        .notification-slide-out { animation: slideOut 0.3s ease-in; }
+        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
+        .animate-delay-1 { animation-delay: 0.1s; }
+        .animate-delay-2 { animation-delay: 0.2s; }
+        .animate-delay-3 { animation-delay: 0.3s; }
+        .animate-delay-4 { animation-delay: 0.4s; }
+        .animate-delay-5 { animation-delay: 0.5s; }
+        .animate-pulse-green { animation: pulse-green 2s infinite; }
 
-        .menu-transition {
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-        .menu-open {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        .menu-closed {
-            transform: translateX(-100%);
-            opacity: 0;
+        .card-3d { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s; }
+        .card-3d:hover { transform: translateY(-12px) scale(1.02); }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(ellipse 80% 50% at 20% -10%, rgba(16,185,129,0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(59,130,246,0.05) 0%, transparent 60%);
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="bg-[#040a14] text-white font-['Syne'] min-h-screen overflow-x-hidden antialiased pb-28 md:pb-10">
 
-    <!-- Notifications -->
-    <div id="notification" class="fixed top-4 right-4 z-50 hidden bg-green-600 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold notification-slide-in">
-        <div class="flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-            <span id="notification-text"></span>
+<!-- NAVBAR -->
+<nav class="sticky top-0 z-50 bg-[#040a14]/85 backdrop-blur-xl border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center relative z-10">
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <div class="w-11 h-11 rounded-2xl overflow-hidden border border-white/10 shadow-lg">
+                    <img src="../Logo/logo.jpg" class="w-full h-full object-cover" alt="Logo">
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#040a14] animate-pulse-green"></div>
+            </div>
+            <span class="font-['Orbitron'] font-black text-xl tracking-tight uppercase">MON <span class="text-green-400">REVENU</span></span>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="px-4 py-2.5 bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20 rounded-2xl flex items-center gap-3">
+                <div class="w-7 h-7 bg-green-500/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-[8px] uppercase font-bold text-green-600 leading-none mb-0.5">Solde</p>
+                    <p class="font-['Orbitron'] font-black text-lg leading-none">1 250 <span class="text-green-400 text-[10px]">KMF</span></p>
+                </div>
+            </div>
+            <a href="/monrevenu/logout.php" class="hidden md:block px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 transition">⏻ Déco</a>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-5 py-10 space-y-10 relative z-10">
+    <div class="animate-fade-up animate-delay-1">
+        <p class="text-gray-500 text-sm font-semibold mb-1">Bienvenue,</p>
+        <h1 class="font-['Orbitron'] text-3xl md:text-4xl font-black bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Joueur #1 👾</h1>
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 animate-fade-up animate-delay-2">
+        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 flex items-center gap-3">
+            <span class="text-xl">💰</span>
+            <div><p class="text-[9px] text-gray-500 uppercase font-bold">Solde</p><p class="text-sm font-black font-['Orbitron']">1 250 <span class="text-green-400 text-[9px]">KMF</span></p></div>
+        </div>
+        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 flex items-center gap-3">
+            <span class="text-xl">🎮</span>
+            <div><p class="text-[9px] text-gray-500 uppercase font-bold">Jeux</p><p class="text-sm font-black font-['Orbitron']">3 <span class="text-blue-400 text-[9px]">actifs</span></p></div>
+        </div>
+        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 flex items-center gap-3">
+            <span class="text-xl">🚀</span>
+            <div><p class="text-[9px] text-gray-500 uppercase font-bold">Statut</p><p class="text-sm font-black font-['Orbitron'] text-green-400">EN LIGNE</p></div>
         </div>
     </div>
 
-    <div class="min-h-screen flex flex-col md:flex-row">
-        
-        <!-- Overlay pour mobile -->
-        <div id="overlay" class="hidden fixed inset-0 bg-black/50 z-20 md:hidden" onclick="toggleMenu()"></div>
-
-        <!-- Sidebar -->
-        <aside id="sidebar" class="fixed md:relative w-64 h-full md:h-auto bg-[#0b1224] border-r border-white/5 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
-            <div class="p-6 flex flex-col gap-6 h-full">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-green-500 p-0.5">
-                        <img src="../Logo/logo.jpg" class="w-full h-full object-cover rounded-full" alt="Logo">
-                    </div>
-                    <span class="font-black italic text-lg uppercase tracking-tighter">MON <span class="text-green-500">REVENU</span></span>
-                </div>
-
-                <div class="flex flex-col gap-1 flex-1">
-                    <a href="#" class="flex items-center gap-3 bg-green-600 text-white p-3 rounded-xl font-bold transition hover:bg-green-700">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                        Tableau de bord
-                    </a>
-                    <a href="#" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 p-3 rounded-xl transition font-medium">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                        Mes Ventes
-                    </a>
-                    <a href="#" class="flex items-center gap-3 text-gray-400 hover:text-white hover:bg-white/5 p-3 rounded-xl transition font-medium">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                        Statistiques
-                    </a>
-                </div>
-
-                <div class="border-t border-white/5 pt-4">
-                    <button onclick="handleLogout()" class="flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 p-3 rounded-xl transition font-medium w-full">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                        Déconnexion
-                    </button>
-                </div>
-            </div>
-        </aside>
-
-        <main class="flex-1 p-4 md:p-8 lg:p-10">
-            
-            <!-- Header -->
-            <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 mb-8">
-                <div>
-                    <h1 class="text-xl md:text-3xl font-black uppercase italic">Espace <span class="text-green-500">Vendeur</span></h1>
-                    <div class="flex items-center gap-2 text-gray-500 text-xs uppercase tracking-widest mt-1">
-                        <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot"></div>
-                        Rachid | ID: #8824
-                    </div>
-                </div>
-                
-                <div class="glass border border-white/10 p-6 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-br from-green-500/10 to-transparent">
-                    <div>
-                        <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-1">Gains cumulés</p>
-                        <p class="text-2xl md:text-3xl font-black">450.000 <span class="text-green-500 text-xs">CFA</span></p>
-                    </div>
-                    <button onclick="handleWithdraw()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-green-900/40 transition-all active:scale-95 hover:shadow-xl w-full sm:w-auto text-center">
-                        Retirer
-                    </button>
-                </div>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                <div class="glass border border-white/5 p-6 rounded-3xl hover:bg-white/[0.05] transition-all cursor-pointer group">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Produits vendus</p>
-                        <svg class="w-4 h-4 text-blue-500 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-                    </div>
-                    <p class="text-2xl font-black">124 <span class="text-blue-500 text-sm">/ 200</span></p>
-                    <div class="mt-2 bg-white/5 rounded-full h-1.5">
-                        <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" style="width: 62%"></div>
-                    </div>
-                </div>
-                <div class="glass border border-white/5 p-6 rounded-3xl hover:bg-white/[0.05] transition-all cursor-pointer group">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Commissions (24h)</p>
-                        <svg class="w-4 h-4 text-green-500 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <p class="text-2xl font-black text-green-500">+12.500 <span class="text-xs uppercase text-gray-500">CFA</span></p>
-                </div>
-                <div class="glass border border-white/5 p-6 rounded-3xl hover:bg-white/[0.05] transition-all cursor-pointer group">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Score Partenaire</p>
-                        <svg class="w-4 h-4 text-yellow-500 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <p class="text-2xl font-black">4.8</p>
-                        <span class="text-yellow-500 text-sm">★★★★★</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Graphique -->
-            <div class="glass border border-white/5 rounded-3xl p-6 mb-8">
-                <h2 class="text-xs font-bold uppercase tracking-widest mb-4">Performance des 7 derniers jours</h2>
-                <canvas id="performanceChart" height="80"></canvas>
-            </div>
-
-            <!-- Tableau -->
-            <div class="glass border border-white/5 rounded-3xl overflow-hidden">
-                <div class="p-5 border-b border-white/5 bg-white/5 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                    <h2 class="text-xs font-bold uppercase tracking-widest">Historique Récent</h2>
-                    <div class="flex gap-2">
-                        <input type="text" placeholder="Rechercher..." class="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition">
-                        <select class="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-green-500 transition">
-                            <option value="all">Tout</option>
-                            <option value="success">Succès</option>
-                            <option value="pending">En attente</option>
-                            <option value="failed">Échoué</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left min-w-[600px]">
-                        <thead class="text-[9px] uppercase tracking-widest text-gray-500">
-                            <tr>
-                                <th class="p-5 cursor-pointer hover:text-white transition">
-                                    Produit
-                                    <svg class="w-3 h-3 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
-                                </th>
-                                <th class="p-5 cursor-pointer hover:text-white transition">Date</th>
-                                <th class="p-5 text-right cursor-pointer hover:text-white transition">Gain</th>
-                                <th class="p-5 text-center cursor-pointer hover:text-white transition">Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-white/5" id="tableBody">
-                            <tr class="hover:bg-white/5 transition cursor-pointer">
-                                <td class="p-5 text-sm font-bold">Pack VIP Gold</td>
-                                <td class="p-5 text-xs text-gray-500">26/04/2026</td>
-                                <td class="p-5 text-right font-black text-green-500">+5.000 CFA</td>
-                                <td class="p-5 text-center">
-                                    <span class="bg-green-500/20 text-green-500 text-[9px] px-2 py-1 rounded font-bold">SUCCÈS</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-white/5 transition cursor-pointer">
-                                <td class="p-5 text-sm font-bold">Recharge Points #55</td>
-                                <td class="p-5 text-xs text-gray-500">25/04/2026</td>
-                                <td class="p-5 text-right font-black text-green-500">+1.200 CFA</td>
-                                <td class="p-5 text-center">
-                                    <span class="bg-green-500/20 text-green-500 text-[9px] px-2 py-1 rounded font-bold">SUCCÈS</span>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-white/5 transition cursor-pointer">
-                                <td class="p-5 text-sm font-bold">Pack Starter</td>
-                                <td class="p-5 text-xs text-gray-500">24/04/2026</td>
-                                <td class="p-5 text-right font-black text-green-500">+2.500 CFA</td>
-                                <td class="p-5 text-center">
-                                    <span class="bg-yellow-500/20 text-yellow-500 text-[9px] px-2 py-1 rounded font-bold">EN ATTENTE</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Pagination -->
-                <div class="p-4 border-t border-white/5 flex justify-between items-center text-xs text-gray-500">
-                    <span>Affichage 1-3 sur 24</span>
-                    <div class="flex gap-2">
-                        <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 transition">Précédent</button>
-                        <button class="px-3 py-1 rounded-lg bg-green-600 text-white font-bold">1</button>
-                        <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 transition">2</button>
-                        <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 transition">3</button>
-                        <button class="px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 transition">Suivant</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-up animate-delay-2">
+        <a href="depot.php" class="py-5 rounded-2xl font-['Orbitron'] text-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 hover:-translate-y-1 transition shadow-lg shadow-green-500/20">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+            Dépôt Rapide
+        </a>
+        <a href="retrait.php" class="py-5 rounded-2xl font-['Orbitron'] text-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 text-gray-300 bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] hover:border-white/20 hover:-translate-y-1 transition">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M15 13l-3 3m0 0l-3-3m3 3V8"/></svg>
+            Retirer Gains
+        </a>
     </div>
 
-    <!-- Menu hamburger mobile -->
-    <button onclick="toggleMenu()" class="fixed top-4 right-4 z-40 md:hidden bg-[#0b1224] p-2 rounded-lg border border-white/10 text-gray-400 hover:text-white">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-    </button>
+    <!-- JEUX -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- AVIATOR -->
+        <div class="card-3d bg-gradient-to-b from-white/[0.05] to-black/40 border border-white/5 hover:border-red-500/40 rounded-[28px] overflow-hidden group animate-fade-up animate-delay-3">
+            <div class="h-48 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute w-32 h-32 bg-red-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <span class="absolute top-4 right-4 font-['Orbitron'] text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-red-600/90 text-white z-10">HOT 🔥</span>
+                <svg class="w-28 h-28 text-red-500 relative z-10 transition duration-500 group-hover:scale-110 group-hover:-rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M15.5 8.5L21 3m0 0l-5.5 5.5M21 3v5.5m-9 4.5l-4.5 4.5m4.5-4.5H12m0 0v4.5m3-13.5l-9 9m9-9L3 21"/>
+                </svg>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-1"><h3 class="font-['Orbitron'] text-lg font-black">AVIATOR</h3><span class="text-red-500 font-['Orbitron'] text-xs">ULTRA</span></div>
+                <p class="text-gray-500 text-xs mb-5">Misez, regardez votre multiplicateur monter et retirez au bon moment.</p>
+                <a href="jeu/aviator.php" class="block w-full py-3 rounded-xl font-['Orbitron'] text-[10px] font-black uppercase tracking-widest text-center bg-white/10 border border-white/10 text-white hover:bg-red-500 hover:border-red-500 transition duration-300">Jouer →</a>
+            </div>
+        </div>
 
-    <script>
-        // Menu mobile toggle
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
+        <!-- MINES -->
+        <div class="card-3d bg-gradient-to-b from-white/[0.05] to-black/40 border border-white/5 hover:border-blue-500/40 rounded-[28px] overflow-hidden group animate-fade-up animate-delay-4">
+            <div class="h-48 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute w-32 h-32 bg-blue-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <span class="absolute top-4 right-4 font-['Orbitron'] text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-blue-600/90 text-white z-10">NOUVEAU ✨</span>
+                <svg class="w-28 h-28 text-blue-500 relative z-10 transition duration-500 group-hover:scale-110 group-hover:-rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-1"><h3 class="font-['Orbitron'] text-lg font-black">MINES</h3><span class="text-blue-500 font-['Orbitron'] text-xs">GOLD</span></div>
+                <p class="text-gray-500 text-xs mb-5">Évitez les mines cachées et collectez un maximum de gemmes.</p>
+                <a href="jeu/mines.php" class="block w-full py-3 rounded-xl font-['Orbitron'] text-[10px] font-black uppercase tracking-widest text-center bg-white/10 border border-white/10 text-white hover:bg-blue-500 hover:border-blue-500 transition duration-300">Tenter ma chance →</a>
+            </div>
+        </div>
 
-        // Notification
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            const text = document.getElementById('notification-text');
-            text.textContent = message;
-            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-2xl shadow-2xl font-bold notification-slide-in ${
-                type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-yellow-600'
-            } text-white`;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.classList.add('notification-slide-out');
-                setTimeout(() => notification.style.display = 'none', 300);
-            }, 3000);
-        }
+        <!-- DUEL -->
+        <div class="card-3d bg-gradient-to-b from-white/[0.05] to-black/40 border border-white/5 hover:border-purple-500/40 rounded-[28px] overflow-hidden group animate-fade-up animate-delay-5">
+            <div class="h-48 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute w-32 h-32 bg-purple-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <svg class="w-28 h-28 text-purple-500 relative z-10 transition duration-500 group-hover:scale-110 group-hover:-rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-1"><h3 class="font-['Orbitron'] text-lg font-black">DOUBLE</h3><span class="text-purple-500 font-['Orbitron'] text-xs">DUEL</span></div>
+                <p class="text-gray-500 text-xs mb-5">Affrontez d'autres joueurs en temps réel et doublez votre mise.</p>
+                <a href="jeu/duel.php" class="block w-full py-3 rounded-xl font-['Orbitron'] text-[10px] font-black uppercase tracking-widest text-center bg-white/10 border border-white/10 text-white hover:bg-purple-500 hover:border-purple-500 transition duration-300">Lancer →</a>
+            </div>
+        </div>
+    </div>
+</main>
 
-        // Retrait
-        function handleWithdraw() {
-            if (confirm('Voulez-vous vraiment effectuer un retrait de vos gains ?')) {
-                showNotification('Demande de retrait envoyée avec succès !', 'success');
-            }
-        }
-
-        // Déconnexion
-        function handleLogout() {
-            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-                showNotification('Déconnexion réussie', 'success');
-            }
-        }
-
-        // Graphique
-        const ctx = document.getElementById('performanceChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mer', 'Jeu', 'Ven', 'Sam', 'Dim', 'Lun', 'Mar'],
-                datasets: [{
-                    label: 'CFA',
-                    data: [3200, 5100, 4200, 7800, 6500, 12500, 9800],
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#10b981',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        ticks: { color: '#6b7280', font: { size: 10 } },
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                    },
-                    y: {
-                        ticks: { color: '#6b7280', font: { size: 10 } },
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
+<!-- NAVIGATION MOBILE (visible uniquement sur mobile) -->
+<div class="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 w-[90%] bg-[#040a14]/95 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex justify-around items-center py-3 px-2 z-50">
+    <a href="#" class="flex flex-col items-center gap-1">
+        <div class="w-11 h-11 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30 active:scale-95 transition">
+            <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </div>
+        <span class="text-[9px] font-bold font-['Orbitron'] text-green-400">JEUX</span>
+    </a>
+    <a href="depot.php" class="flex flex-col items-center gap-1">
+        <div class="w-11 h-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center active:scale-95 transition">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <span class="text-[9px] font-bold font-['Orbitron'] text-gray-500">DÉPÔT</span>
+    </a>
+    <a href="retrait.php" class="flex flex-col items-center gap-1">
+        <div class="w-11 h-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center active:scale-95 transition">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8"/></svg>
+        </div>
+        <span class="text-[9px] font-bold font-['Orbitron'] text-gray-500">RETRAIT</span>
+    </a>
+    <a href="/monrevenu/logout.php" class="flex flex-col items-center gap-1">
+        <div class="w-11 h-11 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center active:scale-95 transition">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        </div>
+        <span class="text-[9px] font-bold font-['Orbitron'] text-red-400">DÉCO</span>
+    </a>
+</div>
 
 </body>
 </html>
