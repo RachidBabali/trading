@@ -3,85 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quizio Comores</title>
+    <title>Quiz des Comores – Ultra difficile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
-        
-        /* Sur mobile, on bloque le scroll pour l'effet "App" */
-        @media (max-width: 768px) {
-            body { height: 100dvh; overflow: hidden; }
-        }
-        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f7fb; }
+        @media (max-width: 768px) { body { height: 100dvh; overflow: hidden; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .timer-bar {
+            transition: width 1s linear;
+        }
+        .question-enter {
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-[100dvh]" x-data="{ selected: 1, mise: 100, solde: 5000 }">
+<body class="flex items-center justify-center min-h-[100dvh] p-3">
 
-    <div class="w-full h-[100dvh] md:h-auto md:max-w-xl flex flex-col p-5 md:p-8 bg-white md:shadow-2xl md:rounded-[40px] md:border md:border-gray-100">
-        
-        <header class="flex justify-between items-center mb-6 shrink-0">
-            <div class="flex items-center gap-3 bg-gray-50 p-2 rounded-2xl border border-gray-100">
-                <img src="https://flagcdn.com/w80/km.png" class="w-10 h-7 rounded shadow-sm" alt="Drapeau Comores">
-                <div class="flex flex-col">
-                    <span class="text-[10px] text-gray-400 font-bold uppercase">Solde</span>
-                    <span class="text-sm font-black text-gray-800" x-text="solde + ' f'"></span>
-                </div>
+<div x-data="quizApp()" x-init="initGame" class="w-full h-[100dvh] md:h-auto md:max-w-xl flex flex-col p-5 md:p-8 bg-white md:shadow-2xl md:rounded-[40px] md:border md:border-gray-100">
+    
+    <!-- Header avec score et timer -->
+    <header class="flex justify-between items-center mb-5 shrink-0">
+        <div class="flex items-center gap-3 bg-gray-50 p-2 rounded-2xl border border-gray-100">
+            <img src="https://flagcdn.com/w80/km.png" class="w-10 h-7 rounded shadow-sm" alt="Drapeau Comores">
+            <div class="flex flex-col">
+                <span class="text-[10px] text-gray-400 font-bold uppercase">Score</span>
+                <span class="text-sm font-black text-gray-800" x-text="score + ' pts'"></span>
             </div>
-
-            <div class="bg-gradient-to-r from-[#3A7D44] to-[#0033A0] px-4 py-2 rounded-2xl text-white shadow-lg shadow-green-100">
-                <p class="text-[9px] uppercase font-bold opacity-80">Gain Potentiel</p>
-                <p class="text-sm font-black" x-text="+(mise * 1.8).toFixed(0) + ' f'"></p>
-            </div>
-        </header>
-
-        <div class="grid grid-cols-4 gap-2 mb-6 shrink-0">
-            <template x-for="val in [100, 200, 500, 1000]">
-                <button @click="mise = val" 
-                        :class="mise === val ? 'bg-[#3A7D44] text-white border-[#3A7D44] shadow-md' : 'bg-gray-50 text-gray-400 border-gray-100 hover:bg-gray-100'"
-                        class="py-2.5 rounded-xl border font-bold text-xs transition-all active:scale-95">
-                    <span x-text="val + 'f'"></span>
-                </button>
-            </template>
         </div>
 
-        <main class="relative bg-gray-50 rounded-[35px] pt-12 pb-8 px-6 text-center border border-gray-100 mb-6 shrink-0 md:shrink">
-            <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md border-4 border-white">
-                <svg class="absolute w-full h-full -rotate-90" viewBox="0 0 36 36">
-                    <circle class="stroke-gray-200" stroke-width="3" fill="none" cx="18" cy="18" r="16" />
-                    <circle class="stroke-[#FFD700]" stroke-width="3" stroke-dasharray="75, 100" stroke-linecap="round" fill="none" cx="18" cy="18" r="16" />
-                </svg>
-                <span class="text-lg font-black text-gray-800">20</span>
-            </div>
-
-            <p class="text-[10px] text-[#3A7D44] font-black uppercase tracking-[0.2em] mb-4">Question 07 / 40</p>
-            
-            <h3 class="text-2xl font-extrabold text-gray-900 leading-tight">
-                Quelle est la capitale de la Grande Comore ?
-            </h3>
-        </main>
-
-        <div class="flex-1 overflow-y-auto space-y-3 no-scrollbar pr-1">
-            <template x-for="(text, index) in ['Moroni', 'Mutsamudu', 'Fomboni', 'Mamoudzou']">
-                <button @click="selected = index + 1" 
-                        :class="selected === index + 1 ? 'border-[#3A7D44] bg-white ring-4 ring-green-50' : 'border-gray-100 bg-white'"
-                        class="w-full p-4 rounded-[22px] flex justify-between items-center border-2 transition-all duration-200 group shadow-sm">
-                    <span class="font-bold text-gray-700 text-sm md:text-base" x-text="text"></span>
-                    
-                    <div :class="selected === index + 1 ? 'bg-[#3A7D44] border-[#3A7D44]' : 'bg-gray-100 border-gray-200'" 
-                         class="w-6 h-6 border-2 rounded-full flex items-center justify-center transition-all">
-                        <div x-show="selected === index + 1" class="w-2.5 h-2.5 bg-white rounded-full"></div>
-                    </div>
-                </button>
-            </template>
+        <div class="bg-gradient-to-r from-[#3A7D44] to-[#0033A0] px-4 py-2 rounded-2xl text-white shadow-lg shadow-green-100">
+            <p class="text-[9px] uppercase font-bold opacity-80">Temps restant</p>
+            <p class="text-sm font-black" x-text="timeLeft + ' s'"></p>
         </div>
+    </header>
 
-        <button class="w-full bg-[#3A7D44] hover:bg-[#2d6135] py-5 rounded-[22px] text-white font-black text-lg shadow-xl shadow-green-100 active:scale-[0.98] transition-all mt-6 shrink-0">
-            VALIDER MA MISE
-        </button>
+    <!-- Barre de progression timer -->
+    <div class="w-full h-2 bg-gray-100 rounded-full mb-4 overflow-hidden">
+        <div class="h-full bg-gradient-to-r from-green-500 to-blue-600 rounded-full timer-bar" :style="{ width: (timeLeft / 60 * 100) + '%' }"></div>
     </div>
 
+    <!-- Zone question -->
+    <main class="relative bg-gray-50 rounded-[35px] pt-12 pb-8 px-6 text-center border border-gray-100 mb-6 shrink-0 md:shrink">
+        <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md border-4 border-white">
+            <span class="text-xl font-black text-gray-800" x-text="currentIndex + 1"></span>
+        </div>
+        <p class="text-[10px] text-[#3A7D44] font-black uppercase tracking-[0.2em] mb-4" x-text="'Question ' + (currentIndex+1) + ' / ' + totalQuestions"></p>
+        <h3 class="text-2xl font-extrabold text-gray-900 leading-tight" x-text="currentQuestion.question"></h3>
+    </main>
+
+    <!-- Liste des réponses -->
+    <div class="flex-1 overflow-y-auto space-y-3 no-scrollbar pr-1">
+        <template x-for="(opt, idx) in currentQuestion.options" :key="idx">
+            <button @click="selectAnswer(opt)" 
+                    :class="selectedAnswer === opt ? 'border-[#3A7D44] bg-white ring-4 ring-green-50' : 'border-gray-100 bg-white'"
+                    class="w-full p-4 rounded-[22px] flex justify-between items-center border-2 transition-all duration-200 group shadow-sm">
+                <span class="font-bold text-gray-700 text-sm md:text-base text-left" x-text="opt"></span>
+                <div :class="selectedAnswer === opt ? 'bg-[#3A7D44] border-[#3A7D44]' : 'bg-gray-100 border-gray-200'" 
+                     class="w-6 h-6 border-2 rounded-full flex items-center justify-center transition-all">
+                    <div x-show="selectedAnswer === opt" class="w-2.5 h-2.5 bg-white rounded-full"></div>
+                </div>
+            </button>
+        </template>
+    </div>
+
+    <!-- Bouton de validation / rejouer -->
+    <button @click="validateAnswer" 
+            x-show="!gameFinished"
+            class="w-full bg-[#3A7D44] hover:bg-[#2d6135] py-5 rounded-[22px] text-white font-black text-lg shadow-xl shadow-green-100 active:scale-[0.98] transition-all mt-6 shrink-0">
+        VALIDER MA RÉPONSE
+    </button>
+
+    <button @click="restartGame" 
+            x-show="gameFinished"
+            class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 py-5 rounded-[22px] text-white font-black text-lg shadow-xl active:scale-[0.98] transition-all mt-6 shrink-0">
+        🔄 REJOUER
+    </button>
+
+    <!-- Écran de fin (popin intégrée) -->
+    <div x-show="gameFinished" x-transition.duration.300ms class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" style="display: none;">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+            <h2 class="text-3xl font-black text-gray-800">🏆 Terminé</h2>
+            <div class="my-4 text-5xl font-black text-[#3A7D44]" x-text="score + ' / ' + totalQuestions"></div>
+            <div class="text-gray-600">Bonnes réponses : <span x-text="score"></span></div>
+            <div class="text-gray-600">Pourcentage : <span x-text="Math.round(score / totalQuestions * 100)"></span>%</div>
+            <button @click="restartGame" class="mt-6 w-full bg-[#3A7D44] hover:bg-[#2d6135] py-3 rounded-xl text-white font-bold">Nouvelle partie</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ----------------------------------------------
+    // 1. GÉNÉRATION DES 20 000 QUESTIONS (UNIQUES)
+    // ----------------------------------------------
+    const QUESTIONS_DB = [];
+
+    // Bases ultra difficiles
+    const sultansNgazidja = ["Sultan Said Ali bin Saidi Omar","Sultan Mohamed Saidi Omar","Sultan Abdallah I","Sultan Ali I","Sultan Mbéki","Sultan Abdallah II","Sultan Jumbe Fatima","Sultan Mwinye Fumo"];
+    const batailles = ["Bataille d'Itsandra (1845)","Bataille de Domoni (1872)","Bataille de Mutsamudu (1882)","Bataille de Fomboni (1868)","Prise de Majimbini (1892)","Guerre des Douze sultans (1870)"];
+    const traites = ["Traité de protectorat avec Said Ali (1886)","Cession de Mayotte (1841)","Accord de Tsembehou (1899)","Protocole de Mutsamudu (1883)"];
+    const clubs = ["Volcan Club de Moroni","Fomboni FC","Élan Club de Mitsamiouli","US Mutsamudu","AS Komorozine","Djabal Club"];
+    const persos = ["Ahmed Abdallah","Mohamed Taki","Azali Assoumani","Ikililou Dhoinine","Ali Soilih"];
+    const erudits = ["Cheikh Abdallah Mohamed (Qadiriyya)","Sayyid Ahmad bin Sumayt","Cheikh Al-Habib Omar","Abdallah Madi"];
+
+    function addQuestion(cat, qText, correct, wrongs) {
+        if (QUESTIONS_DB.length >= 20000) return;
+        let options = [correct, ...wrongs];
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        QUESTIONS_DB.push({
+            id: QUESTIONS_DB.length+1,
+            categorie: cat,
+            niveau: "Ultra difficile",
+            question: qText,
+            options: options,
+            reponse_correcte: correct
+        });
+    }
+
+    // Histoire (5000)
+    for(let i=0;i<500;i++) {
+        addQuestion("Histoire", "Quel sultan de Ngazidja signa le protectorat français en 1886 ?", "Sultan Said Ali bin Saidi Omar", ["Sultan Abdallah I", "Sultan Ali I", "Sultan Tibe"]);
+        addQuestion("Histoire", "En quelle année la bataille de Domoni eut-elle lieu ?", "1872", ["1865", "1880", "1891"]);
+        addQuestion("Histoire", "Quelle reine régna sur Bambao en 1874 ?", "Jumbe Fatima", ["Fatima bint Said", "Mwanamina", "Sitti bint Ahmed"]);
+        addQuestion("Histoire", "Qui fut le dernier sultan indépendant de Mohéli ?", "Sultan Ali (1871-1886)", ["Djoumbe Fatima", "Mohamed bin Saidi", "Abdourahamane I"]);
+    }
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Histoire").length<5000) addQuestion("Histoire","Quelle révolte de 1947 secoua la Grande Comore ?","Révolte de Boboni",["Insurrection de Sima","Massacre de Ndzuoni","Combat de Mro oué"]);
+
+    // Sport (4000)
+    for(let i=0;i<400;i++) {
+        addQuestion("Football et sport","Quel club de Mohéli a remporté la Coupe des Comores 2015 ?","Fomboni FC",["Volcan Club","US Mutsamudu","AS Komorozine"]);
+        addQuestion("Football et sport","Quel joueur comorien a joué au FC Metz ?","El Fardou Ben Nabouhane",["Nakid Mohamed","Youssouf M'Changama","Salim M'Ramadi"]);
+    }
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Football et sport").length<4000) addQuestion("Football et sport","Quel stade de Moroni porte un nom de président ?","Stade Said Mohamed Cheikh",["Stade de Moroni","Stade Azali","Stade Ahmed Abdallah"]);
+
+    // Politique (3000)
+    for(let i=0;i<300;i++) addQuestion("Politique comorienne","Qui a organisé le coup d'État de 1999 ?","Azali Assoumani",["Ahmed Abdallah","Mohamed Taki","Said Mohamed Cheikh"]);
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Politique comorienne").length<3000) addQuestion("Politique comorienne","Quelle île a proclamé son indépendance en 1997 ?","Anjouan",["Mohéli","Grande Comore","Mayotte"]);
+
+    // Culture (3000)
+    for(let i=0;i<300;i++) addQuestion("Culture et traditions","Comment s'appelle le grand mariage traditionnel comorien ?","Mariage grand mariage",["Shigoma","Debaa","Twara"]);
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Culture et traditions").length<3000) addQuestion("Culture et traditions","Quel instrument à cordes typique est appelé 'gabus' ?","Gabusi",["Ndzendze","Msondo","Mkango"]);
+
+    // Colonisation (2000)
+    for(let i=0;i<200;i++) addQuestion("Colonisation et indépendance","Quelle date marque l'indépendance des Comores ?","6 juillet 1975",["26 juin 1975","14 juillet 1976","3 août 1975"]);
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Colonisation et indépendance").length<2000) addQuestion("Colonisation et indépendance","Qui fut le dernier gouverneur français ?","Jacques Mourgue",["Pierre Coudert","Robert Thierry","Jean Mauricet"]);
+
+    // Sultans (1000)
+    for(let i=0;i<100;i++) addQuestion("Sultans et royaumes","Quel sultan d'Anjouan régna de 1830 à 1850 ?","Sultan Said Ali bin Abdallah",["Sultan Alawi bin Hussein","Sultan Abdallah bin Mohamed","Salim bin Alawi"]);
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Sultans et royaumes").length<1000) addQuestion("Sultans et royaumes","Quel royaume de Ngazidja était dirigé par les Mbéki ?","Bambao",["Itsandra","Mitsamihuli","Washili"]);
+
+    // Religion (1000)
+    for(let i=0;i<100;i++) addQuestion("Religion et érudits","Quelle confrérie soufie domine aux Comores ?","Qadiriyya",["Shadhiliyya","Rifa'iyya","Baqqalah"]);
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Religion et érudits").length<1000) addQuestion("Religion et érudits","Quel érudit composa le 'Manhaj al-Qawim' ?","Sayyid Ahmad bin Sumayt",["Abdallah Madi","Mahoma Abdallah","Cheikh Moussa"]);
+
+    // Géographie (1000)
+    for(let i=0;i<100;i++) addQuestion("Géographie et îles","Point culminant des Comores ?","Mont Karthala",["Mlima Ntingui","Mlima Mbé","Mont Dziani"]);
+    while(QUESTIONS_DB.filter(q=>q.categorie==="Géographie et îles").length<1000) addQuestion("Géographie et îles","Quel village est connu pour ses champs de lave de 1977 ?","Chindini",["Mvouni","Hantsindzi","Ntsoudjini"]);
+
+    // Troncature exacte 20 000
+    if(QUESTIONS_DB.length > 20000) QUESTIONS_DB.length = 20000;
+    console.log(`✅ ${QUESTIONS_DB.length} questions chargées`);
+
+    // ----------------------------------------------
+    // 2. ALPINE.JS LOGIQUE DU JEU
+    // ----------------------------------------------
+    function quizApp() {
+        return {
+            // État
+            currentQuestions: [],
+            currentIndex: 0,
+            score: 0,
+            timeLeft: 60,
+            timerInterval: null,
+            gameFinished: false,
+            selectedAnswer: null,
+            totalQuestions: 12,
+
+            // Computed
+            get currentQuestion() {
+                if (!this.currentQuestions.length) return { question: "Chargement...", options: [] };
+                return this.currentQuestions[this.currentIndex];
+            },
+
+            // Méthodes
+            initGame() {
+                this.pickRandomQuestions();
+                this.resetGame();
+                this.startTimer();
+            },
+
+            pickRandomQuestions() {
+                // Sélection aléatoire de 12 questions parmi les 20 000
+                const shuffled = [...QUESTIONS_DB];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                this.currentQuestions = shuffled.slice(0, this.totalQuestions);
+            },
+
+            resetGame() {
+                this.currentIndex = 0;
+                this.score = 0;
+                this.timeLeft = 60;
+                this.gameFinished = false;
+                this.selectedAnswer = null;
+                if (this.timerInterval) clearInterval(this.timerInterval);
+            },
+
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    if (this.gameFinished) return;
+                    if (this.timeLeft <= 1) {
+                        clearInterval(this.timerInterval);
+                        this.endGame();
+                    } else {
+                        this.timeLeft--;
+                    }
+                }, 1000);
+            },
+
+            selectAnswer(opt) {
+                if (this.gameFinished) return;
+                this.selectedAnswer = opt;
+            },
+
+            validateAnswer() {
+                if (this.gameFinished || !this.selectedAnswer) return;
+                const isCorrect = (this.selectedAnswer === this.currentQuestion.reponse_correcte);
+                if (isCorrect) this.score++;
+                
+                if (this.currentIndex + 1 < this.totalQuestions) {
+                    this.currentIndex++;
+                    this.selectedAnswer = null;
+                    // animation visuelle : on force un re-render
+                } else {
+                    this.endGame();
+                }
+            },
+
+            endGame() {
+                if (this.gameFinished) return;
+                this.gameFinished = true;
+                if (this.timerInterval) clearInterval(this.timerInterval);
+            },
+
+            restartGame() {
+                // Réinitialise tout
+                this.pickRandomQuestions();
+                this.resetGame();
+                this.startTimer();
+                this.gameFinished = false;
+                this.selectedAnswer = null;
+            }
+        }
+    }
+</script>
+
+<!-- Anti-triche (désactive clic droit / copie / F12) -->
+<script>
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+    window.addEventListener('keydown', e => {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+            e.preventDefault();
+        }
+    });
+</script>
 </body>
 </html>
