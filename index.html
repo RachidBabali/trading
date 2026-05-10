@@ -2,178 +2,86 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Zone · Mon Revenu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quizio Comores</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #ffffff; }
+        
+        /* Sur mobile, on bloque le scroll pour l'effet "App" */
+        @media (max-width: 768px) {
+            body { height: 100dvh; overflow: hidden; }
         }
-        @keyframes pulse-green {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
-            50%       { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
-        }
-        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
-        .animate-delay-1 { animation-delay: 0.1s; }
-        .animate-delay-2 { animation-delay: 0.2s; }
-        .animate-delay-3 { animation-delay: 0.3s; }
-        .animate-delay-4 { animation-delay: 0.4s; }
-        .animate-delay-5 { animation-delay: 0.5s; }
-        .animate-pulse-green { animation: pulse-green 2s infinite; }
-
-        .card-3d { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s; }
-        .card-3d:hover { transform: translateY(-12px) scale(1.02); }
-
-        body::before {
-            content: '';
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
-            background: radial-gradient(ellipse 80% 50% at 20% -10%, rgba(16,185,129,0.06) 0%, transparent 60%),
-                        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(59,130,246,0.05) 0%, transparent 60%);
-        }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-[#040a14] text-white font-['Syne'] min-h-screen overflow-x-hidden antialiased pb-28 md:pb-10">
+<body class="flex items-center justify-center min-h-[100dvh]" x-data="{ selected: 1, mise: 100, solde: 5000 }">
 
-<!-- NAVBAR -->
-<nav class="sticky top-0 z-50 bg-[#040a14]/85 backdrop-blur-xl border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center relative z-10">
-        <div class="flex items-center gap-4">
-            <div class="relative">
-                <div class="w-11 h-11 rounded-2xl overflow-hidden border border-white/10 shadow-lg">
-                    <img src="../Logo/logo.jpg" class="w-full h-full object-cover" alt="Logo">
-                </div>
-                <div class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#040a14] animate-pulse-green"></div>
-            </div>
-            <span class="font-['Orbitron'] font-black text-xl tracking-tight uppercase">MON <span class="text-green-400">REVENU</span></span>
-        </div>
-        <div class="flex items-center gap-3">
-            <div class="px-4 py-2.5 bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20 rounded-2xl flex items-center gap-3">
-                <div class="w-7 h-7 bg-green-500/20 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-[8px] uppercase font-bold text-green-600 leading-none mb-0.5">Solde</p>
-                    <p class="font-['Orbitron'] font-black text-lg leading-none">1 250 <span class="text-green-400 text-[10px]">KMF</span></p>
+    <div class="w-full h-[100dvh] md:h-auto md:max-w-xl flex flex-col p-5 md:p-8 bg-white md:shadow-2xl md:rounded-[40px] md:border md:border-gray-100">
+        
+        <header class="flex justify-between items-center mb-6 shrink-0">
+            <div class="flex items-center gap-3 bg-gray-50 p-2 rounded-2xl border border-gray-100">
+                <img src="https://flagcdn.com/w80/km.png" class="w-10 h-7 rounded shadow-sm" alt="Drapeau Comores">
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-gray-400 font-bold uppercase">Solde</span>
+                    <span class="text-sm font-black text-gray-800" x-text="solde + ' f'"></span>
                 </div>
             </div>
-            <a href="/monrevenu/logout.php" class="hidden md:block px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-bold uppercase tracking-wider hover:bg-red-500/20 transition">⏻ Déco</a>
-        </div>
-    </div>
-</nav>
 
-<!-- MAIN -->
-<main class="max-w-7xl mx-auto px-5 py-10 space-y-10 relative z-10">
-    <div class="animate-fade-up animate-delay-1">
-        <p class="text-gray-500 text-sm font-semibold mb-1">Bienvenue,</p>
-        <h1 class="font-['Orbitron'] text-3xl md:text-4xl font-black bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Joueur #1 👾</h1>
-    </div>
+            <div class="bg-gradient-to-r from-[#3A7D44] to-[#0033A0] px-4 py-2 rounded-2xl text-white shadow-lg shadow-green-100">
+                <p class="text-[9px] uppercase font-bold opacity-80">Gain Potentiel</p>
+                <p class="text-sm font-black" x-text="+(mise * 1.8).toFixed(0) + ' f'"></p>
+            </div>
+        </header>
 
-    <div class="grid grid-cols-3 gap-3 animate-fade-up animate-delay-2">
-        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 flex items-center gap-3">
-            <span class="text-xl">💰</span>
-            <div><p class="text-[9px] text-gray-500 uppercase font-bold">Solde</p><p class="text-sm font-black font-['Orbitron']">1 250 <span class="text-green-400 text-[9px]">KMF</span></p></div>
+        <div class="grid grid-cols-4 gap-2 mb-6 shrink-0">
+            <template x-for="val in [100, 200, 500, 1000]">
+                <button @click="mise = val" 
+                        :class="mise === val ? 'bg-[#3A7D44] text-white border-[#3A7D44] shadow-md' : 'bg-gray-50 text-gray-400 border-gray-100 hover:bg-gray-100'"
+                        class="py-2.5 rounded-xl border font-bold text-xs transition-all active:scale-95">
+                    <span x-text="val + 'f'"></span>
+                </button>
+            </template>
         </div>
-        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 flex items-center gap-3">
-            <span class="text-xl">🎮</span>
-            <div><p class="text-[9px] text-gray-500 uppercase font-bold">Jeux</p><p class="text-sm font-black font-['Orbitron']">3 <span class="text-blue-400 text-[9px]">actifs</span></p></div>
-        </div>
-        <div class="bg-white/[0.03] border border-white/5 rounded-xl p-3 flex items-center gap-3">
-            <span class="text-xl">🚀</span>
-            <div><p class="text-[9px] text-gray-500 uppercase font-bold">Statut</p><p class="text-sm font-black font-['Orbitron'] text-green-400">EN LIGNE</p></div>
-        </div>
-    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-up animate-delay-2">
-        <a href="depot.php" class="py-5 rounded-2xl font-['Orbitron'] text-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 hover:-translate-y-1 transition shadow-lg shadow-green-500/20">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M12 4v16m8-8H4"/></svg>
-            Dépôt Rapide
-        </a>
-        <a href="retrait.php" class="py-5 rounded-2xl font-['Orbitron'] text-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 text-gray-300 bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] hover:border-white/20 hover:-translate-y-1 transition">
-            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M15 13l-3 3m0 0l-3-3m3 3V8"/></svg>
-            Retirer Gains
-        </a>
-    </div>
-
-    <!-- JEUX -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- AVIATOR -->
-        <div class="card-3d bg-gradient-to-b from-white/[0.05] to-black/40 border border-white/5 hover:border-red-500/40 rounded-[28px] overflow-hidden group animate-fade-up animate-delay-3">
-            <div class="h-48 flex items-center justify-center relative overflow-hidden">
-                <div class="absolute w-32 h-32 bg-red-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                <span class="absolute top-4 right-4 font-['Orbitron'] text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-red-600/90 text-white z-10">HOT 🔥</span>
-                <svg class="w-28 h-28 text-red-500 relative z-10 transition duration-500 group-hover:scale-110 group-hover:-rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M15.5 8.5L21 3m0 0l-5.5 5.5M21 3v5.5m-9 4.5l-4.5 4.5m4.5-4.5H12m0 0v4.5m3-13.5l-9 9m9-9L3 21"/>
+        <main class="relative bg-gray-50 rounded-[35px] pt-12 pb-8 px-6 text-center border border-gray-100 mb-6 shrink-0 md:shrink">
+            <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md border-4 border-white">
+                <svg class="absolute w-full h-full -rotate-90" viewBox="0 0 36 36">
+                    <circle class="stroke-gray-200" stroke-width="3" fill="none" cx="18" cy="18" r="16" />
+                    <circle class="stroke-[#FFD700]" stroke-width="3" stroke-dasharray="75, 100" stroke-linecap="round" fill="none" cx="18" cy="18" r="16" />
                 </svg>
+                <span class="text-lg font-black text-gray-800">20</span>
             </div>
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-1"><h3 class="font-['Orbitron'] text-lg font-black">AVIATOR</h3><span class="text-red-500 font-['Orbitron'] text-xs">ULTRA</span></div>
-                <p class="text-gray-500 text-xs mb-5">Misez, regardez votre multiplicateur monter et retirez au bon moment.</p>
-                <a href="jeu/aviator.php" class="block w-full py-3 rounded-xl font-['Orbitron'] text-[10px] font-black uppercase tracking-widest text-center bg-white/10 border border-white/10 text-white hover:bg-red-500 hover:border-red-500 transition duration-300">Jouer →</a>
-            </div>
+
+            <p class="text-[10px] text-[#3A7D44] font-black uppercase tracking-[0.2em] mb-4">Question 07 / 40</p>
+            
+            <h3 class="text-2xl font-extrabold text-gray-900 leading-tight">
+                Quelle est la capitale de la Grande Comore ?
+            </h3>
+        </main>
+
+        <div class="flex-1 overflow-y-auto space-y-3 no-scrollbar pr-1">
+            <template x-for="(text, index) in ['Moroni', 'Mutsamudu', 'Fomboni', 'Mamoudzou']">
+                <button @click="selected = index + 1" 
+                        :class="selected === index + 1 ? 'border-[#3A7D44] bg-white ring-4 ring-green-50' : 'border-gray-100 bg-white'"
+                        class="w-full p-4 rounded-[22px] flex justify-between items-center border-2 transition-all duration-200 group shadow-sm">
+                    <span class="font-bold text-gray-700 text-sm md:text-base" x-text="text"></span>
+                    
+                    <div :class="selected === index + 1 ? 'bg-[#3A7D44] border-[#3A7D44]' : 'bg-gray-100 border-gray-200'" 
+                         class="w-6 h-6 border-2 rounded-full flex items-center justify-center transition-all">
+                        <div x-show="selected === index + 1" class="w-2.5 h-2.5 bg-white rounded-full"></div>
+                    </div>
+                </button>
+            </template>
         </div>
 
-        <!-- MINES -->
-        <div class="card-3d bg-gradient-to-b from-white/[0.05] to-black/40 border border-white/5 hover:border-blue-500/40 rounded-[28px] overflow-hidden group animate-fade-up animate-delay-4">
-            <div class="h-48 flex items-center justify-center relative overflow-hidden">
-                <div class="absolute w-32 h-32 bg-blue-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                <span class="absolute top-4 right-4 font-['Orbitron'] text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-blue-600/90 text-white z-10">NOUVEAU ✨</span>
-                <svg class="w-28 h-28 text-blue-500 relative z-10 transition duration-500 group-hover:scale-110 group-hover:-rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                </svg>
-            </div>
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-1"><h3 class="font-['Orbitron'] text-lg font-black">MINES</h3><span class="text-blue-500 font-['Orbitron'] text-xs">GOLD</span></div>
-                <p class="text-gray-500 text-xs mb-5">Évitez les mines cachées et collectez un maximum de gemmes.</p>
-                <a href="jeu/mines.php" class="block w-full py-3 rounded-xl font-['Orbitron'] text-[10px] font-black uppercase tracking-widest text-center bg-white/10 border border-white/10 text-white hover:bg-blue-500 hover:border-blue-500 transition duration-300">Tenter ma chance →</a>
-            </div>
-        </div>
-
-        <!-- DUEL -->
-        <div class="card-3d bg-gradient-to-b from-white/[0.05] to-black/40 border border-white/5 hover:border-purple-500/40 rounded-[28px] overflow-hidden group animate-fade-up animate-delay-5">
-            <div class="h-48 flex items-center justify-center relative overflow-hidden">
-                <div class="absolute w-32 h-32 bg-purple-500/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                <svg class="w-28 h-28 text-purple-500 relative z-10 transition duration-500 group-hover:scale-110 group-hover:-rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                </svg>
-            </div>
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-1"><h3 class="font-['Orbitron'] text-lg font-black">DOUBLE</h3><span class="text-purple-500 font-['Orbitron'] text-xs">DUEL</span></div>
-                <p class="text-gray-500 text-xs mb-5">Affrontez d'autres joueurs en temps réel et doublez votre mise.</p>
-                <a href="jeu/duel.php" class="block w-full py-3 rounded-xl font-['Orbitron'] text-[10px] font-black uppercase tracking-widest text-center bg-white/10 border border-white/10 text-white hover:bg-purple-500 hover:border-purple-500 transition duration-300">Lancer →</a>
-            </div>
-        </div>
+        <button class="w-full bg-[#3A7D44] hover:bg-[#2d6135] py-5 rounded-[22px] text-white font-black text-lg shadow-xl shadow-green-100 active:scale-[0.98] transition-all mt-6 shrink-0">
+            VALIDER MA MISE
+        </button>
     </div>
-</main>
-
-<!-- NAVIGATION MOBILE (visible uniquement sur mobile) -->
-<div class="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 w-[90%] bg-[#040a14]/95 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex justify-around items-center py-3 px-2 z-50">
-    <a href="#" class="flex flex-col items-center gap-1">
-        <div class="w-11 h-11 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/30 active:scale-95 transition">
-            <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        </div>
-        <span class="text-[9px] font-bold font-['Orbitron'] text-green-400">JEUX</span>
-    </a>
-    <a href="depot.php" class="flex flex-col items-center gap-1">
-        <div class="w-11 h-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center active:scale-95 transition">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-        </div>
-        <span class="text-[9px] font-bold font-['Orbitron'] text-gray-500">DÉPÔT</span>
-    </a>
-    <a href="retrait.php" class="flex flex-col items-center gap-1">
-        <div class="w-11 h-11 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center active:scale-95 transition">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8"/></svg>
-        </div>
-        <span class="text-[9px] font-bold font-['Orbitron'] text-gray-500">RETRAIT</span>
-    </a>
-    <a href="/monrevenu/logout.php" class="flex flex-col items-center gap-1">
-        <div class="w-11 h-11 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center active:scale-95 transition">
-            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        </div>
-        <span class="text-[9px] font-bold font-['Orbitron'] text-red-400">DÉCO</span>
-    </a>
-</div>
 
 </body>
 </html>
