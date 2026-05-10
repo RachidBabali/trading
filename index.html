@@ -3,276 +3,474 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quiz des Comores – Ultra difficile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <title>COMORES QUIZ | WALLET x5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f7fb; }
-        @media (max-width: 768px) { body { height: 100dvh; overflow: hidden; } }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .timer-bar {
-            transition: width 1s linear;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg:    #ffffff;
+            --card:  #f8f9fc;
+            --bdr:   #e2e8f0;
+            --green: #10b981;
+            --g2:    #059669;
+            --gold:  #f59e0b;
+            --red:   #ef4444;
+            --muted: #6b7280;
+            --dim:   #9ca3af;
+            --text:  #1f2937;
         }
-        .question-enter {
-            animation: slideUp 0.3s ease-out;
+        html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; }
+        #app { position:fixed; inset:0; z-index:1; display:flex; flex-direction:column; padding:10px 12px; gap:8px; }
+
+        #header { flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
+        .logo {
+            display:flex; align-items:center; gap:9px;
+            font-family:'Syne',sans-serif; font-size:17px; font-weight:800; letter-spacing:-.01em; color:var(--green);
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+        .logo span.sub { color:var(--muted); }
+        .wallet {
+            background:var(--card); border:1px solid var(--bdr);
+            border-radius:100px; padding:5px 14px;
+            display:flex; align-items:center; gap:8px;
+            font-family:'DM Mono',monospace; font-size:13px; font-weight:500;
         }
+        .wallet span:first-child { font-size:11px; color:var(--muted); letter-spacing:.05em; }
+        .wallet span:last-child { color:var(--green); font-weight:800; }
+        .timer-pill {
+            display:flex; align-items:center; gap:7px;
+            background:var(--card); border:1px solid var(--bdr);
+            border-radius:100px; padding:5px 12px;
+            font-family:'DM Mono',monospace; font-size:13px; font-weight:500;
+            color:var(--text);
+        }
+        .t-dot { width:7px; height:7px; border-radius:50%; background:var(--green); transition:background .3s; }
+        .t-dot.urgent { background:var(--red); animation:blink .5s ease infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        #t-track { flex-shrink:0; height:3px; background:#eef2f6; border-radius:100px; overflow:hidden; }
+        #t-fill   { height:100%; border-radius:100px; background:var(--green); transition:width 1s linear, background .5s; }
+        #t-fill.urgent { background:var(--red); }
+
+        #stats { flex-shrink:0; display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+        .stat  { background:var(--card); border:1px solid var(--bdr); border-radius:12px; padding:8px 10px; text-align:center; }
+        .s-lbl { font-size:9px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+        .s-val { font-family:'DM Mono',monospace; font-size:15px; font-weight:500; color:var(--text); }
+        .s-val.g { color:var(--green); }
+        .s-val.o { color:var(--gold); }
+
+        #mise-zone { flex-shrink:0; background:var(--card); border:1px solid var(--bdr); border-radius:14px; padding:10px 12px; }
+        .m-lbl { font-size:9px; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+        .m-row { display:flex; gap:8px; align-items:center; }
+        #mise-input {
+            flex:1; background:#fff; border:1px solid var(--bdr); border-radius:9px;
+            color:var(--text); font-family:'DM Mono',monospace; font-size:15px; font-weight:500;
+            padding:9px 12px; outline:none; width:100%;
+        }
+        #mise-input:focus { border-color:var(--green); }
+        #mise-input:disabled { opacity:.5; background:#f3f4f6; }
+        .btn-launch {
+            flex-shrink:0; background:linear-gradient(135deg,var(--green),var(--g2));
+            color:#fff; font-family:'Syne',sans-serif; font-size:11px; font-weight:800;
+            letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:9px;
+            padding:10px 18px; cursor:pointer; transition:all .2s;
+        }
+        .btn-launch:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 8px 20px rgba(16,214,122,0.3); }
+        .btn-launch:disabled { opacity:.5; cursor:not-allowed; }
+        #mise-info { font-size:10px; color:var(--muted); margin-top:5px; text-align:center; font-family:'DM Mono',monospace; }
+
+        #prog-wrap { flex-shrink:0; background:#eef2f6; border-radius:100px; height:4px; overflow:hidden; }
+        #prog-bar  { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--green),#34d399); transition:width .4s ease; }
+
+        #q-card { flex-shrink:0; background:var(--card); border:1px solid var(--bdr); border-radius:16px; padding:13px 15px; }
+        .q-badge {
+            display:inline-block; background:rgba(16,214,122,0.1); border:1px solid rgba(16,214,122,0.25);
+            border-radius:100px; padding:3px 10px; font-size:9px; font-weight:700;
+            letter-spacing:.15em; text-transform:uppercase; color:var(--green); margin-bottom:7px;
+        }
+        #q-text { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; line-height:1.4; color:var(--text); }
+        #q-text.ph { color:var(--dim); font-style:italic; font-family:'DM Sans',sans-serif; font-weight:400; }
+
+        #answers { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+        .a-btn {
+            background:#fff; border:1px solid var(--bdr); border-radius:13px;
+            padding:9px 11px; display:flex; align-items:flex-start; gap:8px;
+            cursor:pointer; transition:all .18s; text-align:left;
+        }
+        .a-btn:hover:not(:disabled):not(.ph-a) { background:#f1f5f9; border-color:var(--green); transform:translateY(-1px); }
+        .a-btn:disabled { cursor:not-allowed; opacity:0.7; }
+        .a-btn.ph-a { cursor:default; opacity:0.6; }
+        .a-ltr {
+            flex-shrink:0; width:22px; height:22px; border-radius:6px;
+            background:#f3f4f6; border:1px solid var(--bdr);
+            display:flex; align-items:center; justify-content:center;
+            font-family:'DM Mono',monospace; font-size:11px; font-weight:500; color:var(--muted);
+        }
+        .a-txt { font-size:12px; font-weight:500; color:var(--text); line-height:1.35; padding-top:2px; }
+        .a-btn.correct { border-color:var(--green) !important; background:rgba(16,214,122,0.1) !important; }
+        .a-btn.correct .a-ltr { background:var(--green); color:#fff; border-color:var(--green); }
+        .a-btn.wrong   { border-color:var(--red) !important; background:rgba(239,68,68,0.08) !important; }
+        .a-btn.wrong   .a-ltr { background:var(--red); color:#fff; border-color:var(--red); }
+        @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+        .slide { animation:slideIn .28s ease forwards; }
+
+        #result {
+            position:fixed; inset:0; z-index:50; background:rgba(255,255,255,0.96);
+            display:none; flex-direction:column; align-items:center; justify-content:center;
+            padding:24px; text-align:center; gap:13px;
+        }
+        #result.show { display:flex; }
+        .r-icon  { font-size:52px; line-height:1; }
+        .r-title { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; }
+        .r-title.win  { color:var(--green); }
+        .r-title.lose { color:var(--red); }
+        .r-gain   { font-family:'DM Mono',monospace; font-size:22px; font-weight:500; color:var(--gold); }
+        .r-reason { font-size:13px; color:var(--muted); max-width:260px; line-height:1.5; }
+        .btn-replay {
+            margin-top:4px; background:#f3f4f6; border:1px solid var(--bdr);
+            color:var(--text); font-family:'Syne',sans-serif; font-size:11px; font-weight:800;
+            letter-spacing:.12em; text-transform:uppercase; border-radius:12px;
+            padding:13px 32px; cursor:pointer; transition:all .2s;
+        }
+        .btn-replay:hover { background:#e5e7eb; transform:translateY(-1px); }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-[100dvh] p-3">
+<body>
 
-<div x-data="quizApp()" x-init="initGame" class="w-full h-[100dvh] md:h-auto md:max-w-xl flex flex-col p-5 md:p-8 bg-white md:shadow-2xl md:rounded-[40px] md:border md:border-gray-100">
-    
-    <!-- Header avec score et timer -->
-    <header class="flex justify-between items-center mb-5 shrink-0">
-        <div class="flex items-center gap-3 bg-gray-50 p-2 rounded-2xl border border-gray-100">
-            <img src="https://flagcdn.com/w80/km.png" class="w-10 h-7 rounded shadow-sm" alt="Drapeau Comores">
-            <div class="flex flex-col">
-                <span class="text-[10px] text-gray-400 font-bold uppercase">Score</span>
-                <span class="text-sm font-black text-gray-800" x-text="score + ' pts'"></span>
+<div id="app">
+    <div id="header">
+        <div class="logo">
+            <svg class="flag" width="34" height="22" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" style="border-radius:4px; overflow:hidden; border:1px solid #e2e8f0;">
+                <rect width="900" height="150" y="0"   fill="#fecb00"/>
+                <rect width="900" height="150" y="150" fill="#fff"/>
+                <rect width="900" height="150" y="300" fill="#ce1126"/>
+                <rect width="900" height="150" y="450" fill="#3a75c4"/>
+                <polygon points="0,0 360,300 0,600" fill="#009a44"/>
+                <circle cx="145" cy="300" r="105" fill="#fff"/>
+                <circle cx="178" cy="300" r="105" fill="#009a44"/>
+                <g fill="#fff">
+                    <polygon points="268,130 278,162 312,162 286,181 296,213 268,194 240,213 250,181 224,162 258,162" transform="scale(0.72) translate(-20,50)"/>
+                    <polygon points="268,200 278,232 312,232 286,251 296,283 268,264 240,283 250,251 224,232 258,232" transform="scale(0.72) translate(-20,50)"/>
+                    <polygon points="268,270 278,302 312,302 286,321 296,353 268,334 240,353 250,321 224,302 258,302" transform="scale(0.72) translate(-20,50)"/>
+                    <polygon points="268,340 278,372 312,372 286,391 296,423 268,404 240,423 250,391 224,372 258,372" transform="scale(0.72) translate(-20,50)"/>
+                </g>
+            </svg>
+            COMORES <span class="sub">QUIZ</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <div class="wallet">
+                <span>💰 WALLET</span>
+                <span id="wallet-amount">5000</span><span> KMF</span>
+            </div>
+            <div class="timer-pill">
+                <div class="t-dot" id="t-dot"></div>
+                <span id="t-disp">1:20</span>
             </div>
         </div>
-
-        <div class="bg-gradient-to-r from-[#3A7D44] to-[#0033A0] px-4 py-2 rounded-2xl text-white shadow-lg shadow-green-100">
-            <p class="text-[9px] uppercase font-bold opacity-80">Temps restant</p>
-            <p class="text-sm font-black" x-text="timeLeft + ' s'"></p>
-        </div>
-    </header>
-
-    <!-- Barre de progression timer -->
-    <div class="w-full h-2 bg-gray-100 rounded-full mb-4 overflow-hidden">
-        <div class="h-full bg-gradient-to-r from-green-500 to-blue-600 rounded-full timer-bar" :style="{ width: (timeLeft / 60 * 100) + '%' }"></div>
     </div>
 
-    <!-- Zone question -->
-    <main class="relative bg-gray-50 rounded-[35px] pt-12 pb-8 px-6 text-center border border-gray-100 mb-6 shrink-0 md:shrink">
-        <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md border-4 border-white">
-            <span class="text-xl font-black text-gray-800" x-text="currentIndex + 1"></span>
-        </div>
-        <p class="text-[10px] text-[#3A7D44] font-black uppercase tracking-[0.2em] mb-4" x-text="'Question ' + (currentIndex+1) + ' / ' + totalQuestions"></p>
-        <h3 class="text-2xl font-extrabold text-gray-900 leading-tight" x-text="currentQuestion.question"></h3>
-    </main>
+    <div id="t-track"><div id="t-fill" style="width:100%"></div></div>
 
-    <!-- Liste des réponses -->
-    <div class="flex-1 overflow-y-auto space-y-3 no-scrollbar pr-1">
-        <template x-for="(opt, idx) in currentQuestion.options" :key="idx">
-            <button @click="selectAnswer(opt)" 
-                    :class="selectedAnswer === opt ? 'border-[#3A7D44] bg-white ring-4 ring-green-50' : 'border-gray-100 bg-white'"
-                    class="w-full p-4 rounded-[22px] flex justify-between items-center border-2 transition-all duration-200 group shadow-sm">
-                <span class="font-bold text-gray-700 text-sm md:text-base text-left" x-text="opt"></span>
-                <div :class="selectedAnswer === opt ? 'bg-[#3A7D44] border-[#3A7D44]' : 'bg-gray-100 border-gray-200'" 
-                     class="w-6 h-6 border-2 rounded-full flex items-center justify-center transition-all">
-                    <div x-show="selectedAnswer === opt" class="w-2.5 h-2.5 bg-white rounded-full"></div>
-                </div>
-            </button>
-        </template>
+    <div id="stats">
+        <div class="stat"><div class="s-lbl">Question</div><div class="s-val" id="s-q">—</div></div>
+        <div class="stat"><div class="s-lbl">Mise</div><div class="s-val g" id="s-m">—</div></div>
+        <div class="stat"><div class="s-lbl">Gain max</div><div class="s-val o" id="s-g">—</div></div>
     </div>
 
-    <!-- Bouton de validation / rejouer -->
-    <button @click="validateAnswer" 
-            x-show="!gameFinished"
-            class="w-full bg-[#3A7D44] hover:bg-[#2d6135] py-5 rounded-[22px] text-white font-black text-lg shadow-xl shadow-green-100 active:scale-[0.98] transition-all mt-6 shrink-0">
-        VALIDER MA RÉPONSE
-    </button>
-
-    <button @click="restartGame" 
-            x-show="gameFinished"
-            class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 py-5 rounded-[22px] text-white font-black text-lg shadow-xl active:scale-[0.98] transition-all mt-6 shrink-0">
-        🔄 REJOUER
-    </button>
-
-    <!-- Écran de fin (popin intégrée) -->
-    <div x-show="gameFinished" x-transition.duration.300ms class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" style="display: none;">
-        <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
-            <h2 class="text-3xl font-black text-gray-800">🏆 Terminé</h2>
-            <div class="my-4 text-5xl font-black text-[#3A7D44]" x-text="score + ' / ' + totalQuestions"></div>
-            <div class="text-gray-600">Bonnes réponses : <span x-text="score"></span></div>
-            <div class="text-gray-600">Pourcentage : <span x-text="Math.round(score / totalQuestions * 100)"></span>%</div>
-            <button @click="restartGame" class="mt-6 w-full bg-[#3A7D44] hover:bg-[#2d6135] py-3 rounded-xl text-white font-bold">Nouvelle partie</button>
+    <div id="mise-zone">
+        <div class="m-lbl">Mise (100 – 1 000 KMF)</div>
+        <div class="m-row">
+            <input type="number" id="mise-input" placeholder="Ex : 500" min="100" max="1000">
+            <button class="btn-launch" id="btn-l">Lancer</button>
         </div>
+        <div id="mise-info">Entrez votre mise pour commencer</div>
+    </div>
+
+    <div id="prog-wrap"><div id="prog-bar" style="width:0%"></div></div>
+
+    <div id="q-card">
+        <div class="q-badge" id="q-badge">Question ?</div>
+        <div id="q-text" class="ph">En attente de votre mise…</div>
+    </div>
+
+    <div id="answers">
+        <button class="a-btn ph-a" disabled><div class="a-ltr">A</div><div class="a-txt ph-t">—</div></button>
+        <button class="a-btn ph-a" disabled><div class="a-ltr">B</div><div class="a-txt ph-t">—</div></button>
+        <button class="a-btn ph-a" disabled><div class="a-ltr">C</div><div class="a-txt ph-t">—</div></button>
+        <button class="a-btn ph-a" disabled><div class="a-ltr">D</div><div class="a-txt ph-t">—</div></button>
     </div>
 </div>
 
+<div id="result">
+    <div class="r-icon" id="r-icon">🏆</div>
+    <div class="r-title" id="r-title">VICTOIRE !</div>
+    <div class="r-gain"   id="r-gain"></div>
+    <div class="r-reason" id="r-reason"></div>
+    <button class="btn-replay" id="btn-replay">Nouvelle partie</button>
+</div>
+
 <script>
-    // ----------------------------------------------
-    // 1. GÉNÉRATION DES 20 000 QUESTIONS (UNIQUES)
-    // ----------------------------------------------
-    const QUESTIONS_DB = [];
+    // ----- État global -----
+    const TOTAL = 8;
+    const TIME  = 80;
+    const LTR   = ['A','B','C','D'];
 
-    // Bases ultra difficiles
-    const sultansNgazidja = ["Sultan Said Ali bin Saidi Omar","Sultan Mohamed Saidi Omar","Sultan Abdallah I","Sultan Ali I","Sultan Mbéki","Sultan Abdallah II","Sultan Jumbe Fatima","Sultan Mwinye Fumo"];
-    const batailles = ["Bataille d'Itsandra (1845)","Bataille de Domoni (1872)","Bataille de Mutsamudu (1882)","Bataille de Fomboni (1868)","Prise de Majimbini (1892)","Guerre des Douze sultans (1870)"];
-    const traites = ["Traité de protectorat avec Said Ali (1886)","Cession de Mayotte (1841)","Accord de Tsembehou (1899)","Protocole de Mutsamudu (1883)"];
-    const clubs = ["Volcan Club de Moroni","Fomboni FC","Élan Club de Mitsamiouli","US Mutsamudu","AS Komorozine","Djabal Club"];
-    const persos = ["Ahmed Abdallah","Mohamed Taki","Azali Assoumani","Ikililou Dhoinine","Ali Soilih"];
-    const erudits = ["Cheikh Abdallah Mohamed (Qadiriyya)","Sayyid Ahmad bin Sumayt","Cheikh Al-Habib Omar","Abdallah Madi"];
+    let allQuestions = [];
+    let selectedQuestions = [];
+    let currentIndex = 0;
+    let currentMise = 0;
+    let timeLeft = TIME;
+    let timerInterval = null;
+    let gameActive = false;
+    let wallet = 5000;
 
-    function addQuestion(cat, qText, correct, wrongs) {
-        if (QUESTIONS_DB.length >= 20000) return;
-        let options = [correct, ...wrongs];
-        for (let i = options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [options[i], options[j]] = [options[j], options[i]];
+    // Éléments DOM
+    const walletSpan = document.getElementById('wallet-amount');
+    const questionText = document.getElementById('q-text');
+    const questionBadge = document.getElementById('q-badge');
+    const answersDiv = document.getElementById('answers');
+    const miseInput = document.getElementById('mise-input');
+    const btnLaunch = document.getElementById('btn-l');
+    const miseInfo = document.getElementById('mise-info');
+    const sQ = document.getElementById('s-q');
+    const sM = document.getElementById('s-m');
+    const sG = document.getElementById('s-g');
+    const progBar = document.getElementById('prog-bar');
+    const tFill = document.getElementById('t-fill');
+    const tDisp = document.getElementById('t-disp');
+    const tDot = document.getElementById('t-dot');
+    const resultDiv = document.getElementById('result');
+    const rIcon = document.getElementById('r-icon');
+    const rTitle = document.getElementById('r-title');
+    const rGain = document.getElementById('r-gain');
+    const rReason = document.getElementById('r-reason');
+
+    // ----- Wallet UI -----
+    function updateWalletUI() {
+        walletSpan.textContent = wallet;
+    }
+
+    // ----- Chargement du JSON -----
+    async function loadQuestions() {
+        try {
+            const response = await fetch('questions.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            if (!Array.isArray(data) || data.length === 0) throw new Error('Fichier JSON invalide ou vide');
+            allQuestions = data;
+            miseInfo.textContent = `✅ ${allQuestions.length} questions chargées. Entrez votre mise.`;
+            miseInfo.style.color = '#10b981';
+            btnLaunch.disabled = false;
+        } catch (err) {
+            console.error(err);
+            miseInfo.textContent = '❌ ERREUR : questions.json introuvable. Vérifiez le fichier.';
+            miseInfo.style.color = '#ef4444';
+            btnLaunch.disabled = true;
+            questionText.textContent = 'Fichier de questions manquant.';
+            questionText.classList.add('ph');
         }
-        QUESTIONS_DB.push({
-            id: QUESTIONS_DB.length+1,
-            categorie: cat,
-            niveau: "Ultra difficile",
-            question: qText,
-            options: options,
-            reponse_correcte: correct
+    }
+
+    // ----- Mélange aléatoire (Fisher-Yates) -----
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    // ----- Lancer une nouvelle partie -----
+    function startGame() {
+        if (!allQuestions.length) {
+            miseInfo.textContent = '❌ Chargement en cours ou échoué. Patientez.';
+            return;
+        }
+        const miseValue = parseInt(miseInput.value);
+        if (isNaN(miseValue) || miseValue < 100 || miseValue > 1000) {
+            miseInfo.textContent = '⚠ Mise entre 100 et 1 000 KMF';
+            miseInfo.style.color = '#ef4444';
+            return;
+        }
+        if (miseValue > wallet) {
+            miseInfo.textContent = `⚠ Solde insuffisant (${wallet} KMF)`;
+            miseInfo.style.color = '#ef4444';
+            return;
+        }
+
+        // Déduire la mise
+        wallet -= miseValue;
+        updateWalletUI();
+        currentMise = miseValue;
+        gameActive = true;
+
+        // Désactiver les champs
+        miseInput.disabled = true;
+        btnLaunch.disabled = true;
+        miseInfo.textContent = `Mise : ${currentMise} KMF → gain max ${currentMise * 5} KMF`;
+        miseInfo.style.color = '#6b7280';
+        sM.textContent = currentMise + ' KMF';
+        sG.textContent = (currentMise * 5) + ' KMF';
+
+        // Sélectionner 8 questions aléatoires parmi toutes
+        const shuffledAll = shuffleArray([...allQuestions]);
+        selectedQuestions = shuffledAll.slice(0, TOTAL);
+        currentIndex = 0;
+        timeLeft = TIME;
+        renderCurrentQuestion();
+        startTimer();
+    }
+
+    // ----- Afficher la question courante -----
+    function renderCurrentQuestion() {
+        const q = selectedQuestions[currentIndex];
+        const percent = Math.round((currentIndex / TOTAL) * 100);
+        progBar.style.width = percent + '%';
+        sQ.textContent = (currentIndex + 1) + '/' + TOTAL;
+        questionBadge.textContent = 'Question ' + (currentIndex + 1) + ' / ' + TOTAL;
+        questionText.textContent = q.question;
+        questionText.classList.remove('ph');
+
+        // Mélanger les options
+        const mixedOptions = shuffleArray([...q.options]);
+        answersDiv.innerHTML = mixedOptions.map((opt, i) => `
+            <button class="a-btn slide" data-answer="${escapeHtml(opt)}" style="animation-delay:${i*0.05}s">
+                <div class="a-ltr">${LTR[i]}</div>
+                <div class="a-txt">${escapeHtml(opt)}</div>
+            </button>
+        `).join('');
+
+        // Attacher les événements aux nouveaux boutons
+        document.querySelectorAll('#answers .a-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (!gameActive) return;
+                const selected = btn.getAttribute('data-answer');
+                const correct = selectedQuestions[currentIndex].reponse_correcte;
+                handleAnswer(btn, selected, correct);
+            });
         });
     }
 
-    // Histoire (5000)
-    for(let i=0;i<500;i++) {
-        addQuestion("Histoire", "Quel sultan de Ngazidja signa le protectorat français en 1886 ?", "Sultan Said Ali bin Saidi Omar", ["Sultan Abdallah I", "Sultan Ali I", "Sultan Tibe"]);
-        addQuestion("Histoire", "En quelle année la bataille de Domoni eut-elle lieu ?", "1872", ["1865", "1880", "1891"]);
-        addQuestion("Histoire", "Quelle reine régna sur Bambao en 1874 ?", "Jumbe Fatima", ["Fatima bint Said", "Mwanamina", "Sitti bint Ahmed"]);
-        addQuestion("Histoire", "Qui fut le dernier sultan indépendant de Mohéli ?", "Sultan Ali (1871-1886)", ["Djoumbe Fatima", "Mohamed bin Saidi", "Abdourahamane I"]);
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Histoire").length<5000) addQuestion("Histoire","Quelle révolte de 1947 secoua la Grande Comore ?","Révolte de Boboni",["Insurrection de Sima","Massacre de Ndzuoni","Combat de Mro oué"]);
 
-    // Sport (4000)
-    for(let i=0;i<400;i++) {
-        addQuestion("Football et sport","Quel club de Mohéli a remporté la Coupe des Comores 2015 ?","Fomboni FC",["Volcan Club","US Mutsamudu","AS Komorozine"]);
-        addQuestion("Football et sport","Quel joueur comorien a joué au FC Metz ?","El Fardou Ben Nabouhane",["Nakid Mohamed","Youssouf M'Changama","Salim M'Ramadi"]);
-    }
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Football et sport").length<4000) addQuestion("Football et sport","Quel stade de Moroni porte un nom de président ?","Stade Said Mohamed Cheikh",["Stade de Moroni","Stade Azali","Stade Ahmed Abdallah"]);
+    // ----- Réponse donnée -----
+    function handleAnswer(btn, selected, correct) {
+        if (!gameActive) return;
+        // Désactiver tous les boutons pour éviter double réponse
+        document.querySelectorAll('#answers .a-btn').forEach(b => b.disabled = true);
 
-    // Politique (3000)
-    for(let i=0;i<300;i++) addQuestion("Politique comorienne","Qui a organisé le coup d'État de 1999 ?","Azali Assoumani",["Ahmed Abdallah","Mohamed Taki","Said Mohamed Cheikh"]);
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Politique comorienne").length<3000) addQuestion("Politique comorienne","Quelle île a proclamé son indépendance en 1997 ?","Anjouan",["Mohéli","Grande Comore","Mayotte"]);
-
-    // Culture (3000)
-    for(let i=0;i<300;i++) addQuestion("Culture et traditions","Comment s'appelle le grand mariage traditionnel comorien ?","Mariage grand mariage",["Shigoma","Debaa","Twara"]);
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Culture et traditions").length<3000) addQuestion("Culture et traditions","Quel instrument à cordes typique est appelé 'gabus' ?","Gabusi",["Ndzendze","Msondo","Mkango"]);
-
-    // Colonisation (2000)
-    for(let i=0;i<200;i++) addQuestion("Colonisation et indépendance","Quelle date marque l'indépendance des Comores ?","6 juillet 1975",["26 juin 1975","14 juillet 1976","3 août 1975"]);
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Colonisation et indépendance").length<2000) addQuestion("Colonisation et indépendance","Qui fut le dernier gouverneur français ?","Jacques Mourgue",["Pierre Coudert","Robert Thierry","Jean Mauricet"]);
-
-    // Sultans (1000)
-    for(let i=0;i<100;i++) addQuestion("Sultans et royaumes","Quel sultan d'Anjouan régna de 1830 à 1850 ?","Sultan Said Ali bin Abdallah",["Sultan Alawi bin Hussein","Sultan Abdallah bin Mohamed","Salim bin Alawi"]);
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Sultans et royaumes").length<1000) addQuestion("Sultans et royaumes","Quel royaume de Ngazidja était dirigé par les Mbéki ?","Bambao",["Itsandra","Mitsamihuli","Washili"]);
-
-    // Religion (1000)
-    for(let i=0;i<100;i++) addQuestion("Religion et érudits","Quelle confrérie soufie domine aux Comores ?","Qadiriyya",["Shadhiliyya","Rifa'iyya","Baqqalah"]);
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Religion et érudits").length<1000) addQuestion("Religion et érudits","Quel érudit composa le 'Manhaj al-Qawim' ?","Sayyid Ahmad bin Sumayt",["Abdallah Madi","Mahoma Abdallah","Cheikh Moussa"]);
-
-    // Géographie (1000)
-    for(let i=0;i<100;i++) addQuestion("Géographie et îles","Point culminant des Comores ?","Mont Karthala",["Mlima Ntingui","Mlima Mbé","Mont Dziani"]);
-    while(QUESTIONS_DB.filter(q=>q.categorie==="Géographie et îles").length<1000) addQuestion("Géographie et îles","Quel village est connu pour ses champs de lave de 1977 ?","Chindini",["Mvouni","Hantsindzi","Ntsoudjini"]);
-
-    // Troncature exacte 20 000
-    if(QUESTIONS_DB.length > 20000) QUESTIONS_DB.length = 20000;
-    console.log(`✅ ${QUESTIONS_DB.length} questions chargées`);
-
-    // ----------------------------------------------
-    // 2. ALPINE.JS LOGIQUE DU JEU
-    // ----------------------------------------------
-    function quizApp() {
-        return {
-            // État
-            currentQuestions: [],
-            currentIndex: 0,
-            score: 0,
-            timeLeft: 60,
-            timerInterval: null,
-            gameFinished: false,
-            selectedAnswer: null,
-            totalQuestions: 12,
-
-            // Computed
-            get currentQuestion() {
-                if (!this.currentQuestions.length) return { question: "Chargement...", options: [] };
-                return this.currentQuestions[this.currentIndex];
-            },
-
-            // Méthodes
-            initGame() {
-                this.pickRandomQuestions();
-                this.resetGame();
-                this.startTimer();
-            },
-
-            pickRandomQuestions() {
-                // Sélection aléatoire de 12 questions parmi les 20 000
-                const shuffled = [...QUESTIONS_DB];
-                for (let i = shuffled.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-                }
-                this.currentQuestions = shuffled.slice(0, this.totalQuestions);
-            },
-
-            resetGame() {
-                this.currentIndex = 0;
-                this.score = 0;
-                this.timeLeft = 60;
-                this.gameFinished = false;
-                this.selectedAnswer = null;
-                if (this.timerInterval) clearInterval(this.timerInterval);
-            },
-
-            startTimer() {
-                this.timerInterval = setInterval(() => {
-                    if (this.gameFinished) return;
-                    if (this.timeLeft <= 1) {
-                        clearInterval(this.timerInterval);
-                        this.endGame();
-                    } else {
-                        this.timeLeft--;
-                    }
-                }, 1000);
-            },
-
-            selectAnswer(opt) {
-                if (this.gameFinished) return;
-                this.selectedAnswer = opt;
-            },
-
-            validateAnswer() {
-                if (this.gameFinished || !this.selectedAnswer) return;
-                const isCorrect = (this.selectedAnswer === this.currentQuestion.reponse_correcte);
-                if (isCorrect) this.score++;
-                
-                if (this.currentIndex + 1 < this.totalQuestions) {
-                    this.currentIndex++;
-                    this.selectedAnswer = null;
-                    // animation visuelle : on force un re-render
+        if (selected === correct) {
+            btn.classList.add('correct');
+            btn.querySelector('.a-ltr').textContent = '✓';
+            setTimeout(() => {
+                if (!gameActive) return;
+                if (currentIndex + 1 < TOTAL) {
+                    currentIndex++;
+                    renderCurrentQuestion();
                 } else {
-                    this.endGame();
+                    winGame();
                 }
-            },
-
-            endGame() {
-                if (this.gameFinished) return;
-                this.gameFinished = true;
-                if (this.timerInterval) clearInterval(this.timerInterval);
-            },
-
-            restartGame() {
-                // Réinitialise tout
-                this.pickRandomQuestions();
-                this.resetGame();
-                this.startTimer();
-                this.gameFinished = false;
-                this.selectedAnswer = null;
-            }
+            }, 400);
+        } else {
+            btn.classList.add('wrong');
+            // Révéler la bonne réponse
+            document.querySelectorAll('#answers .a-btn').forEach(b => {
+                if (b.getAttribute('data-answer') === correct) {
+                    b.classList.add('correct');
+                }
+            });
+            setTimeout(() => loseGame('Mauvaise réponse ! Vous perdez votre mise.'), 650);
         }
     }
-</script>
 
-<!-- Anti-triche (désactive clic droit / copie / F12) -->
-<script>
+    // ----- Timer -----
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (!gameActive) return;
+            timeLeft--;
+            const percent = (timeLeft / TIME) * 100;
+            tFill.style.width = percent + '%';
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            tDisp.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+            if (timeLeft <= 15) {
+                tDot.classList.add('urgent');
+                tFill.classList.add('urgent');
+            }
+            if (timeLeft <= 0) {
+                loseGame('Temps écoulé !');
+            }
+        }, 1000);
+    }
+
+    // ----- Victoire -----
+    function winGame() {
+        if (!gameActive) return;
+        clearInterval(timerInterval);
+        gameActive = false;
+        const gain = currentMise * 5;
+        wallet += gain;
+        updateWalletUI();
+        progBar.style.width = '100%';
+        resultDiv.classList.add('show');
+        rIcon.textContent = '🏆';
+        rTitle.textContent = 'VICTOIRE !';
+        rTitle.className = 'r-title win';
+        rGain.textContent = '+ ' + gain + ' KMF';
+        rReason.textContent = 'Bravo ! 8/8 correctes. Gains ajoutés au wallet.';
+    }
+
+    // ----- Défaite -----
+    function loseGame(reason) {
+        if (!gameActive) return;
+        clearInterval(timerInterval);
+        gameActive = false;
+        resultDiv.classList.add('show');
+        rIcon.textContent = '💀';
+        rTitle.textContent = 'GAME OVER';
+        rTitle.className = 'r-title lose';
+        rGain.textContent = '− ' + currentMise + ' KMF';
+        rReason.textContent = reason;
+    }
+
+    // ----- Remise à zéro pour une nouvelle partie -----
+    function resetGame() {
+        if (timerInterval) clearInterval(timerInterval);
+        gameActive = false;
+        resultDiv.classList.remove('show');
+        miseInput.disabled = false;
+        btnLaunch.disabled = false;
+        miseInput.value = '';
+        currentMise = 0;
+        currentIndex = 0;
+        timeLeft = TIME;
+        sQ.textContent = '—';
+        sM.textContent = '—';
+        sG.textContent = '—';
+        tDisp.textContent = '1:20';
+        tFill.style.width = '100%';
+        tFill.classList.remove('urgent');
+        tDot.classList.remove('urgent');
+        progBar.style.width = '0%';
+        miseInfo.textContent = 'Entrez votre mise pour commencer';
+        miseInfo.style.color = '';
+        questionBadge.textContent = 'Question ?';
+        questionText.textContent = 'En attente de votre mise…';
+        questionText.classList.add('ph');
+        answersDiv.innerHTML = ['A','B','C','D'].map(l => `
+            <button class="a-btn ph-a" disabled><div class="a-ltr">${l}</div><div class="a-txt ph-t">—</div></button>
+        `).join('');
+    }
+
+    // ----- Initialisation et événements -----
+    btnLaunch.addEventListener('click', startGame);
+    document.getElementById('btn-replay').addEventListener('click', resetGame);
+    loadQuestions();
+
+    // Anti-triche
     document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('copy', e => e.preventDefault());
-    document.addEventListener('selectstart', e => e.preventDefault());
     window.addEventListener('keydown', e => {
         if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
             e.preventDefault();
