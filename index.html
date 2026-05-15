@@ -1,562 +1,827 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>COMORES QUIZ | WALLET x5</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        :root {
-            --bg:    #ffffff;
-            --card:  #f8f9fc;
-            --bdr:   #e2e8f0;
-            --green: #10b981;
-            --g2:    #059669;
-            --gold:  #f59e0b;
-            --red:   #ef4444;
-            --muted: #6b7280;
-            --dim:   #9ca3af;
-            --text:  #1f2937;
-        }
-        html, body { 
-            width:100%; 
-            height:100%; 
-            overflow:hidden; 
-            background:var(--bg); 
-            color:var(--text); 
-            font-family:'DM Sans',sans-serif;
-            position:fixed;
-        }
-        #app { 
-            position:fixed; 
-            inset:0; 
-            z-index:1; 
-            display:flex; 
-            flex-direction:column; 
-            padding:8px 12px 8px 12px; 
-            gap:6px; 
-            background: var(--bg);
-            overflow-y: hidden;
-            height: 100%;
-            max-height: 100vh;
-        }
-        
-        /* ===== COMPACT + NO SCROLL ===== */
-        /* reduction intense sur écrans bas / petits mobiles */
-        @media (max-height: 720px) {
-            #app { padding: 6px 10px 5px 10px; gap: 5px; }
-            .logo { font-size: 14px; gap: 6px; }
-            .wallet { padding: 3px 10px; gap: 5px; font-size: 11px; }
-            .timer-pill { padding: 3px 9px; font-size: 12px; gap: 5px; }
-            .stat { padding: 5px 6px; }
-            .s-lbl { font-size: 7px; letter-spacing: 0.12em; margin-bottom: 1px; }
-            .s-val { font-size: 12px; }
-            #mise-zone { padding: 6px 9px; }
-            .m-lbl { font-size: 8px; margin-bottom: 3px; }
-            .btn-launch { padding: 7px 14px; font-size: 10px; }
-            #mise-input { font-size: 13px; padding: 6px 9px; }
-            #prog-wrap { height: 3px; }
-            #t-track { height: 2.5px; }
-            #q-card { padding: 8px 12px; }
-            .q-badge { font-size: 8px; padding: 2px 8px; margin-bottom: 4px; }
-            #q-text { font-size: 13px; line-height: 1.3; }
-            .a-btn { padding: 6px 8px; gap: 6px; border-radius: 11px; }
-            .a-ltr { width: 20px; height: 20px; font-size: 10px; }
-            .a-txt { font-size: 11px; line-height: 1.25; }
-            .m-row { gap: 6px; }
-            #stats { gap: 5px; }
-            .timer-pill span:last-child { font-size: 12px; }
-        }
-        
-        @media (max-height: 640px) {
-            #app { padding: 5px 8px 4px 8px; gap: 4px; }
-            .stat { padding: 4px 5px; }
-            .s-val { font-size: 11px; }
-            .btn-launch { padding: 5px 12px; }
-            #mise-input { padding: 5px 8px; font-size: 12px; }
-            .a-btn { padding: 5px 7px; }
-            .a-txt { font-size: 10px; }
-            .q-badge { font-size: 7px; }
-            #q-text { font-size: 12px; }
-            .wallet span:last-child { font-size: 12px; }
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Revenu · Plateforme Partenaire & Gaming</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root{
+  --ink:     #04070e;
+  --ink2:    #080f1e;
+  --sur:     rgba(255,255,255,0.03);
+  --sur2:    rgba(255,255,255,0.055);
+  --bdr:     rgba(255,255,255,0.07);
+  --bdr2:    rgba(255,255,255,0.12);
+  --green:   #00d97e;
+  --green2:  #00b368;
+  --blue:    #2c7ef8;
+  --gold:    #f5c518;
+  --muted:   rgba(255,255,255,0.38);
+  --dim:     rgba(255,255,255,0.12);
+  --nav-h:   66px;
+  --r-card:  22px;
+  --r-btn:   100px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);color:#fff;
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+/* Noise */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.45;
+}
+/* Mesh glow */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -5%,rgba(0,217,126,.07) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 10% 80%,rgba(44,126,248,.05) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 35% at 90% 55%,rgba(0,179,104,.04) 0%,transparent 55%);
+}
+/* Grid lines */
+.gl{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+  background-size:64px 64px;}
+/* ── TYPOGRAPHY ── */
+.fd{font-family:'Syne',sans-serif}
+.fm{font-family:'DM Mono',monospace}
+.g-green{background:linear-gradient(135deg,#00d97e,#00ff9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.g-blue{background:linear-gradient(135deg,#2c7ef8,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.g-main{background:linear-gradient(135deg,#00d97e 0%,#2c7ef8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.g-gold{background:linear-gradient(135deg,#f5c518,#ff9f0a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
-        @media (max-height: 560px) {
-            .logo svg { width: 28px; height: 18px; }
-            .wallet, .timer-pill { padding: 2px 8px; }
-            .s-lbl { font-size: 6px; }
-            .s-val { font-size: 10px; }
-            .btn-launch { padding: 4px 10px; font-size: 9px; }
-            #answers { gap: 5px; }
-            .m-lbl { font-size: 7px; }
-            #mise-info { font-size: 8px; }
-            .a-btn { padding: 4px 6px; }
-        }
-        
-        /* General flex shrink & overflow control */
-        #answers {
-            flex: 1;
-            min-height: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 7px;
-            overflow-y: visible;
-        }
-        
-        .logo {
-            display:flex; align-items:center; gap:8px;
-            font-family:'Syne',sans-serif; font-size:16px; font-weight:800; letter-spacing:-.01em; color:var(--green);
-        }
-        .logo span.sub { color:var(--muted); }
-        .wallet {
-            background:var(--card); border:1px solid var(--bdr);
-            border-radius:100px; padding:4px 12px;
-            display:flex; align-items:center; gap:6px;
-            font-family:'DM Mono',monospace; font-size:12px; font-weight:500;
-        }
-        .wallet span:first-child { font-size:10px; color:var(--muted); letter-spacing:.05em; }
-        .wallet span:last-child { color:var(--green); font-weight:800; }
-        .timer-pill {
-            display:flex; align-items:center; gap:6px;
-            background:var(--card); border:1px solid var(--bdr);
-            border-radius:100px; padding:4px 10px;
-            font-family:'DM Mono',monospace; font-size:12px; font-weight:500;
-            color:var(--text);
-        }
-        .t-dot { width:7px; height:7px; border-radius:50%; background:var(--green); transition:background .3s; }
-        .t-dot.urgent { background:var(--red); animation:blink .5s ease infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav-h);
+  background:rgba(4,7,14,.75);
+  backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid var(--bdr);
+  transition:background .3s;
+}
+.nav-inner{
+  height:100%;max-width:1280px;margin:0 auto;
+  padding:0 clamp(16px,4vw,48px);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand-img{
+  width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  border:1.5px solid rgba(0,217,126,.3);
+  box-shadow:0 0 18px rgba(0,217,126,.15);
+}
+.brand-img img{width:100%;height:100%;object-fit:cover}
+.brand-name{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(15px,3vw,18px);letter-spacing:-.02em;white-space:nowrap}
+.nav-btns{display:flex;align-items:center;gap:8px}
+.btn-ghost-sm{
+  background:none;border:1px solid var(--bdr);color:rgba(255,255,255,.45);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;
+  padding:7px 16px;border-radius:var(--r-btn);cursor:pointer;transition:all .25s;white-space:nowrap;
+}
+.btn-ghost-sm:hover{border-color:var(--bdr2);color:#fff}
+.btn-cta{
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#000;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  padding:9px 20px;border-radius:var(--r-btn);border:none;cursor:pointer;
+  transition:all .3s;white-space:nowrap;
+  box-shadow:0 4px 18px rgba(0,217,126,.28);
+}
+.btn-cta:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(0,217,126,.42)}
 
-        #t-track { flex-shrink:0; height:3px; background:#eef2f6; border-radius:100px; overflow:hidden; margin-top: 1px; margin-bottom: 1px; }
-        #t-fill   { height:100%; border-radius:100px; background:var(--green); transition:width 1s linear, background .5s; }
-        #t-fill.urgent { background:var(--red); }
+/* ═══════════════════════════════════════════
+   SHARED HELPERS
+═══════════════════════════════════════════ */
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+.sec{padding:clamp(72px,10vw,120px) 0}
 
-        #stats { flex-shrink:0; display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
-        .stat  { background:var(--card); border:1px solid var(--bdr); border-radius:12px; padding:6px 8px; text-align:center; }
-        .s-lbl { font-size:8px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
-        .s-val { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--text); }
-        .s-val.g { color:var(--green); }
-        .s-val.o { color:var(--gold); }
+/* Pills / tags */
+.pill{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(0,217,126,.07);border:1px solid rgba(0,217,126,.18);
+  border-radius:100px;padding:5px 14px;
+  font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--green);
+}
+.pill::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:blink 2s ease infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
-        #mise-zone { flex-shrink:0; background:var(--card); border:1px solid var(--bdr); border-radius:14px; padding:8px 12px; }
-        .m-lbl { font-size:9px; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
-        .m-row { display:flex; gap:8px; align-items:center; }
-        #mise-input {
-            flex:1; background:#fff; border:1px solid var(--bdr); border-radius:9px;
-            color:var(--text); font-family:'DM Mono',monospace; font-size:14px; font-weight:500;
-            padding:8px 12px; outline:none; width:100%;
-        }
-        #mise-input:focus { border-color:var(--green); }
-        #mise-input:disabled { opacity:.5; background:#f3f4f6; }
-        .btn-launch {
-            flex-shrink:0; background:linear-gradient(135deg,var(--green),var(--g2));
-            color:#fff; font-family:'Syne',sans-serif; font-size:10px; font-weight:800;
-            letter-spacing:.12em; text-transform:uppercase; border:none; border-radius:9px;
-            padding:8px 16px; cursor:pointer; transition:all .2s;
-        }
-        .btn-launch:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 14px rgba(16,214,122,0.25); }
-        .btn-launch:disabled { opacity:.5; cursor:not-allowed; }
-        #mise-info { font-size:9px; color:var(--muted); margin-top:4px; text-align:center; font-family:'DM Mono',monospace; }
+/* Section heading */
+.sh{text-align:center;margin-bottom:clamp(40px,6vw,64px)}
+.sh .pill{margin-bottom:16px}
+.sh h2{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(1.8rem,5vw,3.4rem);letter-spacing:-.02em;line-height:1.05;margin-bottom:10px}
+.sh p{font-size:14px;color:var(--muted)}
 
-        #prog-wrap { flex-shrink:0; background:#eef2f6; border-radius:100px; height:4px; overflow:hidden; margin: 2px 0; }
-        #prog-bar  { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--green),#34d399); transition:width .4s ease; }
+/* Cards */
+.card{
+  background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r-card);
+  transition:all .35s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden;
+}
+.card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(0,217,126,.04),transparent 60%);opacity:0;transition:opacity .35s;pointer-events:none}
+.card:hover{border-color:rgba(0,217,126,.2);transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,.4),0 0 0 1px rgba(0,217,126,.08)}
+.card:hover::after{opacity:1}
 
-        #q-card { flex-shrink:0; background:var(--card); border:1px solid var(--bdr); border-radius:16px; padding:10px 14px; }
-        .q-badge {
-            display:inline-block; background:rgba(16,214,122,0.1); border:1px solid rgba(16,214,122,0.25);
-            border-radius:100px; padding:2px 9px; font-size:8px; font-weight:700;
-            letter-spacing:.15em; text-transform:uppercase; color:var(--green); margin-bottom:6px;
-        }
-        #q-text { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; line-height:1.35; color:var(--text); }
-        #q-text.ph { color:var(--dim); font-style:italic; font-family:'DM Sans',sans-serif; font-weight:400; }
+/* Buttons */
+.btn-green{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#000;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  padding:14px 28px;border-radius:14px;border:none;cursor:pointer;
+  transition:all .3s;box-shadow:0 6px 22px rgba(0,217,126,.28);
+  width:100%;
+}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(0,217,126,.42)}
+.btn-blue{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,#2c7ef8,#1d5fd4);
+  color:#fff;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  padding:14px 28px;border-radius:14px;border:none;cursor:pointer;
+  transition:all .3s;box-shadow:0 6px 22px rgba(44,126,248,.28);
+  width:100%;
+}
+.btn-blue:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(44,126,248,.42)}
+.btn-outline{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:rgba(255,255,255,.05);border:1px solid var(--bdr);
+  color:rgba(255,255,255,.7);font-family:'Syne',sans-serif;font-weight:700;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  padding:14px 32px;border-radius:100px;cursor:pointer;transition:all .3s;
+}
+.btn-outline:hover{background:rgba(255,255,255,.09);border-color:var(--bdr2);color:#fff;transform:translateY(-2px)}
 
-        #answers { flex:1; min-height:0; display:grid; grid-template-columns:1fr 1fr; gap:7px; overflow-y: visible; }
-        .a-btn {
-            background:#fff; border:1px solid var(--bdr); border-radius:13px;
-            padding:8px 10px; display:flex; align-items:flex-start; gap:8px;
-            cursor:pointer; transition:all .18s; text-align:left;
-        }
-        .a-btn:hover:not(:disabled):not(.ph-a) { background:#f1f5f9; border-color:var(--green); transform:translateY(-1px); }
-        .a-btn:disabled { cursor:not-allowed; opacity:0.7; }
-        .a-btn.ph-a { cursor:default; opacity:0.6; }
-        .a-ltr {
-            flex-shrink:0; width:22px; height:22px; border-radius:6px;
-            background:#f3f4f6; border:1px solid var(--bdr);
-            display:flex; align-items:center; justify-content:center;
-            font-family:'DM Mono',monospace; font-size:11px; font-weight:500; color:var(--muted);
-        }
-        .a-txt { font-size:12px; font-weight:500; color:var(--text); line-height:1.3; padding-top:2px; }
-        .a-btn.correct { border-color:var(--green) !important; background:rgba(16,214,122,0.1) !important; }
-        .a-btn.correct .a-ltr { background:var(--green); color:#fff; border-color:var(--green); }
-        .a-btn.wrong   { border-color:var(--red) !important; background:rgba(239,68,68,0.08) !important; }
-        .a-btn.wrong   .a-ltr { background:var(--red); color:#fff; border-color:var(--red); }
-        @keyframes slideIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
-        .slide { animation:slideIn .22s ease forwards; }
+/* Reveal */
+.r{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.23,1,.32,1),transform .7s cubic-bezier(.23,1,.32,1)}
+.r.v{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 
-        #result {
-            position:fixed; inset:0; z-index:50; background:rgba(255,255,255,0.98);
-            display:none; flex-direction:column; align-items:center; justify-content:center;
-            padding:20px; text-align:center; gap:12px;
-            backdrop-filter: blur(2px);
-        }
-        #result.show { display:flex; }
-        .r-icon  { font-size:48px; line-height:1; }
-        .r-title { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; }
-        .r-title.win  { color:var(--green); }
-        .r-title.lose { color:var(--red); }
-        .r-gain   { font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--gold); }
-        .r-reason { font-size:12px; color:var(--muted); max-width:260px; line-height:1.4; }
-        .btn-replay {
-            margin-top:2px; background:#f3f4f6; border:1px solid var(--bdr);
-            color:var(--text); font-family:'Syne',sans-serif; font-size:11px; font-weight:800;
-            letter-spacing:.12em; text-transform:uppercase; border-radius:12px;
-            padding:11px 28px; cursor:pointer; transition:all .2s;
-        }
-        .btn-replay:hover { background:#e5e7eb; transform:translateY(-1px); }
-        
-        /* no scroll on small screens - extra safety */
-        @media (max-height: 480px) {
-            .a-btn { padding: 4px 6px; gap: 4px; }
-            .a-ltr { width: 18px; height: 18px; font-size: 9px; }
-            .a-txt { font-size: 9px; }
-            .btn-launch { padding: 4px 8px; font-size: 8px; }
-            #q-text { font-size: 11px; }
-            .r-title { font-size: 22px; }
-            .r-gain { font-size: 18px; }
-        }
-    </style>
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .7s linear infinite}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero{
+  min-height:100svh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding-top:var(--nav-h);
+  position:relative;z-index:1;overflow:hidden;
+}
+.hero-h1{
+  font-family:'Syne',sans-serif;font-weight:900;
+  font-size:clamp(2.6rem,8vw,6.5rem);
+  line-height:1.0;letter-spacing:-.03em;margin-bottom:22px;
+}
+.hero-p{font-size:clamp(.9rem,2vw,1.1rem);color:var(--muted);max-width:580px;margin:0 auto 38px;line-height:1.75}
+.hero-btns{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin-bottom:64px}
+.btn-hero-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#000;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  padding:15px 32px;border-radius:100px;border:none;cursor:pointer;
+  transition:all .3s;box-shadow:0 6px 24px rgba(0,217,126,.3);
+}
+.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,217,126,.45)}
+/* Stats bar */
+.hero-stats{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  background:rgba(255,255,255,.025);border:1px solid var(--bdr);
+  border-radius:18px;padding:18px 8px;backdrop-filter:blur(12px);
+  max-width:500px;margin:0 auto;gap:0;
+}
+.hs{flex:1;min-width:90px;text-align:center;padding:0 16px;position:relative}
+.hs+.hs::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:28px;background:var(--bdr)}
+.hs-val{font-family:'Syne',sans-serif;font-weight:900;font-size:20px;line-height:1}
+.hs-lbl{font-size:9px;color:rgba(255,255,255,.28);letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+/* Scroll cue */
+.scroll-cue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;opacity:.3;pointer-events:none}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(0,217,126,.7),transparent)}
+.scroll-txt{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+
+/* ═══════════════════════════════════════════
+   SERVICES
+═══════════════════════════════════════════ */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.svc-card{padding:28px 24px}
+.svc-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:20px}
+.svc-n{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--dim);margin-bottom:6px}
+.svc-t{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:6px}
+.svc-p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ═══════════════════════════════════════════
+   FINANCIAL SERVICES — FEATURE CARDS
+═══════════════════════════════════════════ */
+.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.fin-grid{grid-template-columns:1fr}}
+
+.fin-card{
+  border-radius:26px;padding:clamp(28px,5vw,44px) clamp(24px,4vw,40px);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:all .35s cubic-bezier(.23,1,.32,1);
+}
+.fin-card-green{
+  background:linear-gradient(145deg,rgba(0,217,126,.07) 0%,rgba(4,7,14,.85) 60%);
+  border:1px solid rgba(0,217,126,.18);
+}
+.fin-card-green:hover{border-color:rgba(0,217,126,.35);box-shadow:0 28px 70px rgba(0,0,0,.45),0 0 0 1px rgba(0,217,126,.12)}
+.fin-card-blue{
+  background:linear-gradient(145deg,rgba(44,126,248,.07) 0%,rgba(4,7,14,.85) 60%);
+  border:1px solid rgba(44,126,248,.18);
+}
+.fin-card-blue:hover{border-color:rgba(44,126,248,.35);box-shadow:0 28px 70px rgba(0,0,0,.45),0 0 0 1px rgba(44,126,248,.12)}
+
+/* Shine overlay */
+.fin-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);pointer-events:none}
+
+.tf-badge{
+  display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  border-radius:100px;padding:5px 12px;width:fit-content;
+}
+.tf-badge-g{background:rgba(0,217,126,.1);color:var(--green);border:1px solid rgba(0,217,126,.22)}
+.tf-badge-b{background:rgba(44,126,248,.1);color:#60a5fa;border:1px solid rgba(44,126,248,.22)}
+
+/* Route bar */
+.route{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.rflag{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:10px;padding:6px 12px}
+.rflag .em{font-size:18px}
+.rflag .nm{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:var(--muted);letter-spacing:.06em}
+.rline{flex:1;height:2px;background:linear-gradient(90deg,rgba(0,217,126,.35),rgba(44,126,248,.35));border-radius:2px;position:relative}
+.rline::after{content:'→';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;font-weight:700;color:var(--green);background:var(--ink);padding:0 3px}
+
+.fin-title{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(1.4rem,3vw,2rem);line-height:1.05;margin-bottom:10px}
+.fin-p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:22px;flex:1}
+
+/* Method chips — avec les vraies images */
+.methods-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.method-chip{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.05);border:1px solid var(--bdr);
+  border-radius:10px;padding:7px 13px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--muted);
+}
+.method-chip img{width:22px;height:22px;object-fit:contain;border-radius:5px;flex-shrink:0;display:block}
+
+/* Feat list */
+.feat-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+.feat-tag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 11px;border-radius:100px;background:rgba(44,126,248,.08);color:#60a5fa;border:1px solid rgba(44,126,248,.15)}
+.feat-list{display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
+.feat-item{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
+.feat-item::before{content:'✓';color:var(--green);font-weight:800;flex-shrink:0}
+
+/* ═══════════════════════════════════════════
+   IMPORT
+═══════════════════════════════════════════ */
+.import-wrap{background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-radius:28px;padding:clamp(32px,5vw,60px) clamp(20px,4vw,48px)}
+.import-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:580px){.import-grid{grid-template-columns:repeat(2,1fr)}}
+.import-item{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.imp-logo{width:clamp(72px,14vw,100px);height:clamp(72px,14vw,100px);border-radius:50%;overflow:hidden;border:2px solid var(--bdr);transition:all .4s cubic-bezier(.23,1,.32,1)}
+.imp-logo img{width:100%;height:100%;object-fit:cover}
+.import-item:hover .imp-logo{transform:scale(1.1);border-color:rgba(0,217,126,.4);box-shadow:0 0 26px rgba(0,217,126,.2)}
+.imp-name{font-family:'Syne',sans-serif;font-weight:800;font-size:12px;letter-spacing:.05em}
+.imp-btn{font-size:10px;font-weight:600;letter-spacing:.08em;padding:7px 16px;border-radius:100px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid var(--bdr);color:rgba(255,255,255,.38);transition:all .25s;white-space:nowrap}
+.imp-btn:hover{background:rgba(0,217,126,.08);border-color:rgba(0,217,126,.3);color:var(--green)}
+
+/* ═══════════════════════════════════════════
+   VISION
+═══════════════════════════════════════════ */
+.vision-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,60px);align-items:center}
+@media(max-width:768px){.vision-grid{grid-template-columns:1fr}}
+.vision-h{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:16px}
+.vision-p{font-size:13.5px;color:var(--muted);line-height:1.75;margin-bottom:28px}
+.mini-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini-card{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:18px 15px}
+.mc-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;font-size:15px}
+.mc-t{font-family:'Syne',sans-serif;font-weight:800;font-size:11px;margin-bottom:3px}
+.mc-p{font-size:10px;color:var(--muted);line-height:1.5}
+.step-cards{display:flex;flex-direction:column;gap:12px}
+.step-card{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:20px 18px;display:flex;gap:16px;transition:all .3s}
+.step-card:hover{border-color:rgba(0,217,126,.2);transform:translateX(5px)}
+.step-num{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:rgba(255,255,255,.06);flex-shrink:0;line-height:1;margin-top:2px}
+.step-t{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;margin-bottom:3px}
+.step-p{font-size:11px;color:var(--muted);line-height:1.55}
+
+/* ═══════════════════════════════════════════
+   PROOF
+═══════════════════════════════════════════ */
+.proof-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;align-items:stretch}
+@media(max-width:700px){.proof-grid{grid-template-columns:1fr}}
+.proof-img{background:var(--sur);border:1px solid var(--bdr);border-radius:22px;overflow:hidden;position:relative;min-height:280px}
+.proof-img img{width:100%;height:100%;object-fit:cover;display:block}
+.proof-badge{position:absolute;bottom:18px;left:18px;background:rgba(4,7,14,.92);border:1px solid rgba(0,217,126,.3);border-radius:13px;padding:12px 16px;backdrop-filter:blur(12px)}
+.proof-gain{font-family:'Syne',sans-serif;font-weight:900;font-size:19px;color:var(--green)}
+.proof-lbl{font-size:9px;color:var(--muted);margin-top:2px;letter-spacing:.1em;text-transform:uppercase}
+.proof-stats{display:flex;flex-direction:column;gap:10px}
+.ps{background:var(--sur);border:1px solid var(--bdr);border-radius:16px;padding:18px 16px;flex:1}
+.ps-l{font-size:9px;color:rgba(255,255,255,.28);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.ps-v{font-family:'Syne',sans-serif;font-weight:900;font-size:16px}
+.proof-cta{padding:20px 16px;border-radius:16px;text-align:center;background:linear-gradient(135deg,var(--green),#2c7ef8)}
+.proof-cta-l{font-size:9px;color:rgba(255,255,255,.7);letter-spacing:.15em;text-transform:uppercase;margin-bottom:3px}
+.proof-cta-v{font-family:'Syne',sans-serif;font-weight:900;font-size:20px;color:#fff}
+
+/* ═══════════════════════════════════════════
+   REVENDEUR
+═══════════════════════════════════════════ */
+.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px}
+@media(max-width:580px){.rev-grid{grid-template-columns:1fr}}
+.rev-step{background:var(--sur);border:1px solid var(--bdr);border-radius:20px;padding:26px 20px;text-align:center}
+.rev-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px}
+.rev-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:.15em;margin-bottom:5px}
+.rev-t{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;margin-bottom:5px}
+.rev-p{font-size:11px;color:var(--muted);line-height:1.55}
+.rev-example{max-width:340px;margin:0 auto 36px;background:var(--sur);border:1px solid rgba(0,217,126,.15);border-radius:18px;padding:22px 26px}
+.rev-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12.5px}
+.rev-row:not(:last-child){border-bottom:1px solid var(--bdr)}
+.rev-k{color:var(--muted)}.rev-v{font-family:'Syne',sans-serif;font-weight:700}
+.rev-total{font-size:19px !important;color:var(--green)}
+
+/* ═══════════════════════════════════════════
+   FOOTER + CHATBOT + MODALS (styles compacts)
+═══════════════════════════════════════════ */
+footer{border-top:1px solid var(--bdr);padding:44px clamp(16px,4vw,48px);text-align:center;position:relative;z-index:1}
+.footer-b{font-family:'Syne',sans-serif;font-weight:900;font-size:18px;margin-bottom:6px}
+.footer-p{font-size:11px;color:rgba(255,255,255,.2);margin-bottom:18px}
+.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:16px}
+.footer-links a{font-size:11px;color:rgba(255,255,255,.25);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--green)}
+.footer-copy{font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.1)}
+
+/* Chatbot */
+#chatW{width:min(320px,calc(100vw - 32px));background:#08111f;border:1px solid var(--bdr);border-radius:22px;overflow:hidden;box-shadow:0 28px 64px rgba(0,0,0,.6);display:none;flex-direction:column;margin-bottom:12px;max-height:440px}
+#chatW.open{display:flex}
+#chatMsgs{flex:1;overflow-y:auto;padding:12px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.07) transparent}
+.cmbot,.cmusr{font-size:11.5px;line-height:1.55;padding:9px 12px;border-radius:12px;max-width:88%;margin-bottom:9px}
+.cmbot{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-top-left-radius:3px}
+.cmusr{background:rgba(0,217,126,.1);border:1px solid rgba(0,217,126,.2);border-top-right-radius:3px;margin-left:auto}
+#chatChips{display:flex;gap:6px;overflow-x:auto;padding:9px 11px;border-top:1px solid var(--bdr);scrollbar-width:none}
+#chatChips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;font-size:10px;font-weight:600;padding:5px 11px;border-radius:100px;cursor:pointer;background:rgba(255,255,255,.04);border:1px solid var(--bdr);color:rgba(255,255,255,.38);transition:all .2s;flex-shrink:0}
+.chip:hover{background:rgba(0,217,126,.08);border-color:rgba(0,217,126,.25);color:var(--green)}
+.chat-fab{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--green),var(--green2));border:none;cursor:pointer;box-shadow:0 8px 26px rgba(0,217,126,.28);transition:all .3s;flex-shrink:0}
+.chat-fab:hover{transform:scale(1.07);box-shadow:0 12px 34px rgba(0,217,126,.44)}
+
+/* Modals */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(4,7,14,.88);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,visibility .3s}
+.modal-overlay.open{opacity:1;visibility:visible;pointer-events:auto}
+.modal-box{background:#08111f;border:1px solid rgba(255,255,255,.1);border-radius:26px;width:100%;max-width:420px;padding:clamp(22px,5vw,38px);transform:scale(.96) translateY(12px);transition:transform .3s cubic-bezier(.23,1,.32,1);box-shadow:0 40px 80px rgba(0,0,0,.65);max-height:90svh;overflow-y:auto}
+.modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
+.modal-box::-webkit-scrollbar{width:3px}
+.modal-box::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+.modal-tabs{display:flex;gap:24px;margin-bottom:24px;border-bottom:1px solid var(--bdr);padding-bottom:1px}
+.tab-btn{padding-bottom:11px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .25s}
+.tab-btn.active{color:#fff;border-bottom-color:var(--green)}
+.flabel{display:block;font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:5px}
+.field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:11px 14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .25s}
+.field:focus{border-color:rgba(0,217,126,.4);background:rgba(0,217,126,.03);box-shadow:0 0 0 3px rgba(0,217,126,.08)}
+.field::placeholder{color:rgba(255,255,255,.2)}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.35);cursor:pointer}
+.alert-err{background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.25);color:#ff8fa5;font-size:11px;padding:9px 13px;border-radius:9px;text-align:center;line-height:1.5}
+.alert-ok{background:rgba(0,217,126,.08);border:1px solid rgba(0,217,126,.25);color:#4dffa5;font-size:11px;padding:9px 13px;border-radius:9px;text-align:center}
+.btn-submit{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--green),var(--green2));color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:13px;border-radius:12px;border:none;cursor:pointer;transition:all .25s;box-shadow:0 6px 20px rgba(0,217,126,.24)}
+.btn-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,217,126,.38)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+.pwd-wrap{position:relative}
+.pwd-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.28);transition:color .2s;padding:2px;display:flex}
+.pwd-toggle:hover{color:rgba(255,255,255,.65)}
+</style>
 </head>
 <body>
+<div class="gl"></div>
 
-<div id="app">
-    <div id="header">
-        <div class="logo">
-            <svg class="flag" width="34" height="22" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" style="border-radius:4px; overflow:hidden; border:1px solid #e2e8f0;">
-                <rect width="900" height="150" y="0"   fill="#fecb00"/>
-                <rect width="900" height="150" y="150" fill="#fff"/>
-                <rect width="900" height="150" y="300" fill="#ce1126"/>
-                <rect width="900" height="150" y="450" fill="#3a75c4"/>
-                <polygon points="0,0 360,300 0,600" fill="#009a44"/>
-                <circle cx="145" cy="300" r="105" fill="#fff"/>
-                <circle cx="178" cy="300" r="105" fill="#009a44"/>
-                <g fill="#fff">
-                    <polygon points="268,130 278,162 312,162 286,181 296,213 268,194 240,213 250,181 224,162 258,162" transform="scale(0.72) translate(-20,50)"/>
-                    <polygon points="268,200 278,232 312,232 286,251 296,283 268,264 240,283 250,251 224,232 258,232" transform="scale(0.72) translate(-20,50)"/>
-                    <polygon points="268,270 278,302 312,302 286,321 296,353 268,334 240,353 250,321 224,302 258,302" transform="scale(0.72) translate(-20,50)"/>
-                    <polygon points="268,340 278,372 312,372 286,391 296,423 268,404 240,423 250,391 224,372 258,372" transform="scale(0.72) translate(-20,50)"/>
-                </g>
-            </svg>
-            COMORES <span class="sub">QUIZ</span>
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a class="brand" href="#">
+      <div class="brand-img"><img src="Logo/logo.jpg" alt="Mon Revenu"></div>
+      <div class="brand-name">MON <span class="g-green">REVENU</span></div>
+    </a>
+    <div class="nav-btns">
+      <button class="btn-ghost-sm" onclick="openModal('login')">Connexion</button>
+      <button class="btn-cta" onclick="openModal('register')">S'inscrire</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section id="hero">
+  <div class="wrap" style="display:flex;flex-direction:column;align-items:center">
+    <div class="pill r" style="margin-bottom:28px">Objectif · Création d'emplois aux Comores</div>
+    <h1 class="hero-h1 r d1">Gagnez de l'argent<br><span class="g-main">Avec ou sans emploi</span></h1>
+    <p class="hero-p r d2">La plateforme tout-en-un des Comores. Jeux, import international, transferts d'argent sécurisés Comores&nbsp;↔&nbsp;Sénégal, formations et réseau de revendeurs.</p>
+    <div class="hero-btns r d3">
+      <button class="btn-hero-primary" onclick="openModal('register')">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M12 5v14M5 12h14"/></svg>
+        Commencer maintenant
+      </button>
+      <!-- Bouton transfert → redirige vers transfert.php -->
+      <a href="transfert.php" class="btn-outline" style="text-decoration:none">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        Envoyer de l'argent
+      </a>
+    </div>
+    <div class="hero-stats r d4">
+      <div class="hs"><div class="hs-val g-green">+5k</div><div class="hs-lbl">Membres</div></div>
+      <div class="hs"><div class="hs-val">100%</div><div class="hs-lbl">Gains réels</div></div>
+      <div class="hs"><div class="hs-val g-gold">×6.45</div><div class="hs-lbl">Multiplicateur</div></div>
+      <div class="hs"><div class="hs-val g-blue">3</div><div class="hs-lbl">Méthodes</div></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="scroll-txt">Scroll</div><div class="scroll-line"></div></div>
+</section>
+
+<!-- ══════════════════ SERVICES ══════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sh r">
+      <div class="pill" style="margin-bottom:14px">Services</div>
+      <h2>Tout pour <span class="g-green">gagner plus</span></h2>
+      <p>Jeux, import, coaching et transferts dans une seule plateforme</p>
+    </div>
+    <div class="svc-grid">
+      <div class="card svc-card r">
+        <div class="svc-ico" style="background:rgba(0,217,126,.1);border:1px solid rgba(0,217,126,.2)">🎮</div>
+        <div class="svc-n">01 / JEUX</div>
+        <div class="svc-t">Jeux & Gains</div>
+        <p class="svc-p">Aviator, Mines, Duel, Quiz Comores. Stratégie et gains réels sur chaque partie.</p>
+      </div>
+      <div class="card svc-card r d1">
+        <div class="svc-ico" style="background:rgba(44,126,248,.1);border:1px solid rgba(44,126,248,.2)">📦</div>
+        <div class="svc-n">02 / IMPORT</div>
+        <div class="svc-t">Import International</div>
+        <p class="svc-p">Shein, Alibaba, Temu, Jumia. Commandez depuis les Comores sans carte bancaire.</p>
+      </div>
+      <div class="card svc-card r d2">
+        <div class="svc-ico" style="background:rgba(0,217,126,.1);border:1px solid rgba(0,217,126,.2)">💸</div>
+        <div class="svc-n">03 / TRANSFERT</div>
+        <div class="svc-t">Transfert d'argent</div>
+        <p class="svc-p">Envoi sécurisé Comores&nbsp;↔&nbsp;Sénégal via Mvola, Wave et Orange Money.</p>
+      </div>
+      <div class="card svc-card r d3">
+        <div class="svc-ico" style="background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.2)">📚</div>
+        <div class="svc-n">04 / FORMATION</div>
+        <div class="svc-t">Formations Pro</div>
+        <p class="svc-p">E-commerce, marketing digital, site web. Certifiés, avec coaching et accès à vie.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ SERVICES FINANCIERS ══════════════════ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="sh r">
+      <div class="pill" style="margin-bottom:14px">Nouveautés</div>
+      <h2>Nos services <span class="g-green">financiers</span></h2>
+    </div>
+    <div class="fin-grid">
+
+      <!-- ── CARTE TRANSFERT ── -->
+      <div class="fin-card fin-card-green r">
+        <div class="tf-badge tf-badge-g">💸 Transfert instantané</div>
+        <!-- Route visuelle -->
+        <div class="route">
+          <div class="rflag"><span class="em">🇰🇲</span><span class="nm">Comores</span></div>
+          <div class="rline"></div>
+          <div class="rflag"><span class="nm">Sénégal</span><span class="em">🇸🇳</span></div>
         </div>
-        <div style="display:flex; gap:8px;">
-            <div class="wallet">
-                <span>💰 WALLET</span>
-                <span id="wallet-amount">5000</span><span> KMF</span>
-            </div>
-            <div class="timer-pill">
-                <div class="t-dot" id="t-dot"></div>
-                <span id="t-disp">1:20</span>
-            </div>
+        <h2 class="fin-title">Transfert<br><span class="g-green">d'argent</span></h2>
+        <p class="fin-p">Envoyez de l'argent depuis les Comores vers le Sénégal rapidement et en toute sécurité. Taux avantageux, aucune carte bancaire requise.</p>
+
+        <!-- Méthodes avec vraies images -->
+        <div class="methods-row">
+          <div class="method-chip">
+            <img src="Logo/Mvola.png" alt="Mvola">Mvola
+          </div>
+          <div class="method-chip">
+            <img src="Logo/weve.png" alt="Wave">Wave
+          </div>
+          <div class="method-chip">
+            <img src="Logo/orangeMoney.png" alt="Orange Money">Orange Money
+          </div>
         </div>
-    </div>
 
-    <div id="t-track"><div id="t-fill" style="width:100%"></div></div>
+        <!-- Bouton VERT → page dédiée -->
+        <a href="transfert.php" class="btn-green" style="text-decoration:none">
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          Envoyer maintenant
+        </a>
+      </div>
 
-    <div id="stats">
-        <div class="stat"><div class="s-lbl">Question</div><div class="s-val" id="s-q">—</div></div>
-        <div class="stat"><div class="s-lbl">Mise</div><div class="s-val g" id="s-m">—</div></div>
-        <div class="stat"><div class="s-lbl">Gain max</div><div class="s-val o" id="s-g">—</div></div>
-    </div>
-
-    <div id="mise-zone">
-        <div class="m-lbl">Mise (100 – 1 000 KMF)</div>
-        <div class="m-row">
-            <input type="number" id="mise-input" placeholder="Ex : 500" min="100" max="1000">
-            <button class="btn-launch" id="btn-l">Lancer</button>
+      <!-- ── CARTE FORMATIONS ── -->
+      <div class="fin-card fin-card-blue r d1">
+        <div class="tf-badge tf-badge-b">📚 Certifiées & accompagnées</div>
+        <div class="feat-tags">
+          <span class="feat-tag">E-Commerce</span>
+          <span class="feat-tag">Marketing digital</span>
+          <span class="feat-tag">Site Web</span>
         </div>
-        <div id="mise-info">Entrez votre mise pour commencer</div>
-    </div>
+        <h2 class="fin-title">Formations<br><span class="g-blue">professionnelles</span></h2>
+        <p class="fin-p">Boostez vos compétences et multipliez vos revenus avec nos formations vidéo HD, certifiées et accompagnées.</p>
+        <div class="feat-list">
+          <div class="feat-item">Vidéos HD accessibles partout</div>
+          <div class="feat-item">Certificats reconnus professionnellement</div>
+          <div class="feat-item">Coaching personnalisé inclus</div>
+          <div class="feat-item">Accès à vie — sans abonnement</div>
+        </div>
+        <button class="btn-blue" onclick="window.location.href='formations.php'">
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          Découvrir les formations
+        </button>
+      </div>
 
-    <div id="prog-wrap"><div id="prog-bar" style="width:0%"></div></div>
-
-    <div id="q-card">
-        <div class="q-badge" id="q-badge">Question ?</div>
-        <div id="q-text" class="ph">En attente de votre mise…</div>
     </div>
+  </div>
+</section>
 
-    <div id="answers">
-        <button class="a-btn ph-a" disabled><div class="a-ltr">A</div><div class="a-txt ph-t">—</div></button>
-        <button class="a-btn ph-a" disabled><div class="a-ltr">B</div><div class="a-txt ph-t">—</div></button>
-        <button class="a-btn ph-a" disabled><div class="a-ltr">C</div><div class="a-txt ph-t">—</div></button>
-        <button class="a-btn ph-a" disabled><div class="a-ltr">D</div><div class="a-txt ph-t">—</div></button>
+<!-- ══════════════════ IMPORT ══════════════════ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="import-wrap r">
+      <div class="sh" style="margin-bottom:36px">
+        <div class="pill" style="margin-bottom:14px">Import</div>
+        <h2>Où voulez-vous <span class="g-green">commander ?</span></h2>
+        <p>Nous commandons pour vous sur les plus grandes plateformes mondiales</p>
+      </div>
+      <div class="import-grid">
+        <!-- Statique : chaque plateforme écrite en HTML -->
+        <div class="import-item">
+          <div class="imp-logo"><img src="Logo/shein.jpg" alt="Shein"></div>
+          <div class="imp-name">Shein</div>
+          <button class="imp-btn" onclick="openModal('login')">Contacter</button>
+        </div>
+        <div class="import-item">
+          <div class="imp-logo"><img src="Logo/alibaba.png" alt="Alibaba"></div>
+          <div class="imp-name">Alibaba</div>
+          <button class="imp-btn" onclick="openModal('login')">Contacter</button>
+        </div>
+        <div class="import-item">
+          <div class="imp-logo"><img src="Logo/temu.png" alt="Temu"></div>
+          <div class="imp-name">Temu</div>
+          <button class="imp-btn" onclick="openModal('login')">Contacter</button>
+        </div>
+        <div class="import-item">
+          <div class="imp-logo"><img src="Logo/jumia.jpg" alt="Jumia"></div>
+          <div class="imp-name">Jumia</div>
+          <button class="imp-btn" onclick="openModal('login')">Contacter</button>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ══════════════════ VISION ══════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="vision-grid">
+      <div class="r">
+        <div class="pill" style="margin-bottom:18px">Notre vision</div>
+        <h2 class="vision-h">Plus qu'une plateforme,<br><span class="g-main">votre partenaire.</span></h2>
+        <p class="vision-p">Mon Revenu réunit divertissement rentable, commerce international, transferts sécurisés et formation dans une plateforme accessible à tous les Comoriens.</p>
+        <div class="mini-cards">
+          <div class="mini-card"><div class="mc-ico" style="background:rgba(0,217,126,.1)">🔒</div><div class="mc-t">Sécurité max</div><p class="mc-p">Transactions vérifiées. Votre argent est protégé.</p></div>
+          <div class="mini-card"><div class="mc-ico" style="background:rgba(44,126,248,.1)">⚡</div><div class="mc-t">Rapidité</div><p class="mc-p">Dépôts et retraits instantanés, sans complication.</p></div>
+        </div>
+      </div>
+      <div class="step-cards r d1">
+        <div class="step-card"><div class="step-num">01</div><div><div class="step-t" style="color:var(--green)">Divertissement rentable</div><p class="step-p">Jeux stratégiques avec gains réels : Aviator, Mines, Duel, Quiz Comores.</p></div></div>
+        <div class="step-card"><div class="step-num">02</div><div><div class="step-t" style="color:#60a5fa">Shopping sans frontière</div><p class="step-p">Commandez sur les plateformes mondiales directement depuis votre compte.</p></div></div>
+        <div class="step-card"><div class="step-num">03</div><div><div class="step-t" style="color:#a78bfa">Accompagnement local</div><p class="step-p">Des agents dans votre ville pour dépôts, retraits et accompagnement.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ PREUVE ══════════════════ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="sh r">
+      <div class="pill" style="margin-bottom:14px">Preuve réelle</div>
+      <h2>Gagnez de <span class="g-green">l'argent réel</span></h2>
+    </div>
+    <div class="proof-grid r">
+      <div class="proof-img">
+        <img src="Logo/image_jeu.png" alt="Gain Aviator">
+        <div class="proof-badge"><div class="proof-gain">+64 500 KMF</div><div class="proof-lbl">Gain réel vérifié</div></div>
+      </div>
+      <div class="proof-stats">
+        <div class="ps"><div class="ps-l">🎮 Jeu</div><div class="ps-v">Aviator</div></div>
+        <div class="ps"><div class="ps-l">💰 Mise</div><div class="ps-v">10 000 KMF</div></div>
+        <div class="ps"><div class="ps-l">📈 Multiplicateur</div><div class="ps-v g-green">× 6.45</div></div>
+        <div class="proof-cta"><div class="proof-cta-l">Gain total</div><div class="proof-cta-v">64 500 KMF</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ REVENDEUR ══════════════════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sh r">
+      <div class="pill" style="margin-bottom:14px">Opportunité</div>
+      <h2>Devenez revendeur,<br><span class="g-main">gagnez avec nous</span></h2>
+      <p>Nous gérons tout. Vous vendez, vous gagnez.</p>
+    </div>
+    <div class="rev-grid r">
+      <div class="rev-step"><div class="rev-ico" style="background:rgba(0,217,126,.1)">🛒</div><div class="rev-n">ÉTAPE 01</div><div class="rev-t">Nous achetons</div><p class="rev-p">Sélection et achat en grande quantité à prix compétitifs.</p></div>
+      <div class="rev-step"><div class="rev-ico" style="background:rgba(44,126,248,.1)">🤝</div><div class="rev-n">ÉTAPE 02</div><div class="rev-t">On vous confie</div><p class="rev-p">Les produits sont remis aux revendeurs de votre zone.</p></div>
+      <div class="rev-step"><div class="rev-ico" style="background:rgba(245,197,24,.1)">💰</div><div class="rev-n">ÉTAPE 03</div><div class="rev-t">Vous gagnez</div><p class="rev-p">Vous vendez et gardez votre commission sur chaque vente.</p></div>
+    </div>
+    <div class="rev-example r">
+      <div class="rev-row"><span class="rev-k">Prix d'achat</span><span class="rev-v">10 000 KMF</span></div>
+      <div class="rev-row"><span class="rev-k">Prix de vente</span><span class="rev-v">12 000 KMF</span></div>
+      <div class="rev-row"><span class="rev-k">Votre gain</span><span class="rev-v rev-total g-green">2 000 KMF</span></div>
+    </div>
+    <div class="r" style="text-align:center">
+      <button class="btn-hero-primary" onclick="openModal('register')">Devenir Revendeur</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <div class="footer-b">MON <span class="g-green">REVENU</span></div>
+  <p class="footer-p">Plateforme Partenaire & Gaming · Comores</p>
+  <div class="footer-links">
+    <a href="#">Mentions légales</a>
+    <a href="#">Confidentialité</a>
+    <a href="formations.php">Formations</a>
+    <a href="transfert.php">Transfert</a>
+  </div>
+  <p class="footer-copy">© 2026 Mon Revenu. Tous droits réservés.</p>
+</footer>
+
+<!-- ══════════════════ CHATBOT ══════════════════ -->
+<div style="position:fixed;bottom:20px;right:18px;z-index:90;display:flex;flex-direction:column;align-items:flex-end">
+  <div id="chatW">
+    <div style="padding:12px 15px;background:linear-gradient(135deg,var(--green),#2c7ef8);display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:#fff">AI</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:#fff;letter-spacing:.06em">Assistant Mon Revenu</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;background:#4dffa5;border-radius:50%;display:inline-block"></span>En ligne</div>
+        </div>
+      </div>
+      <button onclick="toggleChat()" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,.55);font-size:18px;line-height:1">&times;</button>
+    </div>
+    <div id="chatMsgs"><div class="cmbot">Bonjour ! Je suis l'assistant de <strong>Mon Revenu</strong>. Comment puis-je vous aider ?</div></div>
+    <div id="chatChips">
+      <div class="chip" onclick="askChat('emploi')">💼 Emploi</div>
+      <div class="chip" onclick="askChat('jeux')">🎮 Jeux</div>
+      <div class="chip" onclick="askChat('transfert')">💸 Transfert</div>
+      <div class="chip" onclick="askChat('import')">📦 Import</div>
+      <div class="chip" onclick="askChat('revendeur')">🚀 Revendeur</div>
+    </div>
+  </div>
+  <button class="chat-fab" onclick="toggleChat()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/>
+      <path d="M2 14h2M20 14h2M15 13v2M9 13v2"/>
+    </svg>
+  </button>
 </div>
 
-<div id="result">
-    <div class="r-icon" id="r-icon">🏆</div>
-    <div class="r-title" id="r-title">VICTOIRE !</div>
-    <div class="r-gain"   id="r-gain"></div>
-    <div class="r-reason" id="r-reason"></div>
-    <button class="btn-replay" id="btn-replay">Nouvelle partie</button>
+<!-- ══════════════════ MODAL AUTH ══════════════════ -->
+<div id="authModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="width:50px;height:50px;border-radius:50%;overflow:hidden;margin:0 auto 14px;border:2px solid rgba(0,217,126,.3);box-shadow:0 0 18px rgba(0,217,126,.14)">
+        <img src="Logo/logo.jpg" style="width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+    <div class="modal-tabs">
+      <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">Inscription</button>
+    </div>
+    <!-- LOGIN -->
+    <form id="formLogin" method="POST" action="#" novalidate style="display:flex;flex-direction:column;gap:13px">
+      <!-- CSRF statique (version front-end) -->
+      <input type="hidden" name="csrf_token" value="static_csrf_demo">
+      <div><label class="flabel">Identifiant (Tél ou Email)</label><input type="text" name="identifier" id="loginId" required autocomplete="username" placeholder="Votre numéro ou email" class="field"></div>
+      <div><label class="flabel">Mot de passe</label>
+        <div class="pwd-wrap">
+          <input type="password" name="password" id="loginPwd" required autocomplete="current-password" placeholder="••••••••" class="field" style="padding-right:42px">
+          <button type="button" class="pwd-toggle" id="pwdToggle"><svg id="eyeI" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+        </div>
+      </div>
+      <div id="loginErr" class="alert-err" style="display:none"></div>
+      <div id="loginOk" class="alert-ok" style="display:none">✓ Connexion réussie, redirection…</div>
+      <button type="submit" class="btn-submit" id="loginBtn"><span id="loginTxt">Se connecter</span><svg id="loginSpin" class="spin" style="display:none" width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity=".25"/><path fill="currentColor" d="M4 12a8 8 0 018-8v8z" opacity=".75"/></svg></button>
+    </form>
+    <!-- REGISTER -->
+    <form id="formReg" action="#" method="POST" style="display:none;flex-direction:column;gap:11px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+        <div><label class="flabel">Nom complet</label><input type="text" name="fullname" placeholder="Rachid" class="field"></div>
+        <div><label class="flabel">Téléphone</label><input type="tel" name="phone" placeholder="+269..." class="field"></div>
+      </div>
+      <div><label class="flabel">Email</label><input type="email" name="email" placeholder="contact@exemple.com" class="field"></div>
+      <div><label class="flabel">Mot de passe</label><input type="password" name="password" placeholder="••••••••" class="field"></div>
+      <div><label class="flabel">Date de naissance</label><input type="date" name="birthdate" required class="field"></div>
+      <div id="regErr" class="alert-err" style="display:none"></div>
+      <button type="submit" class="btn-submit" id="regBtn">Créer mon compte</button>
+    </form>
+    <button onclick="closeModal()" style="margin-top:14px;width:100%;background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.2)'">Fermer</button>
+  </div>
 </div>
 
 <script>
-    // ----- État global -----
-    const TOTAL = 8;
-    const TIME  = 80;
-    const LTR   = ['A','B','C','D'];
+// Reveal
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');io.unobserve(e.target)}}),{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
 
-    let allQuestions = [];
-    let selectedQuestions = [];
-    let currentIndex = 0;
-    let currentMise = 0;
-    let timeLeft = TIME;
-    let timerInterval = null;
-    let gameActive = false;
-    let wallet = 5000;
+// Nav scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').style.background=window.scrollY>50?'rgba(4,7,14,.95)':'rgba(4,7,14,.75)';
+},{passive:true});
 
-    const walletSpan = document.getElementById('wallet-amount');
-    const questionText = document.getElementById('q-text');
-    const questionBadge = document.getElementById('q-badge');
-    const answersDiv = document.getElementById('answers');
-    const miseInput = document.getElementById('mise-input');
-    const btnLaunch = document.getElementById('btn-l');
-    const miseInfo = document.getElementById('mise-info');
-    const sQ = document.getElementById('s-q');
-    const sM = document.getElementById('s-m');
-    const sG = document.getElementById('s-g');
-    const progBar = document.getElementById('prog-bar');
-    const tFill = document.getElementById('t-fill');
-    const tDisp = document.getElementById('t-disp');
-    const tDot = document.getElementById('t-dot');
-    const resultDiv = document.getElementById('result');
-    const rIcon = document.getElementById('r-icon');
-    const rTitle = document.getElementById('r-title');
-    const rGain = document.getElementById('r-gain');
-    const rReason = document.getElementById('r-reason');
+// Auth modal
+const authM=document.getElementById('authModal');
+function openModal(t){authM.classList.add('open');switchTab(t);document.body.style.overflow='hidden'}
+function closeModal(){authM.classList.remove('open');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+function switchTab(t){
+  const fl=document.getElementById('formLogin'),fr=document.getElementById('formReg');
+  const tl=document.getElementById('tabLogin'),tr=document.getElementById('tabRegister');
+  if(t==='login'){fl.style.display='flex';fr.style.display='none';tl.classList.add('active');tr.classList.remove('active')}
+  else{fl.style.display='none';fr.style.display='flex';tr.classList.add('active');tl.classList.remove('active')}
+}
+// Pwd toggle
+document.getElementById('pwdToggle').addEventListener('click',function(){
+  const p=document.getElementById('loginPwd'),s=p.type==='password';
+  p.type=s?'text':'password';
+  document.getElementById('eyeI').innerHTML=s
+    ?'<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.176 5.189M15 12a3 3 0 11-4.243-4.243M3 3l18 18"/>'
+    :'<path stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+});
 
-    function updateWalletUI() {
-        walletSpan.textContent = wallet;
-    }
+// Simulation front-end pour les formulaires (aucun appel serveur réel)
+document.getElementById('formLogin').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const errDiv = document.getElementById('loginErr'), okDiv = document.getElementById('loginOk');
+  const btn = document.getElementById('loginBtn'), txt = document.getElementById('loginTxt'), spin = document.getElementById('loginSpin');
+  errDiv.style.display = 'none'; okDiv.style.display = 'none';
+  const id = document.getElementById('loginId').value.trim(), pwd = document.getElementById('loginPwd').value;
+  if(!id || !pwd){
+    errDiv.textContent = 'Veuillez remplir tous les champs.';
+    errDiv.style.display = 'block';
+    return;
+  }
+  // Simulation d’envoi
+  btn.disabled = true; txt.textContent = 'Connexion…'; spin.style.display = 'inline-block';
+  setTimeout(() => {
+    okDiv.style.display = 'block';
+    setTimeout(() => {
+      alert('Démo front-end : connexion simulée. Aucun backend actif.');
+      closeModal();
+    }, 600);
+    btn.disabled = false; txt.textContent = 'Se connecter'; spin.style.display = 'none';
+  }, 800);
+});
 
-    async function loadQuestions() {
-        try {
-            const response = await fetch('questions.json');
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            if (!Array.isArray(data) || data.length === 0) throw new Error('Fichier JSON invalide ou vide');
-            allQuestions = data;
-            miseInfo.textContent = `✅ ${allQuestions.length} questions chargées. Entrez votre mise.`;
-            miseInfo.style.color = '#10b981';
-            btnLaunch.disabled = false;
-        } catch (err) {
-            console.error(err);
-            miseInfo.textContent = '❌ ERREUR : questions.json introuvable. Vérifiez le fichier.';
-            miseInfo.style.color = '#ef4444';
-            btnLaunch.disabled = true;
-            questionText.textContent = 'Fichier de questions manquant.';
-            questionText.classList.add('ph');
-        }
-    }
+document.getElementById('formReg').addEventListener('submit', function(e){
+  e.preventDefault();
+  const errDiv = document.getElementById('regErr'), btn = document.getElementById('regBtn');
+  errDiv.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Chargement…';
+  setTimeout(() => {
+    alert('Démo front-end : inscription simulée. Aucun backend actif.');
+    closeModal();
+    btn.disabled = false; btn.textContent = 'Créer mon compte';
+  }, 800);
+});
 
-    function shuffleArray(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-
-    function escapeHtml(str) {
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-
-    function startGame() {
-        if (!allQuestions.length) {
-            miseInfo.textContent = '❌ Chargement en cours ou échoué. Patientez.';
-            return;
-        }
-        const miseValue = parseInt(miseInput.value);
-        if (isNaN(miseValue) || miseValue < 100 || miseValue > 1000) {
-            miseInfo.textContent = '⚠ Mise entre 100 et 1 000 KMF';
-            miseInfo.style.color = '#ef4444';
-            return;
-        }
-        if (miseValue > wallet) {
-            miseInfo.textContent = `⚠ Solde insuffisant (${wallet} KMF)`;
-            miseInfo.style.color = '#ef4444';
-            return;
-        }
-
-        wallet -= miseValue;
-        updateWalletUI();
-        currentMise = miseValue;
-        gameActive = true;
-
-        miseInput.disabled = true;
-        btnLaunch.disabled = true;
-        miseInfo.textContent = `Mise : ${currentMise} KMF → gain max ${currentMise * 5} KMF`;
-        miseInfo.style.color = '#6b7280';
-        sM.textContent = currentMise + ' KMF';
-        sG.textContent = (currentMise * 5) + ' KMF';
-
-        const shuffledAll = shuffleArray([...allQuestions]);
-        selectedQuestions = shuffledAll.slice(0, TOTAL);
-        currentIndex = 0;
-        timeLeft = TIME;
-        tFill.style.width = '100%';
-        tFill.classList.remove('urgent');
-        tDot.classList.remove('urgent');
-        tDisp.textContent = '1:20';
-        renderCurrentQuestion();
-        startTimer();
-    }
-
-    function renderCurrentQuestion() {
-        const q = selectedQuestions[currentIndex];
-        const percent = Math.round((currentIndex / TOTAL) * 100);
-        progBar.style.width = percent + '%';
-        sQ.textContent = (currentIndex + 1) + '/' + TOTAL;
-        questionBadge.textContent = 'Question ' + (currentIndex + 1) + ' / ' + TOTAL;
-        questionText.textContent = q.question;
-        questionText.classList.remove('ph');
-
-        const mixedOptions = shuffleArray([...q.options]);
-        answersDiv.innerHTML = mixedOptions.map((opt, i) => `
-            <button class="a-btn slide" data-answer="${escapeHtml(opt)}" style="animation-delay:${i*0.04}s">
-                <div class="a-ltr">${LTR[i]}</div>
-                <div class="a-txt">${escapeHtml(opt)}</div>
-            </button>
-        `).join('');
-
-        document.querySelectorAll('#answers .a-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (!gameActive) return;
-                const selected = btn.getAttribute('data-answer');
-                const correct = selectedQuestions[currentIndex].reponse_correcte;
-                handleAnswer(btn, selected, correct);
-            });
-        });
-    }
-
-    function handleAnswer(btn, selected, correct) {
-        if (!gameActive) return;
-        document.querySelectorAll('#answers .a-btn').forEach(b => b.disabled = true);
-
-        if (selected === correct) {
-            btn.classList.add('correct');
-            btn.querySelector('.a-ltr').textContent = '✓';
-            setTimeout(() => {
-                if (!gameActive) return;
-                if (currentIndex + 1 < TOTAL) {
-                    currentIndex++;
-                    renderCurrentQuestion();
-                } else {
-                    winGame();
-                }
-            }, 380);
-        } else {
-            btn.classList.add('wrong');
-            document.querySelectorAll('#answers .a-btn').forEach(b => {
-                if (b.getAttribute('data-answer') === correct) {
-                    b.classList.add('correct');
-                }
-            });
-            setTimeout(() => loseGame('Mauvaise réponse ! Vous perdez votre mise.'), 650);
-        }
-    }
-
-    function startTimer() {
-        if (timerInterval) clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            if (!gameActive) return;
-            if (timeLeft <= 0) {
-                loseGame('Temps écoulé !');
-                return;
-            }
-            timeLeft--;
-            const percent = (timeLeft / TIME) * 100;
-            tFill.style.width = percent + '%';
-            const m = Math.floor(timeLeft / 60);
-            const s = timeLeft % 60;
-            tDisp.textContent = m + ':' + (s < 10 ? '0' : '') + s;
-            if (timeLeft <= 15) {
-                tDot.classList.add('urgent');
-                tFill.classList.add('urgent');
-            }
-            if (timeLeft <= 0) {
-                loseGame('Temps écoulé !');
-            }
-        }, 1000);
-    }
-
-    function winGame() {
-        if (!gameActive) return;
-        clearInterval(timerInterval);
-        gameActive = false;
-        const gain = currentMise * 5;
-        wallet += gain;
-        updateWalletUI();
-        progBar.style.width = '100%';
-        resultDiv.classList.add('show');
-        rIcon.textContent = '🏆';
-        rTitle.textContent = 'VICTOIRE !';
-        rTitle.className = 'r-title win';
-        rGain.textContent = '+ ' + gain + ' KMF';
-        rReason.textContent = 'Bravo ! 8/8 correctes. Gains ajoutés au wallet.';
-    }
-
-    function loseGame(reason) {
-        if (!gameActive) return;
-        clearInterval(timerInterval);
-        gameActive = false;
-        resultDiv.classList.add('show');
-        rIcon.textContent = '💀';
-        rTitle.textContent = 'GAME OVER';
-        rTitle.className = 'r-title lose';
-        rGain.textContent = '− ' + currentMise + ' KMF';
-        rReason.textContent = reason;
-    }
-
-    function resetGame() {
-        if (timerInterval) clearInterval(timerInterval);
-        gameActive = false;
-        resultDiv.classList.remove('show');
-        miseInput.disabled = false;
-        btnLaunch.disabled = false;
-        miseInput.value = '';
-        currentMise = 0;
-        currentIndex = 0;
-        timeLeft = TIME;
-        sQ.textContent = '—';
-        sM.textContent = '—';
-        sG.textContent = '—';
-        tDisp.textContent = '1:20';
-        tFill.style.width = '100%';
-        tFill.classList.remove('urgent');
-        tDot.classList.remove('urgent');
-        progBar.style.width = '0%';
-        miseInfo.textContent = 'Entrez votre mise pour commencer';
-        miseInfo.style.color = '';
-        questionBadge.textContent = 'Question ?';
-        questionText.textContent = 'En attente de votre mise…';
-        questionText.classList.add('ph');
-        answersDiv.innerHTML = ['A','B','C','D'].map(l => `
-            <button class="a-btn ph-a" disabled><div class="a-ltr">${l}</div><div class="a-txt ph-t">—</div></button>
-        `).join('');
-    }
-
-    btnLaunch.addEventListener('click', startGame);
-    document.getElementById('btn-replay').addEventListener('click', resetGame);
-    loadQuestions();
-
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    window.addEventListener('keydown', e => {
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-            e.preventDefault();
-        }
-    });
+// Chatbot
+function toggleChat(){document.getElementById('chatW').classList.toggle('open');}
+const R = {
+  emploi:"Avec Mon Revenu, gagnez de l'argent même sans emploi grâce aux jeux, au réseau de revendeurs et aux commissions.",
+  jeux:"Aviator, Mines, Duel et Quiz Comores. Chaque jeu demande de la stratégie pour maximiser vos gains réels.",
+  transfert:"Envoyez de l'argent des Comores vers le Sénégal via Mvola, Wave ou Orange Money. Cliquez sur « Envoyer de l'argent » pour commencer.",
+  import:"Nous commandons pour vous sur Shein, Alibaba, Temu et Jumia. Contactez-nous pour passer commande.",
+  revendeur:"Devenez revendeur : nous achetons les produits, vous les vendez et gardez la commission sur chaque vente."
+};
+function askChat(topic){
+  const box = document.getElementById('chatMsgs');
+  const u = document.createElement('div'); u.className = 'cmusr'; u.textContent = topic; box.appendChild(u); box.scrollTop = 9999;
+  setTimeout(()=>{
+    const b = document.createElement('div'); b.className = 'cmbot'; b.textContent = R[topic] || 'Je suis là pour vous aider !';
+    box.appendChild(b); box.scrollTop = 9999;
+  }, 420);
+}
 </script>
 </body>
 </html>
