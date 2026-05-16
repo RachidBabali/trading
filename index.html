@@ -2,109 +2,213 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Transfert d'argent · Mon Revenu</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:    #04070e;
-  --ink2:   #07101e;
-  --sur:    rgba(255,255,255,0.03);
-  --sur2:   rgba(255,255,255,0.055);
-  --bdr:    rgba(255,255,255,0.07);
-  --bdr2:   rgba(255,255,255,0.13);
-  --green:  #00d97e;
-  --green2: #00b368;
-  --blue:   #2c7ef8;
-  --muted:  rgba(255,255,255,0.38);
-  --dim:    rgba(255,255,255,0.12);
-  --nav-h:  64px;
+  --ink:#04070e; --sur:rgba(255,255,255,0.03); --bdr:rgba(255,255,255,0.07);
+  --bdr2:rgba(255,255,255,0.13); --green:#00d97e; --green2:#00b368;
+  --blue:#2c7ef8; --muted:rgba(255,255,255,0.38); --dim:rgba(255,255,255,0.12);
+  --nav-h:64px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--ink);color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(0,217,126,.08) 0%,transparent 65%),radial-gradient(ellipse 45% 40% at 5% 70%,rgba(44,126,248,.06) 0%,transparent 60%);}
-.gl{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:60px 60px;}
-.fd{font-family:'Syne',sans-serif}
-.fm{font-family:'DM Mono',monospace}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 70% 55% at 50% 0%,rgba(0,217,126,.08) 0%,transparent 65%),
+             radial-gradient(ellipse 45% 40% at 5% 70%,rgba(44,126,248,.06) 0%,transparent 60%);}
+.gl{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:60px 60px;}
 .g-green{background:linear-gradient(135deg,#00d97e,#00ff9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(4,7,14,.8);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--bdr);}
-.nav-inner{height:100%;max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);
+  background:rgba(4,7,14,.82);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--bdr);}
+.nav-inner{height:100%;max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
-.brand-img{width:34px;height:34px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(0,217,126,.3);box-shadow:0 0 16px rgba(0,217,126,.14);flex-shrink:0}
+.brand-img{width:34px;height:34px;border-radius:50%;overflow:hidden;
+  border:1.5px solid rgba(0,217,126,.3);box-shadow:0 0 16px rgba(0,217,126,.14);}
 .brand-img img{width:100%;height:100%;object-fit:cover}
 .brand-name{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(14px,3vw,17px);letter-spacing:-.02em;white-space:nowrap}
-.nav-back{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);color:rgba(255,255,255,.55);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:7px 16px;border-radius:100px;cursor:pointer;transition:all .25s;text-decoration:none;}
+.nav-back{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.05);
+  border:1px solid var(--bdr);color:rgba(255,255,255,.55);font-size:12px;font-weight:600;
+  padding:7px 16px;border-radius:100px;cursor:pointer;transition:all .25s;text-decoration:none;}
 .nav-back:hover{border-color:var(--bdr2);color:#fff;background:rgba(255,255,255,.08)}
-.page-hero{position:relative;z-index:1;padding:calc(var(--nav-h) + clamp(32px,6vw,60px)) 0 clamp(32px,6vw,60px);text-align:center;overflow:hidden;}
-.page-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 80% at 50% 0%,rgba(0,217,126,.07) 0%,transparent 70%);}
-.page-hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,217,126,.07);border:1px solid rgba(0,217,126,.18);border-radius:100px;padding:5px 14px;margin-bottom:20px;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--green);}
-.page-hero-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s ease infinite;flex-shrink:0}
+
+/* HERO */
+.page-hero{position:relative;z-index:1;padding:calc(var(--nav-h) + clamp(28px,5vw,50px)) 0 clamp(24px,4vw,40px);text-align:center;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 80% at 50% 0%,rgba(0,217,126,.07) 0%,transparent 70%);}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,217,126,.07);
+  border:1px solid rgba(0,217,126,.18);border-radius:100px;padding:5px 14px;margin-bottom:16px;
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--green);}
+.hero-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px var(--green);animation:blink 2s ease infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.page-hero h1{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(2rem,6vw,4rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:12px}
-.page-hero p{font-size:clamp(.875rem,2vw,1rem);color:var(--muted);max-width:480px;margin:0 auto}
-main{position:relative;z-index:1;padding-bottom:clamp(60px,10vw,120px)}
-.wrap{max-width:700px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
-.form-card{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:26px;padding:clamp(24px,4vw,44px);position:relative;overflow:hidden;}
-.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,217,126,.15),transparent);pointer-events:none;}
+.page-hero h1{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(1.7rem,4.5vw,3rem);line-height:1.05;letter-spacing:-.02em;margin-bottom:8px;}
+.page-hero p{font-size:clamp(.78rem,1.7vw,.92rem);color:var(--muted);max-width:420px;margin:0 auto}
 
-.ftitle{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(1.2rem,4vw,1.6rem);margin:24px 0 8px 0;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.ftitle:first-of-type{margin-top:0}
-.fsub{font-size:12.5px;color:var(--muted);margin-bottom:clamp(20px,3vw,30px);line-height:1.5}
+/* MAIN */
+main{position:relative;z-index:1;padding-bottom:clamp(60px,10vw,100px)}
+.wrap{max-width:660px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
 
-/* Direction selector */
-.dir-selector{background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-radius:20px;padding:8px;margin-bottom:24px;display:flex;align-items:center;gap:8px;}
-.dir-opt{flex:1;text-align:center;padding:10px 6px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;border-radius:14px;transition:all .2s;color:var(--muted);}
-.dir-opt.active{background:linear-gradient(135deg,var(--green),var(--green2));color:#000;box-shadow:0 4px 12px rgba(0,217,126,.3);}
+/* FORM CARD */
+.form-card{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:24px;
+  padding:clamp(22px,4vw,38px);position:relative;overflow:hidden;}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,217,126,.15),transparent);pointer-events:none;}
 
-/* Custom select avec logos */
-.custom-select{position:relative;margin:0 0 24px 0;}
-.select-trigger{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .25s;}
-.select-trigger:hover{border-color:rgba(0,217,126,.4);background:rgba(0,217,126,.05)}
-.selected-value{display:flex;align-items:center;gap:12px;}
-.selected-value img{width:28px;height:28px;object-fit:contain;border-radius:6px;}
-.selected-value span{font-size:14px;font-weight:500;color:#fff}
-.select-arrow{width:18px;height:18px;transition:transform .2s}
-.select-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:#0f1725;border:1px solid var(--bdr);border-radius:16px;overflow:hidden;z-index:100;display:none;box-shadow:0 12px 28px rgba(0,0,0,.5);}
-.select-option{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .2s;}
-.select-option:hover{background:rgba(0,217,126,.1)}
-.select-option img{width:28px;height:28px;object-fit:contain;border-radius:6px;}
-.select-option span{font-size:14px;color:rgba(255,255,255,.8);}
+/* DIRECTION TOGGLE */
+.dir-toggle{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);
+  border:1px solid var(--bdr);border-radius:14px;padding:5px;margin-bottom:28px;}
+.dir-btn{flex:1;padding:10px 8px;text-align:center;font-family:'Syne',sans-serif;font-weight:700;
+  font-size:clamp(9px,1.8vw,11px);letter-spacing:.04em;cursor:pointer;border-radius:10px;
+  transition:all .25s;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;
+  border:none;background:none;}
+.dir-btn.active{background:linear-gradient(135deg,var(--green),var(--green2));color:#000;box-shadow:0 4px 14px rgba(0,217,126,.28);}
 
-/* Form fields */
-.field-group{margin-bottom:clamp(14px,2.5vw,20px)}
-.flabel{display:block;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:6px}
-.field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:clamp(11px,2vw,14px) clamp(13px,2vw,16px);color:#fff;font-family:'DM Sans',sans-serif;font-size:clamp(13px,2vw,15px);outline:none;transition:all .25s;}
+/* ══ APP CARDS ══ */
+.app-selector-wrap{margin-bottom:20px}
+.app-selector-label{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:10px;display:block;}
+.app-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+
+.app-card{
+  position:relative;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:clamp(12px,2.5vw,16px) 6px clamp(10px,2vw,13px);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;transition:all .25s cubic-bezier(.23,1,.32,1);
+  -webkit-tap-highlight-color:transparent;outline:none;
+}
+.app-card:hover:not(.locked){border-color:rgba(0,217,126,.3);background:rgba(0,217,126,.05);transform:translateY(-2px);}
+.app-card.sel{border-color:var(--green);background:rgba(0,217,126,.09);transform:translateY(-2px);
+  box-shadow:0 0 0 3px rgba(0,217,126,.12),0 6px 18px rgba(0,217,126,.1);}
+
+/* Locked / indisponible pour cette direction */
+.app-card.locked{
+  opacity:.28;cursor:not-allowed;pointer-events:none;
+  filter:grayscale(.7);
+}
+
+/* Coche */
+.app-card .chk{position:absolute;top:7px;right:7px;width:17px;height:17px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:scale(.3);transition:opacity .2s,transform .22s cubic-bezier(.23,1,.32,1);}
+.app-card.sel .chk{opacity:1;transform:scale(1)}
+
+/* Badge "indisponible" */
+.lock-badge{
+  position:absolute;top:6px;left:6px;
+  background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);
+  border-radius:6px;padding:2px 6px;
+  font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.08em;text-transform:uppercase;
+  color:#ff8fa5;white-space:nowrap;
+  opacity:0;transition:opacity .2s;
+  pointer-events:none;
+}
+.app-card.locked .lock-badge{opacity:1}
+
+/* Logo */
+.app-logo{width:clamp(44px,9vw,54px);height:clamp(44px,9vw,54px);border-radius:12px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.app-logo img{width:100%;height:100%;object-fit:contain;display:block}
+.logo-mvola{background:#c8dc00}
+.logo-wave{background:#1ab4c9}
+.logo-orange{background:#fff}
+
+.app-country-badge{display:flex;align-items:center;gap:3px;
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.06em;color:rgba(255,255,255,.35);}
+.app-country-badge span{font-size:11px}
+.app-name{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(9px,1.8vw,11px);
+  color:rgba(255,255,255,.5);text-align:center;transition:color .2s;line-height:1.2}
+.app-card.sel .app-name{color:#fff}
+
+/* ══ CHAMPS ══ */
+.divider{height:1px;background:var(--bdr);margin:clamp(16px,3vw,24px) 0;}
+.section-title{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(.95rem,2.5vw,1.1rem);
+  margin:0 0 4px;background:linear-gradient(135deg,#fff,var(--green));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.section-sub{font-size:11.5px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2vw,12px);}
+@media(max-width:420px){.field-row{grid-template-columns:1fr}}
+.field-group{margin-bottom:clamp(11px,2vw,14px)}
+.flabel{display:block;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:5px;}
+.field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+  border-radius:11px;padding:clamp(10px,2vw,13px) clamp(12px,2vw,15px);color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:clamp(13px,2vw,14px);outline:none;transition:all .25s;}
 .field:focus{border-color:rgba(0,217,126,.45);background:rgba(0,217,126,.03);box-shadow:0 0 0 3px rgba(0,217,126,.08)}
 .field::placeholder{color:rgba(255,255,255,.2)}
 .field-ico{position:relative}
 .field-ico .field{padding-left:44px}
-.field-ico-sym{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);font-weight:500;pointer-events:none}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,2vw,16px);margin-bottom:0;}
-@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+.field-ico-sym{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);pointer-events:none;}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 
-/* Équivalence */
-.equiv-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(0,217,126,.06);border:1px solid rgba(0,217,126,.15);border-radius:10px;padding:10px 14px;margin-top:8px;}
-.equiv-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)}
-.equiv-val{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--green)}
+/* Equiv */
+.equiv-bar{display:flex;justify-content:space-between;align-items:center;
+  background:rgba(0,217,126,.06);border:1px solid rgba(0,217,126,.15);
+  border-radius:10px;padding:9px 13px;margin-top:7px;}
+.equiv-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)}
+.equiv-val{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--green)}
 
-/* Bouton final */
-.btn-submit{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,var(--green),var(--green2));color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(10px,2vw,12px);letter-spacing:.12em;text-transform:uppercase;padding:clamp(13px,2.5vw,16px) 24px;border-radius:14px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 22px rgba(0,217,126,.28);margin-top:clamp(28px,4vw,40px);}
-.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(0,217,126,.42);}
+/* Info box */
+.info-box{background:rgba(0,217,126,.04);border:1px solid rgba(0,217,126,.12);
+  border-radius:12px;padding:12px 14px;font-size:11.5px;color:var(--muted);
+  line-height:1.6;text-align:center;margin-bottom:14px;}
+.app-link{display:inline-block;margin-top:7px;padding:6px 15px;
+  background:rgba(0,217,126,.12);border:1px solid rgba(0,217,126,.3);
+  border-radius:100px;color:var(--green);text-decoration:none;font-size:11px;font-weight:700;transition:all .2s;}
+.app-link:hover{background:var(--green);color:#000}
 
-/* Animations */
-.r{opacity:0;transform:translateY(20px);transition:opacity .65s cubic-bezier(.23,1,.32,1),transform .65s cubic-bezier(.23,1,.32,1)}
+/* Alerte */
+.alert-err{background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.25);
+  color:#ff8fa5;font-size:11px;padding:10px 14px;border-radius:9px;margin-top:10px;
+  line-height:1.5;display:none;}
+
+/* Arrow entre les deux grilles */
+.grid-arrow{display:flex;align-items:center;justify-content:center;gap:8px;margin:4px 0 20px;}
+.ga-line{flex:1;height:1px;}
+.ga-circle{width:32px;height:32px;border-radius:50%;background:rgba(0,217,126,.08);
+  border:1px solid rgba(0,217,126,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+/* Bouton submit */
+.btn-submit{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;
+  background:linear-gradient(135deg,var(--green),var(--green2));color:#000;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(10px,2vw,12px);
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:clamp(13px,2.5vw,16px) 24px;border-radius:13px;border:none;cursor:pointer;
+  transition:all .3s;box-shadow:0 6px 22px rgba(0,217,126,.28);margin-top:clamp(20px,3.5vw,28px);}
+.btn-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 34px rgba(0,217,126,.42)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+
+/* Reveal */
+.r{opacity:0;transform:translateY(18px);transition:opacity .65s cubic-bezier(.23,1,.32,1),transform .65s cubic-bezier(.23,1,.32,1)}
 .r.v{opacity:1;transform:none}
 .d1{transition-delay:.08s}
 
-.page-footer{position:relative;z-index:1;border-top:1px solid var(--bdr);padding:clamp(24px,4vw,40px) clamp(16px,4vw,48px);text-align:center}
-.page-footer .fb{font-family:'Syne',sans-serif;font-weight:900;font-size:16px;margin-bottom:5px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .7s linear infinite}
+
+/* Footer */
+.page-footer{position:relative;z-index:1;border-top:1px solid var(--bdr);
+  padding:clamp(22px,4vw,36px) clamp(16px,4vw,48px);text-align:center;}
+.page-footer .fb{font-family:'Syne',sans-serif;font-weight:900;font-size:15px;margin-bottom:4px}
 .page-footer p{font-size:11px;color:rgba(255,255,255,.18)}
-/* Lien applicatif */
-.app-link{display:inline-block;margin-top:10px;padding:8px 16px;background:rgba(0,217,126,.15);border:1px solid var(--green);border-radius:40px;color:var(--green);text-decoration:none;font-size:12px;font-weight:700;transition:all .25s;}
-.app-link:hover{background:var(--green);color:#000;transform:translateY(-2px);}
+
+@media(max-width:340px){
+  .app-logo{width:38px;height:38px;border-radius:9px}
+  .app-name{font-size:8px}
+  .dir-btn{font-size:8px;gap:3px}
+}
 </style>
 </head>
 <body>
@@ -112,19 +216,22 @@ main{position:relative;z-index:1;padding-bottom:clamp(60px,10vw,120px)}
 
 <nav>
   <div class="nav-inner">
-    <a class="brand" href="../index.php">
-      <div class="brand-img"><img src="../Logo/logo.jpg" alt="Mon Revenu"></div>
+    <a class="brand" href="#">
+      <div class="brand-img"><img src="https://placehold.co/100x100" alt="Mon Revenu"></div>
       <div class="brand-name">MON <span class="g-green">REVENU</span></div>
     </a>
-    <a href="../index.php" class="nav-back"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg> Retour</a>
+    <a href="#" class="nav-back">
+      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Retour
+    </a>
   </div>
 </nav>
 
 <div class="page-hero r">
   <div class="wrap">
-    <div class="page-hero-badge">Transfert instantané · Comores ↔ Sénégal</div>
+    <div class="hero-badge">Transfert · Comores ↔ Sénégal</div>
     <h1>Envoyer de l'argent<br><span class="g-green">facilement</span></h1>
-    <p>Choisissez votre sens et votre application</p>
+    <p>Mvola (Comores) · Wave & Orange Money (Sénégal) — dans les deux sens.</p>
   </div>
 </div>
 
@@ -132,78 +239,163 @@ main{position:relative;z-index:1;padding-bottom:clamp(60px,10vw,120px)}
   <div class="wrap">
     <div class="form-card r d1">
 
-      
-      <input type="hidden" id="globalDirection" value="km-sn">
-
-      <!-- BLOC "De" (expéditeur) -->
-      <div class="ftitle">De:</div>
-      <p class="fsub">Vos informations pour que l’agent puisse vous contacter.</p>
-
-      <div class="field-row">
-        <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="expPrenom" class="field" placeholder="Ali"></div>
-        <div class="field-group"><label class="flabel">Nom</label><input type="text" id="expNom" class="field" placeholder="Mohamed"></div>
+      <!-- DIRECTION -->
+      <div class="dir-toggle">
+        <button class="dir-btn active" id="btn-km-sn" onclick="setDir('km-sn')">
+          <span>🇰🇲</span> Comores → Sénégal <span>🇸🇳</span>
+        </button>
+        <button class="dir-btn" id="btn-sn-km" onclick="setDir('sn-km')">
+          <span>🇸🇳</span> Sénégal → Comores <span>🇰🇲</span>
+        </button>
       </div>
 
-      <div class="field-group">
-        <label class="flabel" id="expPhoneLabel">Numéro de téléphone (Comores)</label>
-        <div class="field-ico"><span class="field-ico-sym" id="expPhoneFlag">🇰🇲</span><input type="tel" id="expPhone" class="field" placeholder="+269 333 12 34"></div>
-      </div>
+      <!-- GRILLE ENVOI -->
+      <div class="app-selector-wrap">
+        <span class="app-selector-label" id="labelSend">Application d'envoi (Comores)</span>
+        <div class="app-grid" id="gridSend">
 
-      <!-- Select application EXPÉDITEUR -->
-      <div class="custom-select" id="methodSelectExp">
-        <div class="select-trigger">
-          <div class="selected-value"><img src="../Logo/Mvola.png" alt="Mvola"><span>Mvola</span></div>
-          <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          <div class="app-card sel" data-app="mvola" data-country="km" tabindex="0" role="button" aria-pressed="true">
+            <div class="chk"><svg width="8" height="8" fill="none" stroke="#000" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="lock-badge">Comores</div>
+            <div class="app-logo logo-mvola"><img src="https://placehold.co/64x64/c8dc00/000?text=Mvola" alt="Mvola"></div>
+            <div class="app-country-badge"><span>🇰🇲</span> Comores</div>
+            <span class="app-name">Mvola</span>
+          </div>
+
+          <div class="app-card" data-app="wave" data-country="sn" tabindex="0" role="button" aria-pressed="false">
+            <div class="chk"><svg width="8" height="8" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="lock-badge">Sénégal</div>
+            <div class="app-logo logo-wave"><img src="https://placehold.co/64x64/1ab4c9/fff?text=Wave" alt="Wave"></div>
+            <div class="app-country-badge"><span>🇸🇳</span> Sénégal</div>
+            <span class="app-name">Wave</span>
+          </div>
+
+          <div class="app-card" data-app="orange" data-country="sn" tabindex="0" role="button" aria-pressed="false">
+            <div class="chk"><svg width="8" height="8" fill="none" stroke="#000" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="lock-badge">Sénégal</div>
+            <div class="app-logo logo-orange"><img src="https://placehold.co/64x64/fff/000?text=Orange" alt="Orange Money"></div>
+            <div class="app-country-badge"><span>🇸🇳</span> Sénégal</div>
+            <span class="app-name">Orange Money</span>
+          </div>
+
         </div>
-        <div class="select-dropdown" id="expDropdown"></div>
-      </div>
-      <input type="hidden" id="expMethod" value="mvola">
-
-      <!-- BLOC "Vers" (destinataire) -->
-      <div class="ftitle">Vers</div>
-      <p class="fsub">Coordonnées de la personne qui recevra l’argent.</p>
-
-      <div class="field-row">
-        <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="destPrenom" class="field" placeholder="Aminata"></div>
-        <div class="field-group"><label class="flabel">Nom</label><input type="text" id="destNom" class="field" placeholder="Diallo"></div>
       </div>
 
-      <div class="field-group">
-        <label class="flabel" id="destPhoneLabel">Numéro de téléphone (Sénégal)</label>
-        <div class="field-ico"><span class="field-ico-sym" id="destPhoneFlag">🇸🇳</span><input type="tel" id="destPhone" class="field" placeholder="+221 77 123 45 67"></div>
-      </div>
-
-      <!-- Select application DESTINATAIRE -->
-      <div class="custom-select" id="methodSelectDest">
-        <div class="select-trigger">
-          <div class="selected-value"><img src="../Logo/Mvola.png" alt="Mvola"><span>Mvola</span></div>
-          <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      <!-- FLÈCHE -->
+      <div class="grid-arrow">
+        <div class="ga-line" style="background:linear-gradient(to right,transparent,rgba(0,217,126,.3))"></div>
+        <div class="ga-circle">
+          <svg width="14" height="14" fill="none" stroke="var(--green)" viewBox="0 0 24 24"><path stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12l7 7 7-7"/></svg>
         </div>
-        <div class="select-dropdown" id="destDropdown"></div>
+        <div class="ga-line" style="background:linear-gradient(to left,transparent,rgba(0,217,126,.3))"></div>
       </div>
-      <input type="hidden" id="destMethod" value="mvola">
+
+      <!-- GRILLE RÉCEPTION -->
+      <div class="app-selector-wrap">
+        <span class="app-selector-label" id="labelRecv">Application de réception (Sénégal)</span>
+        <div class="app-grid" id="gridRecv">
+
+          <div class="app-card" data-app="mvola" data-country="km" tabindex="0" role="button" aria-pressed="false">
+            <div class="chk"><svg width="8" height="8" fill="none" stroke="#000" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="lock-badge">Comores</div>
+            <div class="app-logo logo-mvola"><img src="https://placehold.co/64x64/c8dc00/000?text=Mvola" alt="Mvola"></div>
+            <div class="app-country-badge"><span>🇰🇲</span> Comores</div>
+            <span class="app-name">Mvola</span>
+          </div>
+
+          <div class="app-card sel" data-app="wave" data-country="sn" tabindex="0" role="button" aria-pressed="true">
+            <div class="chk"><svg width="8" height="8" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="lock-badge">Sénégal</div>
+            <div class="app-logo logo-wave"><img src="https://placehold.co/64x64/1ab4c9/fff?text=Wave" alt="Wave"></div>
+            <div class="app-country-badge"><span>🇸🇳</span> Sénégal</div>
+            <span class="app-name">Wave</span>
+          </div>
+
+          <div class="app-card" data-app="orange" data-country="sn" tabindex="0" role="button" aria-pressed="false">
+            <div class="chk"><svg width="8" height="8" fill="none" stroke="#000" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="lock-badge">Sénégal</div>
+            <div class="app-logo logo-orange"><img src="https://placehold.co/64x64/fff/000?text=Orange" alt="Orange Money"></div>
+            <div class="app-country-badge"><span>🇸🇳</span> Sénégal</div>
+            <span class="app-name">Orange Money</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- EXPÉDITEUR -->
+      <div class="section-title" id="titleSend">Expéditeur (Comores)</div>
+      <p class="section-sub">Vos informations pour que l'agent puisse vous contacter.</p>
+      <div class="field-row">
+        <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="expPrenom" class="field" placeholder="Ali" autocomplete="given-name"></div>
+        <div class="field-group"><label class="flabel">Nom</label><input type="text" id="expNom" class="field" placeholder="Mohamed" autocomplete="family-name"></div>
+      </div>
+      <div class="field-group">
+        <label class="flabel" id="labelExpPhone">Numéro de téléphone (Comores)</label>
+        <div class="field-ico"><span class="field-ico-sym" id="flagExp">🇰🇲</span>
+          <input type="tel" id="expPhone" class="field" placeholder="+269 333 12 34" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- DESTINATAIRE -->
+      <div class="section-title" id="titleRecv">Destinataire (Sénégal)</div>
+      <p class="section-sub">Coordonnées de la personne qui recevra l'argent.</p>
+      <div class="field-row">
+        <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="destPrenom" class="field" placeholder="Aminata" autocomplete="given-name"></div>
+        <div class="field-group"><label class="flabel">Nom</label><input type="text" id="destNom" class="field" placeholder="Diallo" autocomplete="family-name"></div>
+      </div>
+      <div class="field-group">
+        <label class="flabel" id="labelDestPhone">Numéro de téléphone (Sénégal)</label>
+        <div class="field-ico"><span class="field-ico-sym" id="flagDest">🇸🇳</span>
+          <input type="tel" id="destPhone" class="field" placeholder="+221 77 123 45 67" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="divider"></div>
 
       <!-- MONTANT -->
-      <div class="ftitle" style="margin-top:28px">Montant</div>
+      <div class="section-title">Montant</div>
+      <div class="field-group" style="margin-top:6px">
+        <label class="flabel" id="labelAmount">Montant à envoyer (KMF)</label>
+        <div class="field-ico">
+          <span class="field-ico-sym" id="symAmount">KMF</span>
+          <input type="number" id="fAmount" class="field" placeholder="5 000" min="500" step="100" inputmode="numeric">
+        </div>
+        <div id="equivBar" style="display:none" class="equiv-bar">
+          <span class="equiv-label">Le bénéficiaire recevra ≈</span>
+          <span class="equiv-val" id="equivVal"></span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- PAIEMENT -->
+      <div class="section-title">Référence de paiement</div>
+      <div class="info-box" style="margin-top:6px">
+        ⚡ Effectuez d'abord le paiement via l'application d'envoi choisie, puis renseignez l'ID de la transaction.
+        <div id="payLinkBox" style="margin-top:7px"></div>
+      </div>
       <div class="field-group">
-        <label class="flabel" id="amountLabel">Montant à envoyer (KMF)</label>
-        <div class="field-ico"><span class="field-ico-sym" id="amountSym">KMF</span><input type="number" id="fAmount" class="field" placeholder="5 000" min="1000" step="100"></div>
-        <div id="equivBar" style="display:none" class="equiv-bar"><span class="equiv-label" id="equivLabel">Le bénéficiaire recevra ≈</span><span class="equiv-val" id="equivVal"></span></div>
+        <label class="flabel">ID ou référence de la transaction</label>
+        <div class="field-ico"><span class="field-ico-sym">🔑</span>
+          <input type="text" id="transId" class="field" placeholder="Ex : MVOLA-123456" autocomplete="off">
+        </div>
       </div>
 
-      <!-- PAIEMENT & ID avec lien dynamique -->
-      <div class="fsub" style="margin-top:16px; text-align:center; background:rgba(0,217,126,.05); padding:12px; border-radius:14px;">
-        ⚡ Effectuez le paiement via l'application choisie avant de renseigner l'ID ci-dessous.
-        <div id="paymentLinkContainer" style="margin-top:8px;"></div>
-      </div>
+      <div class="alert-err" id="formErr"></div>
 
-      <div class="ftitle" style="margin-top:28px">ID ou référence</div>
-      <div class="field-group">
-        <p class="fsub" style="margin-bottom:8px">Assurez-vous que l'ID correspond à la transaction effectuée depuis votre numéro.</p>
-        <div class="field-ico"><span class="field-ico-sym">🔑</span><input type="text" id="transactionId" class="field" placeholder="Ex: MVOLA-123456"></div>
-      </div>
-
-      <button class="btn-submit" id="finalSubmitBtn">Envoyer la demande</button>
+      <!-- SUBMIT -->
+      <button class="btn-submit" id="submitBtn">
+        <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        <span id="btnTxt">Envoyer la demande</span>
+        <svg id="btnSpin" class="spin" style="display:none" width="15" height="15" fill="none" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity=".25"/>
+          <path fill="currentColor" d="M4 12a8 8 0 018-8v8z" opacity=".75"/>
+        </svg>
+      </button>
 
     </div>
   </div>
@@ -217,201 +409,184 @@ main{position:relative;z-index:1;padding-bottom:clamp(60px,10vw,120px)}
 <script>
 'use strict';
 
-// === 1. CONFIGURATION DES MÉTHODES (3 applications) ===
-// Remplacez les liens par vos propres URLs de paiement
-const allMethods = [
-  { value: 'mvola', label: 'Mvola', img: '../Logo/Mvola.png', link: 'https://www.mvola.mg/' },  // ← à remplacer
-  { value: 'wave', label: 'Wave', img: '../Logo/weve.png', link: 'https://sn.mmapp.wave.com/web/referrals/i/O3PAO2' }, // ✅ Lien Wave personnalisé
-  { value: 'orange_money', label: 'Orange Money', img: '../Logo/orangeMoney.png', link: 'https://www.orange-money.com/' } // ← à remplacer
-];
+/* RÈGLE MÉTIER :
+   Mvola  → uniquement Comores (km)
+   Wave   → uniquement Sénégal (sn)
+   Orange → uniquement Sénégal (sn)
 
-// Construction du select personnalisé pour EXPÉDITEUR
-function buildExpSelect() {
-  const container = document.getElementById('methodSelectExp');
-  const trigger = container.querySelector('.select-trigger');
-  const dropdown = container.querySelector('.select-dropdown');
-  const selectedImg = trigger.querySelector('.selected-value img');
-  const selectedText = trigger.querySelector('.selected-value span');
-  const hidden = document.getElementById('expMethod');
+   Direction km→sn :
+     Envoi   : seulement Mvola (km)
+     Récep.  : seulement Wave ou Orange (sn)
 
-  dropdown.innerHTML = '';
-  allMethods.forEach(m => {
-    const div = document.createElement('div');
-    div.className = 'select-option';
-    div.innerHTML = `<img src="${m.img}" alt="${m.label}"><span>${m.label}</span>`;
-    div.addEventListener('click', (e) => {
-      e.stopPropagation();
-      selectedImg.src = m.img;
-      selectedText.textContent = m.label;
-      hidden.value = m.value;
-      dropdown.style.display = 'none';
-      updatePaymentLink(); // Mettre à jour le lien de paiement
-    });
-    dropdown.appendChild(div);
-  });
+   Direction sn→km :
+     Envoi   : seulement Wave ou Orange (sn)
+     Récep.  : seulement Mvola (km)
+*/
 
-  trigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-  });
-  document.addEventListener('click', () => { dropdown.style.display = 'none'; });
-}
+const APPS = {
+  mvola:  { label:'Mvola',        country:'km', flag:'🇰🇲', phone:'+269', link:'https://www.mvola.mg/' },
+  wave:   { label:'Wave',         country:'sn', flag:'🇸🇳', phone:'+221', link:'https://sn.mmapp.wave.com/web/referrals/i/O3PAO2' },
+  orange: { label:'Orange Money', country:'sn', flag:'🇸🇳', phone:'+221', link:'https://www.orange-money.com/' },
+};
 
-// Construction du select personnalisé pour DESTINATAIRE
-function buildDestSelect() {
-  const container = document.getElementById('methodSelectDest');
-  const trigger = container.querySelector('.select-trigger');
-  const dropdown = container.querySelector('.select-dropdown');
-  const selectedImg = trigger.querySelector('.selected-value img');
-  const selectedText = trigger.querySelector('.selected-value span');
-  const hidden = document.getElementById('destMethod');
+let dir     = 'km-sn';
+let sendApp = 'mvola';
+let recvApp = 'wave';
 
-  dropdown.innerHTML = '';
-  allMethods.forEach(m => {
-    const div = document.createElement('div');
-    div.className = 'select-option';
-    div.innerHTML = `<img src="${m.img}" alt="${m.label}"><span>${m.label}</span>`;
-    div.addEventListener('click', (e) => {
-      e.stopPropagation();
-      selectedImg.src = m.img;
-      selectedText.textContent = m.label;
-      hidden.value = m.value;
-      dropdown.style.display = 'none';
-      // Ne pas mettre à jour le lien de paiement (c'est l'application de l'expéditeur qui compte)
-    });
-    dropdown.appendChild(div);
-  });
-
-  trigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-  });
-  document.addEventListener('click', () => { dropdown.style.display = 'none'; });
-}
-
-buildExpSelect();
-buildDestSelect();
-
-// === 2. MISE À JOUR DU LIEN DE PAIEMENT ===
-function updatePaymentLink() {
-  const expMethod = document.getElementById('expMethod').value;
-  const method = allMethods.find(m => m.value === expMethod);
-  const container = document.getElementById('paymentLinkContainer');
-  if (method && method.link) {
-    container.innerHTML = `<a href="${method.link}" target="_blank" class="app-link">💸 Payer avec ${method.label}</a>`;
-  } else {
-    container.innerHTML = '';
-  }
-}
-// Appel initial
-updatePaymentLink();
-
-// === 3. DIRECTION UNIQUE (influence téléphones et montant) ===
-let currentDirection = 'km-sn';
-
-const expPhoneLabel = document.getElementById('expPhoneLabel');
-const expPhoneFlag = document.getElementById('expPhoneFlag');
-const expPhoneInput = document.getElementById('expPhone');
-const destPhoneLabel = document.getElementById('destPhoneLabel');
-const destPhoneFlag = document.getElementById('destPhoneFlag');
-const destPhoneInput = document.getElementById('destPhone');
-const amountLabel = document.getElementById('amountLabel');
-const amountSym = document.getElementById('amountSym');
-const equivLabel = document.getElementById('equivLabel');
-const equivVal = document.getElementById('equivVal');
-const equivBar = document.getElementById('equivBar');
-const amountInput = document.getElementById('fAmount');
-
-function updateFields() {
-  const isKmToSn = (currentDirection === 'km-sn');
-  if (isKmToSn) {
-    expPhoneLabel.textContent = 'Numéro de téléphone (Comores)';
-    expPhoneFlag.textContent = '🇰🇲';
-    expPhoneInput.placeholder = '+269 333 12 34';
-    destPhoneLabel.textContent = 'Numéro de téléphone (Sénégal)';
-    destPhoneFlag.textContent = '🇸🇳';
-    destPhoneInput.placeholder = '+221 77 123 45 67';
-    amountLabel.textContent = 'Montant à envoyer (KMF)';
-    amountSym.textContent = 'KMF';
-    equivLabel.textContent = 'Le bénéficiaire recevra ≈';
-  } else {
-    expPhoneLabel.textContent = 'Numéro de téléphone (Sénégal)';
-    expPhoneFlag.textContent = '🇸🇳';
-    expPhoneInput.placeholder = '+221 77 123 45 67';
-    destPhoneLabel.textContent = 'Numéro de téléphone (Comores)';
-    destPhoneFlag.textContent = '🇰🇲';
-    destPhoneInput.placeholder = '+269 333 12 34';
-    amountLabel.textContent = 'Montant à envoyer (XOF)';
-    amountSym.textContent = 'XOF';
-    equivLabel.textContent = 'Le bénéficiaire recevra ≈';
-  }
-  calcEquiv();
-}
-
-function calcEquiv() {
-  const amount = parseFloat(amountInput.value);
-  if (!isNaN(amount) && amount > 0) {
-    let equiv = 0;
-    if (currentDirection === 'km-sn') equiv = Math.round(amount * 1.22);
-    else equiv = Math.round(amount / 1.22);
-    equivVal.textContent = equiv.toLocaleString('fr-FR') + (currentDirection === 'km-sn' ? ' XOF' : ' KMF');
-    equivBar.style.display = 'flex';
-  } else {
-    equivBar.style.display = 'none';
-  }
-}
-
-const dirOpts = document.querySelectorAll('#dirSelectorGlobal .dir-opt');
-dirOpts.forEach(opt => {
-  opt.addEventListener('click', () => {
-    dirOpts.forEach(o => o.classList.remove('active'));
-    opt.classList.add('active');
-    currentDirection = opt.getAttribute('data-dir');
-    document.getElementById('globalDirection').value = currentDirection;
-    updateFields();
-  });
-});
-
-amountInput.addEventListener('input', calcEquiv);
-updateFields();
-
-// === 4. ANIMATION D'APPARITION ===
-const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('v'); io.unobserve(e.target); } }), {threshold:.1});
+/* Reveal */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('v'); io.unobserve(e.target); }
+}), {threshold:.1});
 document.querySelectorAll('.r').forEach(el => io.observe(el));
 
-// === 5. SOUMISSION FINALE ===
-document.getElementById('finalSubmitBtn').addEventListener('click', async () => {
-  const expPrenom = document.getElementById('expPrenom').value.trim();
-  const expNom = document.getElementById('expNom').value.trim();
-  const expPhone = document.getElementById('expPhone').value.trim();
-  const destPrenom = document.getElementById('destPrenom').value.trim();
-  const destNom = document.getElementById('destNom').value.trim();
-  const destPhone = document.getElementById('destPhone').value.trim();
-  const amount = parseFloat(amountInput.value);
-  const expMethod = document.getElementById('expMethod').value;
-  const destMethod = document.getElementById('destMethod').value;
-  const transactionId = document.getElementById('transactionId').value.trim();
+/* ── Direction ── */
+function setDir(d) {
+  dir = d;
+  ['km-sn','sn-km'].forEach(x => document.getElementById('btn-'+x).classList.toggle('active', x===d));
 
-  if (!expPrenom || !expNom || !expPhone || !destPrenom || !destNom || !destPhone || isNaN(amount) || amount < 1000) {
-    alert('Veuillez remplir tous les champs correctement (montant minimum 1000).');
-    return;
-  }
-  if (!transactionId) {
-    alert('Veuillez saisir l\'ID ou la référence de la transaction effectuée.');
-    return;
-  }
+  const kmToSn = d === 'km-sn';
 
-  const btn = document.getElementById('finalSubmitBtn');
-  const originalText = btn.textContent;
-  btn.textContent = 'Traitement...';
-  btn.disabled = true;
+  // Labels sections
+  document.getElementById('labelSend').textContent     = kmToSn ? 'Application d\'envoi (Comores)'      : 'Application d\'envoi (Sénégal)';
+  document.getElementById('labelRecv').textContent     = kmToSn ? 'Application de réception (Sénégal)'  : 'Application de réception (Comores)';
+  document.getElementById('titleSend').textContent     = kmToSn ? 'Expéditeur (Comores)'                : 'Expéditeur (Sénégal)';
+  document.getElementById('titleRecv').textContent     = kmToSn ? 'Destinataire (Sénégal)'              : 'Destinataire (Comores)';
+  document.getElementById('labelExpPhone').textContent = kmToSn ? 'Numéro de téléphone (Comores)'       : 'Numéro de téléphone (Sénégal)';
+  document.getElementById('labelDestPhone').textContent= kmToSn ? 'Numéro de téléphone (Sénégal)'       : 'Numéro de téléphone (Comores)';
+  document.getElementById('expPhone').placeholder      = kmToSn ? '+269 333 12 34'                      : '+221 77 000 00 00';
+  document.getElementById('destPhone').placeholder     = kmToSn ? '+221 77 123 45 67'                   : '+269 333 12 34';
+  document.getElementById('flagExp').textContent       = kmToSn ? '🇰🇲' : '🇸🇳';
+  document.getElementById('flagDest').textContent      = kmToSn ? '🇸🇳' : '🇰🇲';
+  document.getElementById('labelAmount').textContent   = kmToSn ? 'Montant à envoyer (KMF)'             : 'Montant à envoyer (XOF)';
+  document.getElementById('symAmount').textContent     = kmToSn ? 'KMF'                                 : 'XOF';
+
+  // Verrouillage des grilles
+  lockGrid('gridSend', kmToSn ? 'km' : 'sn');
+  lockGrid('gridRecv', kmToSn ? 'sn' : 'km');
+
+  autoSelect('gridSend');
+  autoSelect('gridRecv');
+
+  calcEquiv();
+  updatePayLink();
+}
+
+function lockGrid(gridId, allowedCountry) {
+  document.querySelectorAll('#' + gridId + ' .app-card').forEach(card => {
+    const ok = card.dataset.country === allowedCountry;
+    card.classList.toggle('locked', !ok);
+    if (!ok) {
+      card.classList.remove('sel');
+      card.setAttribute('aria-pressed', 'false');
+    }
+  });
+}
+
+function autoSelect(gridId) {
+  const grid = document.getElementById(gridId);
+  const hasSel = !!grid.querySelector('.app-card.sel:not(.locked)');
+  if (!hasSel) {
+    const first = grid.querySelector('.app-card:not(.locked)');
+    if (first) {
+      first.classList.add('sel');
+      first.setAttribute('aria-pressed','true');
+      if (gridId === 'gridSend') sendApp = first.dataset.app;
+      else recvApp = first.dataset.app;
+    }
+  }
+}
+
+function initGrid(gridId, onSelect) {
+  document.getElementById(gridId).querySelectorAll('.app-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if (card.classList.contains('locked')) return;
+      document.getElementById(gridId).querySelectorAll('.app-card').forEach(c => {
+        c.classList.remove('sel'); c.setAttribute('aria-pressed','false');
+      });
+      card.classList.add('sel'); card.setAttribute('aria-pressed','true');
+      onSelect(card.dataset.app);
+      updatePayLink();
+    });
+    card.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' '){ e.preventDefault(); card.click(); }});
+  });
+}
+
+initGrid('gridSend', app => { sendApp = app; });
+initGrid('gridRecv', app => { recvApp = app; });
+
+/* ── Équivalence ── */
+document.getElementById('fAmount').addEventListener('input', calcEquiv);
+function calcEquiv() {
+  const v = parseFloat(document.getElementById('fAmount').value);
+  const bar = document.getElementById('equivBar');
+  if (!isNaN(v) && v > 0) {
+    const kmToSn = dir === 'km-sn';
+    const c = kmToSn ? Math.round(v * 1.22) : Math.round(v / 1.22);
+    document.getElementById('equivVal').textContent = c.toLocaleString('fr-FR') + (kmToSn ? ' XOF' : ' KMF');
+    bar.style.display = 'flex';
+  } else { bar.style.display = 'none'; }
+}
+
+/* ── Lien app ── */
+function updatePayLink() {
+  const a = APPS[sendApp];
+  document.getElementById('payLinkBox').innerHTML = a
+    ? `<a href="${a.link}" target="_blank" rel="noopener noreferrer" class="app-link">💸 Ouvrir ${a.label}</a>`
+    : '';
+}
+
+/* ── Submit ── */
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const err = document.getElementById('formErr');
+  err.style.display = 'none';
+  const f = {
+    expPrenom:  document.getElementById('expPrenom').value.trim(),
+    expNom:     document.getElementById('expNom').value.trim(),
+    expPhone:   document.getElementById('expPhone').value.trim(),
+    destPrenom: document.getElementById('destPrenom').value.trim(),
+    destNom:    document.getElementById('destNom').value.trim(),
+    destPhone:  document.getElementById('destPhone').value.trim(),
+    amount:     parseFloat(document.getElementById('fAmount').value),
+    transId:    document.getElementById('transId').value.trim(),
+  };
+  if (!f.expPrenom || !f.expNom)          return show('Renseignez le prénom et nom de l\'expéditeur.');
+  if (!f.expPhone || f.expPhone.length<8) return show('Numéro expéditeur invalide.');
+  if (!f.destPrenom || !f.destNom)        return show('Renseignez le prénom et nom du destinataire.');
+  if (!f.destPhone || f.destPhone.length<9) return show('Numéro destinataire invalide.');
+  if (isNaN(f.amount) || f.amount < 500)  return show('Montant minimum : 500.');
+  if (!f.transId)                          return show('Saisissez l\'ID de la transaction.');
+
+  const btn = document.getElementById('submitBtn');
+  const txt = document.getElementById('btnTxt');
+  const sp  = document.getElementById('btnSpin');
+  btn.disabled=true; txt.textContent='Traitement…'; sp.style.display='inline-block';
+
   await new Promise(r => setTimeout(r, 1500));
-  btn.textContent = originalText;
-  btn.disabled = false;
 
-  const dirText = (currentDirection === 'km-sn') ? 'Comores → Sénégal' : 'Sénégal → Comores';
-  alert(`✅ Demande envoyée !\n\nDirection : ${dirText}\nApplication expéditeur : ${expMethod}\nApplication destinataire : ${destMethod}\n\nExpéditeur : ${expPrenom} ${expNom} (${expPhone})\nDestinataire : ${destPrenom} ${destNom} (${destPhone})\nMontant : ${amount} ${currentDirection === 'km-sn' ? 'KMF' : 'XOF'}\nID transaction : ${transactionId}\n\nUn agent vous contactera sous 24h.`);
+  btn.disabled=false; txt.textContent='Envoyer la demande'; sp.style.display='none';
+
+  const currency = dir==='km-sn' ? 'KMF' : 'XOF';
+  const dirLbl   = dir==='km-sn' ? 'Comores → Sénégal' : 'Sénégal → Comores';
+  alert(
+    '✅ Demande envoyée !\n\n' +
+    `Direction     : ${dirLbl}\n` +
+    `App envoi     : ${APPS[sendApp].label}\n` +
+    `App réception : ${APPS[recvApp].label}\n\n` +
+    `Expéditeur    : ${f.expPrenom} ${f.expNom} (${f.expPhone})\n` +
+    `Destinataire  : ${f.destPrenom} ${f.destNom} (${f.destPhone})\n` +
+    `Montant       : ${f.amount.toLocaleString('fr-FR')} ${currency}\n` +
+    `Réf.          : ${f.transId}\n\n` +
+    'Un agent vous contactera sous 24h.'
+  );
 });
+
+function show(msg) {
+  const e = document.getElementById('formErr');
+  e.textContent = msg; e.style.display = 'block';
+  e.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+setDir('km-sn');
 </script>
 </body>
 </html>
