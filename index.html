@@ -49,87 +49,62 @@ main{position:relative;z-index:1;padding-bottom:clamp(60px,10vw,120px)}
 .wrap{max-width:700px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
 .form-card{background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:26px;padding:clamp(24px,4vw,44px);position:relative;overflow:hidden;}
 .form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,217,126,.15),transparent);pointer-events:none;}
-.steps-bar{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:clamp(28px,5vw,44px);}
-.step-item{display:flex;align-items:center;gap:0}
-.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;border:1.5px solid var(--bdr);background:rgba(255,255,255,.04);color:rgba(255,255,255,.28);transition:all .3s;flex-shrink:0;position:relative;z-index:1;}
-.step-dot.active{border-color:var(--green);background:rgba(0,217,126,.12);color:var(--green);box-shadow:0 0 0 4px rgba(0,217,126,.08)}
-.step-dot.done{border-color:var(--green2);background:linear-gradient(135deg,var(--green),var(--green2));color:#000}
-.step-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 6px;display:none}
-@media(min-width:480px){.step-lbl{display:block}}
-.step-line{width:clamp(20px,5vw,50px);height:1px;background:var(--bdr);flex-shrink:0}
-.step-line.done{background:linear-gradient(90deg,var(--green),var(--green2))}
-.step-panel{display:none}
-.step-panel.active{display:block}
-.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2vw,16px);margin:clamp(16px,2vw,24px) 0;}
-.method-card{background:rgba(255,255,255,.04);border:1.5px solid var(--bdr);border-radius:16px;padding:clamp(14px,3vw,22px) 10px clamp(12px,2.5vw,18px);display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.5vw,12px);cursor:pointer;transition:all .3s cubic-bezier(.23,1,.32,1);position:relative;outline:none;}
-.method-card:hover{border-color:rgba(0,217,126,.3);background:rgba(0,217,126,.06);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,217,126,.1)}
-.method-card.sel{border-color:var(--green);background:rgba(0,217,126,.1);box-shadow:0 0 0 3px rgba(0,217,126,.14),0 10px 28px rgba(0,217,126,.12);transform:translateY(-3px);}
-.mc-check{position:absolute;top:9px;right:9px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.4);transition:all .25s cubic-bezier(.23,1,.32,1);}
-.method-card.sel .mc-check{opacity:1;transform:scale(1)}
-.mc-logo{width:clamp(52px,10vw,64px);height:clamp(52px,10vw,64px);border-radius:clamp(10px,2vw,14px);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.mc-logo img{width:100%;height:100%;object-fit:contain;display:block}
-.mc-logo-mvola  { background:#c8dc00; }
-.mc-logo-wave   { background:#1ab4c9; }
-.mc-logo-orange { background:#fff;    }
-.mc-name{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(10px,2vw,13px);letter-spacing:.04em;color:rgba(255,255,255,.6);text-align:center;transition:color .25s;}
-.method-card.sel .mc-name{color:var(--green)}
+
+.ftitle{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(1.2rem,4vw,1.6rem);margin:24px 0 8px 0;background:linear-gradient(135deg,#fff,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ftitle:first-of-type{margin-top:0}
+.fsub{font-size:12.5px;color:var(--muted);margin-bottom:clamp(20px,3vw,30px);line-height:1.5}
+
+/* Direction selector */
+.dir-selector{background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-radius:20px;padding:8px;margin-bottom:24px;display:flex;align-items:center;gap:8px;}
+.dir-opt{flex:1;text-align:center;padding:10px 6px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;border-radius:14px;transition:all .2s;color:var(--muted);}
+.dir-opt.active{background:linear-gradient(135deg,var(--green),var(--green2));color:#000;box-shadow:0 4px 12px rgba(0,217,126,.3);}
+
+/* Custom select avec logos */
+.custom-select{position:relative;margin:0 0 24px 0;}
+.select-trigger{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .25s;}
+.select-trigger:hover{border-color:rgba(0,217,126,.4);background:rgba(0,217,126,.05)}
+.selected-value{display:flex;align-items:center;gap:12px;}
+.selected-value img{width:28px;height:28px;object-fit:contain;border-radius:6px;}
+.selected-value span{font-size:14px;font-weight:500;color:#fff}
+.select-arrow{width:18px;height:18px;transition:transform .2s}
+.select-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:#0f1725;border:1px solid var(--bdr);border-radius:16px;overflow:hidden;z-index:100;display:none;box-shadow:0 12px 28px rgba(0,0,0,.5);}
+.select-option{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:background .2s;}
+.select-option:hover{background:rgba(0,217,126,.1)}
+.select-option img{width:28px;height:28px;object-fit:contain;border-radius:6px;}
+.select-option span{font-size:14px;color:rgba(255,255,255,.8);}
+
+/* Form fields */
 .field-group{margin-bottom:clamp(14px,2.5vw,20px)}
 .flabel{display:block;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:6px}
-.field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:clamp(11px,2vw,14px) clamp(13px,2vw,16px);color:#fff;font-family:'DM Sans',sans-serif;font-size:clamp(13px,2vw,15px);outline:none;transition:all .25s;-webkit-appearance:none;}
+.field{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:clamp(11px,2vw,14px) clamp(13px,2vw,16px);color:#fff;font-family:'DM Sans',sans-serif;font-size:clamp(13px,2vw,15px);outline:none;transition:all .25s;}
 .field:focus{border-color:rgba(0,217,126,.45);background:rgba(0,217,126,.03);box-shadow:0 0 0 3px rgba(0,217,126,.08)}
 .field::placeholder{color:rgba(255,255,255,.2)}
 .field-ico{position:relative}
 .field-ico .field{padding-left:44px}
 .field-ico-sym{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);font-weight:500;pointer-events:none}
-input[type=number]{-moz-appearance:textfield}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,2vw,16px)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,2vw,16px);margin-bottom:0;}
 @media(max-width:480px){.field-row{grid-template-columns:1fr}}
-.equiv-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(0,217,126,.06);border:1px solid rgba(0,217,126,.15);border-radius:10px;padding:10px 14px;margin-top:8px;transition:all .3s;}
+
+/* Équivalence */
+.equiv-bar{display:flex;justify-content:space-between;align-items:center;background:rgba(0,217,126,.06);border:1px solid rgba(0,217,126,.15);border-radius:10px;padding:10px 14px;margin-top:8px;}
 .equiv-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)}
 .equiv-val{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--green)}
-.alert-err{background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.25);color:#ff8fa5;font-size:12px;padding:11px 14px;border-radius:10px;line-height:1.5;margin-bottom:14px}
-.ftitle{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(1.1rem,3vw,1.4rem);margin-bottom:6px}
-.fsub{font-size:12.5px;color:var(--muted);margin-bottom:clamp(20px,3vw,30px);line-height:1.5}
-.btn-next{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,var(--green),var(--green2));color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(10px,2vw,12px);letter-spacing:.12em;text-transform:uppercase;padding:clamp(13px,2.5vw,16px) 24px;border-radius:14px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 22px rgba(0,217,126,.28);margin-top:clamp(18px,3vw,28px);}
-.btn-next:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 34px rgba(0,217,126,.42)}
-.btn-next:disabled{opacity:.5;cursor:not-allowed}
-.btn-back{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);color:rgba(255,255,255,.5);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:12px 24px;border-radius:14px;cursor:pointer;transition:all .25s;margin-top:10px;}
-.btn-back:hover{background:rgba(255,255,255,.09);color:#fff;border-color:var(--bdr2)}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spin{animation:spin .7s linear infinite}
-.success-state{display:none;text-align:center;padding:clamp(20px,4vw,40px) 0}
-.success-icon{width:clamp(64px,12vw,88px);height:clamp(64px,12vw,88px);border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;margin:0 auto clamp(18px,3vw,26px);box-shadow:0 16px 40px rgba(0,217,126,.35);animation:popIn .5s cubic-bezier(.23,1,.32,1) forwards;}
-@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
-.success-state h2{font-family:'Syne',sans-serif;font-weight:900;font-size:clamp(1.4rem,4vw,2rem);margin-bottom:10px}
-.success-state p{font-size:13px;color:var(--muted);max-width:360px;margin:0 auto 28px;line-height:1.65}
-.recap-card{background:rgba(0,217,126,.05);border:1px solid rgba(0,217,126,.15);border-radius:16px;padding:20px;text-align:left;margin-bottom:28px;}
-.recap-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px}
-.recap-row:not(:last-child){border-bottom:1px solid rgba(255,255,255,.05)}
-.recap-k{color:var(--muted)}
-.recap-v{font-family:'Syne',sans-serif;font-weight:700}
-.recap-total .recap-v{color:var(--green);font-size:18px}
+
+/* Bouton final */
+.btn-submit{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,var(--green),var(--green2));color:#000;font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(10px,2vw,12px);letter-spacing:.12em;text-transform:uppercase;padding:clamp(13px,2.5vw,16px) 24px;border-radius:14px;border:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 22px rgba(0,217,126,.28);margin-top:clamp(28px,4vw,40px);}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(0,217,126,.42);}
+
+/* Animations */
 .r{opacity:0;transform:translateY(20px);transition:opacity .65s cubic-bezier(.23,1,.32,1),transform .65s cubic-bezier(.23,1,.32,1)}
 .r.v{opacity:1;transform:none}
 .d1{transition-delay:.08s}
+
 .page-footer{position:relative;z-index:1;border-top:1px solid var(--bdr);padding:clamp(24px,4vw,40px) clamp(16px,4vw,48px);text-align:center}
 .page-footer .fb{font-family:'Syne',sans-serif;font-weight:900;font-size:16px;margin-bottom:5px}
 .page-footer p{font-size:11px;color:rgba(255,255,255,.18)}
-@media(max-width:400px){.method-grid{gap:8px}.mc-logo{width:46px;height:46px}.mc-name{font-size:10px}}
-.dir-selector{
-  background:rgba(255,255,255,.02);border:1px solid var(--bdr);border-radius:20px;
-  padding:8px;margin-bottom:24px;display:flex;align-items:center;
-}
-.dir-opt{
-  flex:1;text-align:center;padding:10px 6px;cursor:pointer;
-  font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
-  border-radius:14px;transition:all .2s;color:var(--muted);
-}
-.dir-opt.active{
-  background:linear-gradient(135deg,var(--green),var(--green2));color:#000;
-  box-shadow:0 4px 12px rgba(0,217,126,.3);
-}
+/* Lien applicatif */
+.app-link{display:inline-block;margin-top:10px;padding:8px 16px;background:rgba(0,217,126,.15);border:1px solid var(--green);border-radius:40px;color:var(--green);text-decoration:none;font-size:12px;font-weight:700;transition:all .25s;}
+.app-link:hover{background:var(--green);color:#000;transform:translateY(-2px);}
 </style>
 </head>
 <body>
@@ -137,11 +112,11 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 
 <nav>
   <div class="nav-inner">
-    <a class="brand" href="index.php">
-      <div class="brand-img"><img src="Logo/logo.jpg" alt="Mon Revenu"></div>
+    <a class="brand" href="../index.php">
+      <div class="brand-img"><img src="../Logo/logo.jpg" alt="Mon Revenu"></div>
       <div class="brand-name">MON <span class="g-green">REVENU</span></div>
     </a>
-    <a href="index.php" class="nav-back"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg> Retour</a>
+    <a href="../index.php" class="nav-back"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg> Retour</a>
   </div>
 </nav>
 
@@ -149,142 +124,87 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
   <div class="wrap">
     <div class="page-hero-badge">Transfert instantané · Comores ↔ Sénégal</div>
     <h1>Envoyer de l'argent<br><span class="g-green">facilement</span></h1>
-    <p>Choisissez votre application, envoyez en toute sécurité.</p>
+    <p>Choisissez votre sens et votre application</p>
   </div>
 </div>
 
 <main>
   <div class="wrap">
     <div class="form-card r d1">
-      <div class="steps-bar">
-        <div class="step-item"><div class="step-dot active" id="sd1">1</div><div class="step-lbl" id="sl1">Expéditeur</div></div>
-        <div class="step-line" id="sline1"></div>
-        <div class="step-item"><div class="step-dot" id="sd2">2</div><div class="step-lbl" id="sl2">Montant</div></div>
-        <div class="step-line" id="sline2"></div>
-        <div class="step-item"><div class="step-dot" id="sd3">3</div><div class="step-lbl" id="sl3">Destinataire</div></div>
-        <div class="step-line" id="sline3"></div>
-        <div class="step-item"><div class="step-dot" id="sd4">4</div><div class="step-lbl" id="sl4">Confirmation</div></div>
+
+      
+      <input type="hidden" id="globalDirection" value="km-sn">
+
+      <!-- BLOC "De" (expéditeur) -->
+      <div class="ftitle">De:</div>
+      <p class="fsub">Vos informations pour que l’agent puisse vous contacter.</p>
+
+      <div class="field-row">
+        <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="expPrenom" class="field" placeholder="Ali"></div>
+        <div class="field-group"><label class="flabel">Nom</label><input type="text" id="expNom" class="field" placeholder="Mohamed"></div>
       </div>
 
-      <!-- STEP 1 : EXPÉDITEUR + DIRECTION + MÉTHODE (section avec les 3 apps) -->
-      <div id="step1" class="step-panel active">
-        <div class="ftitle">Qui envoie ?</div>
-        <p class="fsub">Vos informations pour que l’agent puisse vous contacter.</p>
-        
-        <!-- Sélecteur de direction -->
-        <div class="dir-selector" id="dirSelector">
-          <div class="dir-opt" data-dir="km-sn">🇰🇲 Comores → Sénégal 🇸🇳</div>
-          <div class="dir-opt" data-dir="sn-km">🇸🇳 Sénégal → Comores 🇰🇲</div>
-        </div>
-        <input type="hidden" id="direction" value="km-sn">
-
-        <div class="field-row">
-          <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="expPrenom" class="field" placeholder="Ali"></div>
-          <div class="field-group"><label class="flabel">Nom</label><input type="text" id="expNom" class="field" placeholder="Mohamed"></div>
-        </div>
-
-        <div class="field-group" id="expPhoneGroup">
-          <label class="flabel" id="expPhoneLabel">Numéro de téléphone (Comores)</label>
-          <div class="field-ico"><span class="field-ico-sym" id="expPhoneFlag">🇰🇲</span><input type="tel" id="expPhone" class="field" placeholder="+269 333 12 34"></div>
-        </div>
-
-        <!-- SECTION DÉDIÉE : MÉTHODE DE TRANSFERT (3 applications) -->
-        <div style="background:rgba(255,255,255,.02); border:1px solid var(--bdr); border-radius:20px; padding:16px; margin:16px 0 8px;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-            <svg width="18" height="18" fill="none" stroke="var(--green)" viewBox="0 0 24 24"><path stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            <span style="font-family:'Syne'; font-weight:800; font-size:13px;">Méthode de transfert</span>
-          </div>
-          <div class="method-grid">
-            <div class="method-card" data-method="mvola" data-label="Mvola" onclick="selectMethod(this)">
-              <div class="mc-check"><svg width="9" height="9" fill="none" stroke="#000" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
-              <div class="mc-logo mc-logo-mvola"><img src="Logo/Mvola.png" alt="Mvola"></div>
-              <span class="mc-name">Mvola</span>
-            </div>
-            <div class="method-card" data-method="wave" data-label="Wave" onclick="selectMethod(this)">
-              <div class="mc-check"><svg width="9" height="9" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
-              <div class="mc-logo mc-logo-wave"><img src="Logo/weve.png" alt="Wave"></div>
-              <span class="mc-name">Wave</span>
-            </div>
-            <div class="method-card" data-method="orange" data-label="Orange Money" onclick="selectMethod(this)">
-              <div class="mc-check"><svg width="9" height="9" fill="none" stroke="#000" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
-              <div class="mc-logo mc-logo-orange"><img src="Logo/orangeMoney.png" alt="Orange Money"></div>
-              <span class="mc-name">Orange Money</span>
-            </div>
-          </div>
-        </div>
-
-        <div id="err1" class="alert-err" style="display:none"></div>
-        <button class="btn-next" onclick="goStep(2)">Continuer <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M9 18l6-6-6-6"/></svg></button>
+      <div class="field-group">
+        <label class="flabel" id="expPhoneLabel">Numéro de téléphone (Comores)</label>
+        <div class="field-ico"><span class="field-ico-sym" id="expPhoneFlag">🇰🇲</span><input type="tel" id="expPhone" class="field" placeholder="+269 333 12 34"></div>
       </div>
 
-      <!-- STEP 2 : MONTANT -->
-      <div id="step2" class="step-panel">
-        <div class="ftitle">Montant du transfert</div>
-        <p class="fsub" id="amountHint">Entrez le montant en Francs Comoriens (KMF). Minimum : 1 000 KMF.</p>
-        <div class="field-group">
-          <label class="flabel" id="amountLabel">Montant à envoyer (KMF)</label>
-          <div class="field-ico"><span class="field-ico-sym" id="amountSym">KMF</span><input type="number" id="fAmount" class="field" placeholder="5 000" min="1000" step="100" oninput="calcEquiv()"></div>
-          <div id="equivBar" style="display:none" class="equiv-bar"><span class="equiv-label" id="equivLabel">Le bénéficiaire recevra ≈</span><span class="equiv-val" id="equivVal"></span></div>
+      <!-- Select application EXPÉDITEUR -->
+      <div class="custom-select" id="methodSelectExp">
+        <div class="select-trigger">
+          <div class="selected-value"><img src="../Logo/Mvola.png" alt="Mvola"><span>Mvola</span></div>
+          <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
-        <div id="err2" class="alert-err" style="display:none"></div>
-        <button class="btn-next" onclick="goStep(3)">Continuer <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M9 18l6-6-6-6"/></svg></button>
-        <button class="btn-back" onclick="goStep(1)"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M15 18l-6-6 6-6"/></svg> Retour</button>
+        <div class="select-dropdown" id="expDropdown"></div>
+      </div>
+      <input type="hidden" id="expMethod" value="mvola">
+
+      <!-- BLOC "Vers" (destinataire) -->
+      <div class="ftitle">Vers</div>
+      <p class="fsub">Coordonnées de la personne qui recevra l’argent.</p>
+
+      <div class="field-row">
+        <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="destPrenom" class="field" placeholder="Aminata"></div>
+        <div class="field-group"><label class="flabel">Nom</label><input type="text" id="destNom" class="field" placeholder="Diallo"></div>
       </div>
 
-      <!-- STEP 3 : DESTINATAIRE -->
-      <div id="step3" class="step-panel">
-        <div class="ftitle">Bénéficiaire</div>
-        <p class="fsub" id="destSub">Coordonnées de la personne qui recevra l'argent.</p>
-        <div class="field-row">
-          <div class="field-group"><label class="flabel">Prénom</label><input type="text" id="destPrenom" class="field" placeholder="Aminata"></div>
-          <div class="field-group"><label class="flabel">Nom</label><input type="text" id="destNom" class="field" placeholder="Diallo"></div>
-        </div>
-        <div class="field-group" id="destPhoneGroup">
-          <label class="flabel" id="destPhoneLabel">Numéro de téléphone (Sénégal)</label>
-          <div class="field-ico"><span class="field-ico-sym" id="destPhoneFlag">🇸🇳</span><input type="tel" id="destPhone" class="field" placeholder="+221 77 123 45 67"></div>
-        </div>
-        <div class="field-group"><label class="flabel">Note / Motif (facultatif)</label><input type="text" id="fNote" class="field" placeholder="Ex : aide familiale, loyer…"></div>
-        <div id="err3" class="alert-err" style="display:none"></div>
-        <button class="btn-next" onclick="goStep(4)">Vérifier et confirmer <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M9 18l6-6-6-6"/></svg></button>
-        <button class="btn-back" onclick="goStep(2)"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M15 18l-6-6 6-6"/></svg> Retour</button>
+      <div class="field-group">
+        <label class="flabel" id="destPhoneLabel">Numéro de téléphone (Sénégal)</label>
+        <div class="field-ico"><span class="field-ico-sym" id="destPhoneFlag">🇸🇳</span><input type="tel" id="destPhone" class="field" placeholder="+221 77 123 45 67"></div>
       </div>
 
-      <!-- STEP 4 : RÉCAPITULATIF + CONFIRMATION -->
-      <div id="step4" class="step-panel">
-        <div class="ftitle">Vérifiez votre transfert</div>
-        <p class="fsub">Relisez toutes les informations avant d'envoyer.</p>
-        <div class="recap-card" id="recapCard">
-          <div class="recap-row"><span class="recap-k">Direction</span><span class="recap-v" id="rDir">—</span></div>
-          <div class="recap-row"><span class="recap-k">Expéditeur</span><span class="recap-v" id="rExp">—</span></div>
-          <div class="recap-row"><span class="recap-k">Tél. expéditeur</span><span class="recap-v" id="rExpPhone">—</span></div>
-          <div class="recap-row"><span class="recap-k">Méthode</span><span class="recap-v" id="rMethod">—</span></div>
-          <div class="recap-row"><span class="recap-k">Montant envoyé</span><span class="recap-v" id="rAmount">—</span></div>
-          <div class="recap-row"><span class="recap-k">Montant reçu (équivalent)</span><span class="recap-v" id="rEquiv">—</span></div>
-          <div class="recap-row"><span class="recap-k">Destinataire</span><span class="recap-v" id="rDest">—</span></div>
-          <div class="recap-row"><span class="recap-k">Tél. destinataire</span><span class="recap-v" id="rDestPhone">—</span></div>
-          <div class="recap-row recap-total"><span class="recap-k">Note</span><span class="recap-v" id="rNote">—</span></div>
+      <!-- Select application DESTINATAIRE -->
+      <div class="custom-select" id="methodSelectDest">
+        <div class="select-trigger">
+          <div class="selected-value"><img src="../Logo/Mvola.png" alt="Mvola"><span>Mvola</span></div>
+          <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </div>
-        <div style="background:rgba(255,255,255,.03);border:1px solid var(--bdr);border-radius:12px;padding:14px 16px;margin-bottom:6px;font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:10px;align-items:flex-start">
-          <span style="font-size:16px;flex-shrink:0">ℹ️</span>
-          <span>Un agent Mon Revenu vous contactera sous <strong style="color:rgba(255,255,255,.55)">24h</strong> pour finaliser l'opération.</span>
-        </div>
-        <div id="err4" class="alert-err" style="display:none;margin-top:12px"></div>
-        <button class="btn-next" id="submitBtn" onclick="submitTransfer()">
-          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-          <span id="submitTxt">Envoyer maintenant</span>
-          <svg id="submitSpin" class="spin" style="display:none" width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity=".25"/><path fill="currentColor" d="M4 12a8 8 0 018-8v8z" opacity=".75"/></svg>
-        </button>
-        <button class="btn-back" onclick="goStep(3)"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.5" d="M15 18l-6-6 6-6"/></svg> Modifier</button>
+        <div class="select-dropdown" id="destDropdown"></div>
+      </div>
+      <input type="hidden" id="destMethod" value="mvola">
+
+      <!-- MONTANT -->
+      <div class="ftitle" style="margin-top:28px">Montant</div>
+      <div class="field-group">
+        <label class="flabel" id="amountLabel">Montant à envoyer (KMF)</label>
+        <div class="field-ico"><span class="field-ico-sym" id="amountSym">KMF</span><input type="number" id="fAmount" class="field" placeholder="5 000" min="1000" step="100"></div>
+        <div id="equivBar" style="display:none" class="equiv-bar"><span class="equiv-label" id="equivLabel">Le bénéficiaire recevra ≈</span><span class="equiv-val" id="equivVal"></span></div>
       </div>
 
-      <!-- SUCCESS -->
-      <div class="success-state" id="successState">
-        <div class="success-icon"><svg width="36" height="36" fill="none" stroke="#000" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
-        <h2>Demande envoyée !</h2>
-        <p>Votre demande de transfert a bien été reçue. Un agent vous contactera sous 24h.</p>
-        <div class="recap-card" id="successRecap"></div>
-        <a href="index.php" class="btn-next" style="text-decoration:none;margin-top:0"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2.2" d="M3 12h18M3 12l7-7M3 12l7 7"/></svg> Retour à l'accueil</a>
+      <!-- PAIEMENT & ID avec lien dynamique -->
+      <div class="fsub" style="margin-top:16px; text-align:center; background:rgba(0,217,126,.05); padding:12px; border-radius:14px;">
+        ⚡ Effectuez le paiement via l'application choisie avant de renseigner l'ID ci-dessous.
+        <div id="paymentLinkContainer" style="margin-top:8px;"></div>
       </div>
+
+      <div class="ftitle" style="margin-top:28px">ID ou référence</div>
+      <div class="field-group">
+        <p class="fsub" style="margin-bottom:8px">Assurez-vous que l'ID correspond à la transaction effectuée depuis votre numéro.</p>
+        <div class="field-ico"><span class="field-ico-sym">🔑</span><input type="text" id="transactionId" class="field" placeholder="Ex: MVOLA-123456"></div>
+      </div>
+
+      <button class="btn-submit" id="finalSubmitBtn">Envoyer la demande</button>
+
     </div>
   </div>
 </main>
@@ -296,66 +216,131 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 
 <script>
 'use strict';
-const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('v'); io.unobserve(e.target); } }), {threshold:.1});
-document.querySelectorAll('.r').forEach(el => io.observe(el));
 
-let selMethod='', selMethodLabel='', currentDirection='km-sn';
-let currentStep=1;
+// === 1. CONFIGURATION DES MÉTHODES (3 applications) ===
+// Remplacez les liens par vos propres URLs de paiement
+const allMethods = [
+  { value: 'mvola', label: 'Mvola', img: '../Logo/Mvola.png', link: 'https://www.mvola.mg/' },  // ← à remplacer
+  { value: 'wave', label: 'Wave', img: '../Logo/weve.png', link: 'https://sn.mmapp.wave.com/web/referrals/i/O3PAO2' }, // ✅ Lien Wave personnalisé
+  { value: 'orange_money', label: 'Orange Money', img: '../Logo/orangeMoney.png', link: 'https://www.orange-money.com/' } // ← à remplacer
+];
 
-// Direction UI
-const dirOpts = document.querySelectorAll('.dir-opt');
-dirOpts.forEach(opt => {
-  opt.addEventListener('click', () => {
-    dirOpts.forEach(o => o.classList.remove('active'));
-    opt.classList.add('active');
-    currentDirection = opt.getAttribute('data-dir');
-    document.getElementById('direction').value = currentDirection;
-    updateFieldsForDirection();
-    if(currentStep===1) { if(document.getElementById('expPhone').value) updateSenderPlaceholder(); }
-    if(currentStep===4) fillRecap();
+// Construction du select personnalisé pour EXPÉDITEUR
+function buildExpSelect() {
+  const container = document.getElementById('methodSelectExp');
+  const trigger = container.querySelector('.select-trigger');
+  const dropdown = container.querySelector('.select-dropdown');
+  const selectedImg = trigger.querySelector('.selected-value img');
+  const selectedText = trigger.querySelector('.selected-value span');
+  const hidden = document.getElementById('expMethod');
+
+  dropdown.innerHTML = '';
+  allMethods.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'select-option';
+    div.innerHTML = `<img src="${m.img}" alt="${m.label}"><span>${m.label}</span>`;
+    div.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedImg.src = m.img;
+      selectedText.textContent = m.label;
+      hidden.value = m.value;
+      dropdown.style.display = 'none';
+      updatePaymentLink(); // Mettre à jour le lien de paiement
+    });
+    dropdown.appendChild(div);
   });
-});
 
-function updateFieldsForDirection() {
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  });
+  document.addEventListener('click', () => { dropdown.style.display = 'none'; });
+}
+
+// Construction du select personnalisé pour DESTINATAIRE
+function buildDestSelect() {
+  const container = document.getElementById('methodSelectDest');
+  const trigger = container.querySelector('.select-trigger');
+  const dropdown = container.querySelector('.select-dropdown');
+  const selectedImg = trigger.querySelector('.selected-value img');
+  const selectedText = trigger.querySelector('.selected-value span');
+  const hidden = document.getElementById('destMethod');
+
+  dropdown.innerHTML = '';
+  allMethods.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'select-option';
+    div.innerHTML = `<img src="${m.img}" alt="${m.label}"><span>${m.label}</span>`;
+    div.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedImg.src = m.img;
+      selectedText.textContent = m.label;
+      hidden.value = m.value;
+      dropdown.style.display = 'none';
+      // Ne pas mettre à jour le lien de paiement (c'est l'application de l'expéditeur qui compte)
+    });
+    dropdown.appendChild(div);
+  });
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  });
+  document.addEventListener('click', () => { dropdown.style.display = 'none'; });
+}
+
+buildExpSelect();
+buildDestSelect();
+
+// === 2. MISE À JOUR DU LIEN DE PAIEMENT ===
+function updatePaymentLink() {
+  const expMethod = document.getElementById('expMethod').value;
+  const method = allMethods.find(m => m.value === expMethod);
+  const container = document.getElementById('paymentLinkContainer');
+  if (method && method.link) {
+    container.innerHTML = `<a href="${method.link}" target="_blank" class="app-link">💸 Payer avec ${method.label}</a>`;
+  } else {
+    container.innerHTML = '';
+  }
+}
+// Appel initial
+updatePaymentLink();
+
+// === 3. DIRECTION UNIQUE (influence téléphones et montant) ===
+let currentDirection = 'km-sn';
+
+const expPhoneLabel = document.getElementById('expPhoneLabel');
+const expPhoneFlag = document.getElementById('expPhoneFlag');
+const expPhoneInput = document.getElementById('expPhone');
+const destPhoneLabel = document.getElementById('destPhoneLabel');
+const destPhoneFlag = document.getElementById('destPhoneFlag');
+const destPhoneInput = document.getElementById('destPhone');
+const amountLabel = document.getElementById('amountLabel');
+const amountSym = document.getElementById('amountSym');
+const equivLabel = document.getElementById('equivLabel');
+const equivVal = document.getElementById('equivVal');
+const equivBar = document.getElementById('equivBar');
+const amountInput = document.getElementById('fAmount');
+
+function updateFields() {
   const isKmToSn = (currentDirection === 'km-sn');
-  // Expéditeur
-  const expPhoneLabel = document.getElementById('expPhoneLabel');
-  const expPhoneFlag = document.getElementById('expPhoneFlag');
-  const expPhoneInput = document.getElementById('expPhone');
-  if(isKmToSn){
+  if (isKmToSn) {
     expPhoneLabel.textContent = 'Numéro de téléphone (Comores)';
     expPhoneFlag.textContent = '🇰🇲';
     expPhoneInput.placeholder = '+269 333 12 34';
-  } else {
-    expPhoneLabel.textContent = 'Numéro de téléphone (Sénégal)';
-    expPhoneFlag.textContent = '🇸🇳';
-    expPhoneInput.placeholder = '+221 77 123 45 67';
-  }
-  // Destinataire
-  const destPhoneLabel = document.getElementById('destPhoneLabel');
-  const destPhoneFlag = document.getElementById('destPhoneFlag');
-  const destPhoneInput = document.getElementById('destPhone');
-  if(isKmToSn){
     destPhoneLabel.textContent = 'Numéro de téléphone (Sénégal)';
     destPhoneFlag.textContent = '🇸🇳';
     destPhoneInput.placeholder = '+221 77 123 45 67';
-  } else {
-    destPhoneLabel.textContent = 'Numéro de téléphone (Comores)';
-    destPhoneFlag.textContent = '🇰🇲';
-    destPhoneInput.placeholder = '+269 333 12 34';
-  }
-  // Montant
-  const amountHint = document.getElementById('amountHint');
-  const amountLabel = document.getElementById('amountLabel');
-  const amountSym = document.getElementById('amountSym');
-  const equivLabel = document.getElementById('equivLabel');
-  if(isKmToSn){
-    amountHint.textContent = 'Entrez le montant en Francs Comoriens (KMF). Minimum : 1 000 KMF.';
     amountLabel.textContent = 'Montant à envoyer (KMF)';
     amountSym.textContent = 'KMF';
     equivLabel.textContent = 'Le bénéficiaire recevra ≈';
   } else {
-    amountHint.textContent = 'Entrez le montant en Francs CFA (XOF). Minimum : 1 000 XOF.';
+    expPhoneLabel.textContent = 'Numéro de téléphone (Sénégal)';
+    expPhoneFlag.textContent = '🇸🇳';
+    expPhoneInput.placeholder = '+221 77 123 45 67';
+    destPhoneLabel.textContent = 'Numéro de téléphone (Comores)';
+    destPhoneFlag.textContent = '🇰🇲';
+    destPhoneInput.placeholder = '+269 333 12 34';
     amountLabel.textContent = 'Montant à envoyer (XOF)';
     amountSym.textContent = 'XOF';
     equivLabel.textContent = 'Le bénéficiaire recevra ≈';
@@ -363,133 +348,70 @@ function updateFieldsForDirection() {
   calcEquiv();
 }
 
-function updateSenderPlaceholder() {
-  const isKmToSn = (currentDirection === 'km-sn');
-  const expPhoneInput = document.getElementById('expPhone');
-  if(isKmToSn) expPhoneInput.placeholder = '+269 333 12 34';
-  else expPhoneInput.placeholder = '+221 77 123 45 67';
-}
-
-function goStep(n){
-  if(n>currentStep && !validate(currentStep)) return;
-  document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('step'+n).classList.add('active');
-  for(let i=1;i<=4;i++){
-    const dot=document.getElementById('sd'+i);
-    dot.classList.remove('active','done');
-    if(i<n) dot.classList.add('done');
-    else if(i===n) dot.classList.add('active');
-  }
-  for(let i=1;i<=3;i++) document.getElementById('sline'+i).classList.toggle('done', i<n);
-  if(n===4) fillRecap();
-  currentStep=n;
-  if(window.innerWidth<900) document.querySelector('.form-card').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function selectMethod(el){
-  document.querySelectorAll('.method-card').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  selMethod=el.dataset.method;
-  selMethodLabel=el.dataset.label;
-  document.getElementById('err1').style.display='none';
-}
-
-function calcEquiv(){
-  const amount = parseFloat(document.getElementById('fAmount').value);
-  const bar = document.getElementById('equivBar');
-  const equivValSpan = document.getElementById('equivVal');
-  if(!isNaN(amount) && amount>0){
+function calcEquiv() {
+  const amount = parseFloat(amountInput.value);
+  if (!isNaN(amount) && amount > 0) {
     let equiv = 0;
-    if(currentDirection === 'km-sn') equiv = Math.round(amount * 1.22);
+    if (currentDirection === 'km-sn') equiv = Math.round(amount * 1.22);
     else equiv = Math.round(amount / 1.22);
-    equivValSpan.textContent = equiv.toLocaleString('fr-FR') + (currentDirection === 'km-sn' ? ' XOF' : ' KMF');
-    bar.style.display='flex';
-  } else bar.style.display='none';
+    equivVal.textContent = equiv.toLocaleString('fr-FR') + (currentDirection === 'km-sn' ? ' XOF' : ' KMF');
+    equivBar.style.display = 'flex';
+  } else {
+    equivBar.style.display = 'none';
+  }
 }
 
-function fillRecap(){
+const dirOpts = document.querySelectorAll('#dirSelectorGlobal .dir-opt');
+dirOpts.forEach(opt => {
+  opt.addEventListener('click', () => {
+    dirOpts.forEach(o => o.classList.remove('active'));
+    opt.classList.add('active');
+    currentDirection = opt.getAttribute('data-dir');
+    document.getElementById('globalDirection').value = currentDirection;
+    updateFields();
+  });
+});
+
+amountInput.addEventListener('input', calcEquiv);
+updateFields();
+
+// === 4. ANIMATION D'APPARITION ===
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('v'); io.unobserve(e.target); } }), {threshold:.1});
+document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+// === 5. SOUMISSION FINALE ===
+document.getElementById('finalSubmitBtn').addEventListener('click', async () => {
   const expPrenom = document.getElementById('expPrenom').value.trim();
   const expNom = document.getElementById('expNom').value.trim();
   const expPhone = document.getElementById('expPhone').value.trim();
   const destPrenom = document.getElementById('destPrenom').value.trim();
   const destNom = document.getElementById('destNom').value.trim();
   const destPhone = document.getElementById('destPhone').value.trim();
-  const amount = parseFloat(document.getElementById('fAmount').value);
-  const note = document.getElementById('fNote').value.trim();
-  let equiv = 0;
-  if(!isNaN(amount)){
-    if(currentDirection === 'km-sn') equiv = Math.round(amount * 1.22);
-    else equiv = Math.round(amount / 1.22);
-  }
-  document.getElementById('rDir').textContent = (currentDirection === 'km-sn' ? 'Comores → Sénégal' : 'Sénégal → Comores');
-  document.getElementById('rExp').textContent = expPrenom+' '+expNom;
-  document.getElementById('rExpPhone').textContent = expPhone || '—';
-  document.getElementById('rMethod').textContent = selMethodLabel || '—';
-  document.getElementById('rAmount').textContent = !isNaN(amount) ? amount.toLocaleString('fr-FR')+(currentDirection === 'km-sn' ? ' KMF' : ' XOF') : '—';
-  document.getElementById('rEquiv').textContent = !isNaN(amount) ? equiv.toLocaleString('fr-FR')+(currentDirection === 'km-sn' ? ' XOF' : ' KMF') : '—';
-  document.getElementById('rDest').textContent = destPrenom+' '+destNom;
-  document.getElementById('rDestPhone').textContent = destPhone || '—';
-  document.getElementById('rNote').textContent = note || '—';
-}
+  const amount = parseFloat(amountInput.value);
+  const expMethod = document.getElementById('expMethod').value;
+  const destMethod = document.getElementById('destMethod').value;
+  const transactionId = document.getElementById('transactionId').value.trim();
 
-function validate(step){
-  function err(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';return false;}
-  function hide(id){document.getElementById(id).style.display='none';}
-  if(step===1){
-    hide('err1');
-    const prenom=document.getElementById('expPrenom').value.trim();
-    const nom=document.getElementById('expNom').value.trim();
-    const phone=document.getElementById('expPhone').value.trim();
-    if(!prenom||!nom) return err('err1','Veuillez renseigner votre prénom et nom.');
-    if(!phone||phone.length<8) return err('err1','Numéro de téléphone invalide (au moins 8 chiffres).');
-    if(!selMethod) return err('err1','Veuillez sélectionner une méthode d\'envoi (Mvola, Wave ou Orange Money).');
-    return true;
+  if (!expPrenom || !expNom || !expPhone || !destPrenom || !destNom || !destPhone || isNaN(amount) || amount < 1000) {
+    alert('Veuillez remplir tous les champs correctement (montant minimum 1000).');
+    return;
   }
-  if(step===2){
-    hide('err2');
-    const amount=parseFloat(document.getElementById('fAmount').value);
-    if(!amount||amount<1000) return err('err2','Le montant minimum est de 1 000 unités.');
-    return true;
+  if (!transactionId) {
+    alert('Veuillez saisir l\'ID ou la référence de la transaction effectuée.');
+    return;
   }
-  if(step===3){
-    hide('err3');
-    const dprenom=document.getElementById('destPrenom').value.trim();
-    const dnom=document.getElementById('destNom').value.trim();
-    const dphone=document.getElementById('destPhone').value.trim();
-    if(!dprenom||!dnom) return err('err3','Veuillez renseigner le prénom et nom du destinataire.');
-    if(!dphone||dphone.length<9) return err('err3','Numéro de téléphone du destinataire invalide.');
-    return true;
-  }
-  return true;
-}
 
-async function submitTransfer(){
-  const btn=document.getElementById('submitBtn');
-  const txt=document.getElementById('submitTxt');
-  const sp=document.getElementById('submitSpin');
-  const err=document.getElementById('err4');
-  err.style.display='none';
-  btn.disabled=true;txt.textContent='Traitement…';sp.style.display='inline-block';
-  await new Promise(r=>setTimeout(r,2000));
-  btn.disabled=false;txt.textContent='Envoyer maintenant';sp.style.display='none';
-  document.querySelectorAll('.step-panel').forEach(p=>p.style.display='none');
-  document.querySelector('.steps-bar').style.display='none';
-  const expPrenom=document.getElementById('expPrenom').value.trim();
-  const expNom=document.getElementById('expNom').value.trim();
-  const destPrenom=document.getElementById('destPrenom').value.trim();
-  const destNom=document.getElementById('destNom').value.trim();
-  const amount=parseFloat(document.getElementById('fAmount').value).toLocaleString('fr-FR');
-  const dirText = (currentDirection === 'km-sn' ? 'Comores → Sénégal' : 'Sénégal → Comores');
-  document.getElementById('successRecap').innerHTML=`
-    <div class="recap-row"><span class="recap-k">Direction</span><span class="recap-v">${dirText}</span></div>
-    <div class="recap-row"><span class="recap-k">Expéditeur</span><span class="recap-v">${expPrenom} ${expNom}</span></div>
-    <div class="recap-row"><span class="recap-k">Méthode</span><span class="recap-v">${selMethodLabel}</span></div>
-    <div class="recap-row"><span class="recap-k">Montant</span><span class="recap-v">${amount} ${currentDirection==='km-sn'?'KMF':'XOF'}</span></div>
-    <div class="recap-row"><span class="recap-k">Destinataire</span><span class="recap-v">${destPrenom} ${destNom}</span></div>
-  `;
-  const ss=document.getElementById('successState'); ss.style.display='block'; ss.scrollIntoView({behavior:'smooth',block:'start'});
-}
-updateFieldsForDirection();
+  const btn = document.getElementById('finalSubmitBtn');
+  const originalText = btn.textContent;
+  btn.textContent = 'Traitement...';
+  btn.disabled = true;
+  await new Promise(r => setTimeout(r, 1500));
+  btn.textContent = originalText;
+  btn.disabled = false;
+
+  const dirText = (currentDirection === 'km-sn') ? 'Comores → Sénégal' : 'Sénégal → Comores';
+  alert(`✅ Demande envoyée !\n\nDirection : ${dirText}\nApplication expéditeur : ${expMethod}\nApplication destinataire : ${destMethod}\n\nExpéditeur : ${expPrenom} ${expNom} (${expPhone})\nDestinataire : ${destPrenom} ${destNom} (${destPhone})\nMontant : ${amount} ${currentDirection === 'km-sn' ? 'KMF' : 'XOF'}\nID transaction : ${transactionId}\n\nUn agent vous contactera sous 24h.`);
+});
 </script>
 </body>
 </html>
