@@ -21,27 +21,108 @@
     button:active { transform: scale(0.97); }
     .wave-svg { position: absolute; bottom: 0; left: 0; width: 100%; }
     .sun { position: absolute; width: 56px; height: 56px; background: rgba(255,255,255,0.82); border-radius: 50%; left: 50%; transform: translateX(-50%); }
+
+    /* ── OVERLAY AUTH ── */
+    .auth-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(10,25,60,0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .auth-overlay.open { display: flex; }
+
+    .auth-sheet {
+      background: #fff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 28px 28px 0 0;
+      max-height: 92dvh;
+      overflow-y: auto;
+      padding: 0 0 calc(2rem + env(safe-area-inset-bottom, 0px));
+      animation: slideUp 0.32s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .sheet-handle { width: 40px; height: 4px; background: #d0e4f8; border-radius: 4px; margin: 14px auto 20px; }
+
+    /* Tabs */
+    .tab-bar { display: flex; border-bottom: 1.5px solid #daeeff; margin: 0 1.6rem 1.4rem; }
+    .tab-btn {
+      flex: 1; padding: 10px 0; font-size: 13px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; background: none; border: none; cursor: pointer;
+      color: #90b8d8; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
+      transition: color .2s, border-color .2s;
+    }
+    .tab-btn.active { color: #0a52b8; border-bottom-color: #1e90e8; }
+
+    /* Form fields */
+    .form-body { padding: 0 1.6rem; display: flex; flex-direction: column; gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 11px; color: #6aabcc; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+    .field-row {
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 2px solid #c8e4f8; padding-bottom: 9px;
+      transition: border-color .2s;
+    }
+    .field-row:focus-within { border-color: #1e90e8; }
+    .field-row span { font-size: 17px; color: #90c8e8; flex-shrink: 0; width: 22px; text-align: center; }
+    .field-row input {
+      border: none; outline: none; flex: 1; font-size: 15px;
+      color: #0a3a70; background: transparent;
+    }
+    .field-row input::placeholder { color: #b8d8f0; }
+    .eye-btn { background: none; border: none; cursor: pointer; color: #90c8e8; font-size: 15px; padding: 0; }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .btn-submit {
+      background: linear-gradient(90deg, #1a7fe8, #3ab0ff);
+      box-shadow: 0 6px 24px rgba(26,127,232,0.3);
+      color: #fff; border: none; border-radius: 50px;
+      padding: 15px; font-size: 14px; font-weight: 700;
+      letter-spacing: 1.2px; cursor: pointer; width: 100%;
+      transition: opacity .15s, transform .13s;
+    }
+    .btn-submit:active { transform: scale(0.97); }
+    .btn-submit:hover { opacity: .9; }
+
+    .msg { font-size: 12px; border-radius: 12px; padding: 10px 14px; text-align: center; font-weight: 500; display: none; }
+    .msg.err { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; }
+    .msg.ok  { color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; }
+
+    .divider { display: flex; align-items: center; gap: 10px; }
+    .divider-line { flex: 1; height: 1px; background: #c8e4f8; }
+    .divider-txt { font-size: 11px; color: #a8cce0; white-space: nowrap; }
+
+    .btn-social {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      gap: 7px; padding: 12px 10px; border-radius: 14px;
+      background: #f5faff; border: 1.5px solid #daeeff;
+      font-size: 13px; font-weight: 600; color: #2a5080; cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-social:hover { background: #e0f0ff; }
+
+    .bottom-note { font-size: 11px; color: #90b8d8; text-align: center; line-height: 1.8; }
+    .bottom-note a { color: #1a7fe8; text-decoration: none; }
+    .switch-link { text-align: center; font-size: 13px; color: #7aaac8; }
+    .switch-link span { color: #1a7fe8; font-weight: 600; cursor: pointer; }
   </style>
 </head>
 <body>
+
+<!-- ══════════ PAGE ACCUEIL ══════════ -->
 <div class="app">
-
-  <!-- HERO -->
   <div class="hero">
-
-    <!-- Logo + Brand -->
     <div style="display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;z-index:10;">
       <svg width="72" height="68" viewBox="0 0 200 190" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="lg1" x1="100" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#ffffff"/><stop offset="1" stop-color="#a8e8ff"/>
-          </linearGradient>
-          <linearGradient id="lg2" x1="0" y1="100" x2="100" y2="190" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#a0c8f0"/><stop offset="1" stop-color="#4a90d8"/>
-          </linearGradient>
-          <linearGradient id="lg3" x1="200" y1="100" x2="100" y2="190" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#d8f0ff"/><stop offset="1" stop-color="#70c0f8"/>
-          </linearGradient>
+          <linearGradient id="lg1" x1="100" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#a8e8ff"/></linearGradient>
+          <linearGradient id="lg2" x1="0" y1="100" x2="100" y2="190" gradientUnits="userSpaceOnUse"><stop stop-color="#a0c8f0"/><stop offset="1" stop-color="#4a90d8"/></linearGradient>
+          <linearGradient id="lg3" x1="200" y1="100" x2="100" y2="190" gradientUnits="userSpaceOnUse"><stop stop-color="#d8f0ff"/><stop offset="1" stop-color="#70c0f8"/></linearGradient>
         </defs>
         <path d="M100 8 L192 168 H8 Z" fill="rgba(0,20,60,0.3)"/>
         <path d="M100 8 L116 38 L100 68 L84 38 Z" fill="url(#lg1)"/>
@@ -51,21 +132,13 @@
         <path d="M100 120 L160 168 L144 168 Z" fill="#c0e8ff" opacity="0.85"/>
         <path d="M100 120 L40 168 L56 168 Z" fill="#88c8f0" opacity="0.85"/>
       </svg>
-      <span style="font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px;">
-        Mon<span style="color:#a8e8ff;">Revenu</span>
-      </span>
+      <span style="font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px;">Mon<span style="color:#a8e8ff;">Revenu</span></span>
     </div>
-
-    <!-- Sun -->
-    <div class="sun" style="bottom: clamp(100px, 22%, 180px);"></div>
-
-    <!-- Welcome text above waves -->
+    <div class="sun" style="bottom:clamp(100px,22%,180px);"></div>
     <div style="position:absolute;bottom:clamp(52px,12%,110px);left:0;right:0;text-align:center;z-index:5;">
-      <p style="font-size:clamp(28px,6vw,42px);font-weight:700;color:#fff;letter-spacing:0.3px;">Bienvenue</p>
+      <p style="font-size:clamp(28px,6vw,42px);font-weight:700;color:#fff;">Bienvenue</p>
       <p style="font-size:clamp(13px,2.5vw,17px);color:rgba(255,255,255,0.75);margin-top:6px;">Vos finances, enfin sous contrôle</p>
     </div>
-
-    <!-- Waves -->
     <svg class="wave-svg" viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
       <path d="M0 50 Q50 20 100 42 Q150 64 200 38 Q250 12 300 38 Q350 60 400 32 L400 90 L0 90 Z" fill="rgba(255,255,255,0.18)"/>
       <path d="M0 60 Q60 38 120 56 Q180 74 240 50 Q300 26 400 54 L400 90 L0 90 Z" fill="rgba(255,255,255,0.35)"/>
@@ -73,29 +146,201 @@
     </svg>
   </div>
 
-  <!-- BOTTOM BUTTONS -->
   <div class="bottom">
-    <button
-      onclick="window.location.href='signup.html'"
-      class="btn-primary"
+    <button onclick="openAuth('register')" class="btn-primary"
       style="width:100%;padding:clamp(14px,3vh,18px) 20px;border-radius:50px;color:#fff;font-size:clamp(13px,2vw,15px);font-weight:700;letter-spacing:1.2px;">
       CRÉER UN COMPTE
     </button>
-
-    <button
-      onclick="window.location.href='login.html'"
+    <button onclick="openAuth('login')"
       style="width:100%;padding:clamp(14px,3vh,18px) 20px;border-radius:50px;background:#fff;color:#1a7fe8;font-size:clamp(13px,2vw,15px);font-weight:700;letter-spacing:1.2px;border:2px solid #b8deff;">
       SE CONNECTER
     </button>
-
     <p style="font-size:11px;color:#90b8d8;text-align:center;line-height:1.8;margin-top:4px;">
-      En continuant, vous acceptez nos
-      <a href="#" style="color:#1a7fe8;text-decoration:none;">conditions</a>
-      et notre
-      <a href="#" style="color:#1a7fe8;text-decoration:none;">politique de confidentialité</a>
+      En continuant, vous acceptez nos <a href="#" style="color:#1a7fe8;text-decoration:none;">conditions</a>
+      et notre <a href="#" style="color:#1a7fe8;text-decoration:none;">politique de confidentialité</a>
     </p>
   </div>
-
 </div>
+
+
+<!-- ══════════ AUTH OVERLAY (inclure via PHP: include 'auth_modal.php') ══════════ -->
+<div id="authOverlay" class="auth-overlay" onclick="if(event.target===this)closeAuth()">
+  <div class="auth-sheet" id="authSheet">
+    <div class="sheet-handle"></div>
+
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
+      <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">Inscription</button>
+    </div>
+
+    <!-- ── FORMULAIRE CONNEXION (inclure via PHP: include 'form_login.php') ── -->
+    <div id="formLogin" class="form-body">
+      <div class="field">
+        <label>Identifiant (Tél ou Email)</label>
+        <div class="field-row">
+          <span>✉</span>
+          <input type="text" name="identifier" id="loginId" placeholder="Votre numéro ou email" autocomplete="username"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <div class="field-row">
+          <span>🔒</span>
+          <input type="password" name="password" id="loginPwd" placeholder="••••••••" autocomplete="current-password"/>
+          <button class="eye-btn" onclick="togglePwd('loginPwd',this)" type="button">👁</button>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <a href="#" style="font-size:13px;color:#1a7fe8;font-weight:500;text-decoration:none;">Mot de passe oublié ?</a>
+      </div>
+      <div id="loginErr" class="msg err"></div>
+      <div id="loginOk"  class="msg ok">✓ Connexion réussie…</div>
+      <button class="btn-submit" onclick="handleLogin()">SE CONNECTER</button>
+      <div class="divider"><div class="divider-line"></div><span class="divider-txt">ou continuer avec</span><div class="divider-line"></div></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn-social">
+          <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google
+        </button>
+        <button class="btn-social">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+      </div>
+      <p class="switch-link">Pas encore de compte ? <span onclick="switchTab('register')">Créer un compte</span></p>
+      <p class="bottom-note">
+        <a href="#" onclick="closeAuth()">Fermer</a>
+      </p>
+    </div>
+
+    <!-- ── FORMULAIRE INSCRIPTION (inclure via PHP: include 'form_register.php') ── -->
+    <div id="formRegister" class="form-body" style="display:none;">
+      <div class="grid2">
+        <div class="field">
+          <label>Nom complet</label>
+          <div class="field-row">
+            <span>👤</span>
+            <input type="text" name="fullname" placeholder="Jean Dupont"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Téléphone</label>
+          <div class="field-row">
+            <span>📱</span>
+            <input type="tel" name="phone" placeholder="432 00 00"/>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <div class="field-row">
+          <span>✉</span>
+          <input type="email" name="email" id="regEmail" placeholder="jean@exemple.com"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <div class="field-row">
+          <span>🔒</span>
+          <input type="password" name="password" id="regPwd" placeholder="••••••••"/>
+          <button class="eye-btn" onclick="togglePwd('regPwd',this)" type="button">👁</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Date de naissance</label>
+        <div class="field-row">
+          <span>📅</span>
+          <input type="date" name="birthdate"/>
+        </div>
+      </div>
+      <div id="regErr" class="msg err"></div>
+      <div id="regOk"  class="msg ok">✓ Compte créé avec succès !</div>
+      <button class="btn-submit" onclick="handleRegister()">CRÉER MON COMPTE</button>
+      <p class="switch-link">Déjà un compte ? <span onclick="switchTab('login')">Se connecter</span></p>
+      <p class="bottom-note"><a href="#" onclick="closeAuth()">Fermer</a></p>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ JS (inclure via PHP: include 'auth.js' ou <script src="auth.js"></script>) ══════════ -->
+<script>
+  /* ── Ouvrir / Fermer ── */
+  function openAuth(tab) {
+    document.getElementById('authOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    switchTab(tab || 'login');
+  }
+  function closeAuth() {
+    document.getElementById('authOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
+
+  /* ── Tabs ── */
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('formLogin').style.display    = isLogin ? 'flex' : 'none';
+    document.getElementById('formRegister').style.display = isLogin ? 'none' : 'flex';
+    document.getElementById('tabLogin').classList.toggle('active', isLogin);
+    document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+    // Remonter en haut de la sheet
+    document.getElementById('authSheet').scrollTop = 0;
+  }
+
+  /* ── Toggle mot de passe ── */
+  function togglePwd(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁';
+  }
+
+  /* ── Connexion AJAX ── */
+  function handleLogin() {
+    const err = document.getElementById('loginErr');
+    const ok  = document.getElementById('loginOk');
+    err.style.display = 'none'; ok.style.display = 'none';
+    const id  = document.getElementById('loginId').value.trim();
+    const pwd = document.getElementById('loginPwd').value;
+    if (!id || !pwd) { showMsg(err, 'Veuillez renseigner tous les champs.'); return; }
+
+    // ── Remplacer par fetch('login.php', ...) ──
+    // fetch('login.php', { method:'POST', body: new URLSearchParams({identifier:id,password:pwd}) })
+    //   .then(r => r.text()).then(t => {
+    //     if (t.startsWith('redirect:')) { ok.style.display='block'; setTimeout(()=>window.location.href=t.slice(9),500); return; }
+    //     showMsg(err, t);
+    //   }).catch(() => showMsg(err, 'Erreur réseau.'));
+
+    // Démo
+    showMsg(ok, '✓ Connexion réussie…');
+    setTimeout(() => window.location.href = 'dashboard.php', 1000);
+  }
+
+  /* ── Inscription AJAX ── */
+  function handleRegister() {
+    const err = document.getElementById('regErr');
+    const ok  = document.getElementById('regOk');
+    err.style.display = 'none'; ok.style.display = 'none';
+
+    // ── Remplacer par fetch('registre_clients.php', ...) ──
+    // fetch('registre_clients.php', { method:'POST', body: new FormData(document.querySelector('#formRegister')) })
+    //   .then(r => r.text()).then(d => {
+    //     if (d.trim()==='success') { window.location.href='dashboard.php'; return; }
+    //     showMsg(err, d.trim());
+    //   }).catch(() => showMsg(err, 'Erreur réseau.'));
+
+    // Démo
+    showMsg(ok, '✓ Compte créé avec succès !');
+  }
+
+  function showMsg(el, txt) {
+    el.textContent = txt;
+    el.style.display = 'block';
+  }
+</script>
+
 </body>
 </html>
