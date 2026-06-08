@@ -2,613 +2,351 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-  <meta name="theme-color" content="#1e90e8"/>
-  <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <title>MonRevenu – Inscription</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-
-  <!-- Google Sign-In SDK (optionnel pour l'inscription sociale) -->
-  <meta name="google-signin-client_id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"/>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#1565C0"/>
+  <title>MonRevenu – Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     :root {
-      --blue-dark:  #0a3470;
-      --blue-mid:   #1e90e8;
-      --blue-light: #3ab0ff;
-      --blue-pale:  #daeeff;
-      --bg:         #f0f8ff;
-      --white:      #ffffff;
-      --text-main:  #0a3470;
-      --text-sub:   #6aabcc;
-      --err:        #dc2626;
+      --blue:       #1565C0;
+      --blue-light: #1E88E5;
+      --blue-dark:  #0D47A1;
+      --bg:         #F0F4F8;
+      --card:       #FFFFFF;
+      --text:       #1A1A2E;
+      --muted:      #6B7280;
+      --border:     #E5E7EB;
+      --green:      #16A34A;
+      --red:        #DC2626;
     }
-    html, body {
-      width: 100%; height: 100%; overflow: hidden;
+
+    body {
       font-family: 'Sora', sans-serif;
       background: var(--bg);
-    }
-    .page {
-      width: 100vw; height: 100vh; height: 100dvh;
-      display: flex; flex-direction: column; overflow: hidden;
+      color: var(--text);
+      min-height: 100vh;
+      max-width: 480px;
+      margin: 0 auto;
     }
 
-    /* ── HERO (identique) ── */
-    .hero {
-      flex-shrink: 0;
-      background: linear-gradient(150deg, #5bcfff 0%, #1e90e8 50%, #0a52b8 100%);
-      position: relative; overflow: hidden;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding-top: max(36px, env(safe-area-inset-top, 36px));
-      padding-bottom: 58px;
-      min-height: 200px;
+    /* ── HEADER ── */
+    .header {
+      background: var(--blue);
+      padding: 20px 20px 60px;
+      position: relative;
     }
-    .hero-brand {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 10px;
-      position: relative; z-index: 5;
-      animation: fadeDown .5s ease both;
-    }
-    @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:none; } }
-    .brand-name { font-size: clamp(24px,5vw,32px); font-weight: 800; color:#fff; letter-spacing:-0.5px; }
-    .brand-name span { color: #a8e8ff; }
-    .brand-sub { font-size:13px; color:rgba(255,255,255,.72); font-weight:500; }
-    .deco { position:absolute; border-radius:50%; }
-    .deco1 { width:80px; height:80px; background:rgba(255,255,255,.18); right:-18px; top:16px; }
-    .deco2 { width:40px; height:40px; background:rgba(255,255,255,.13); left:20px; bottom:32px; }
-    .wave-svg { position:absolute; bottom:-1px; left:0; width:100%; }
-
-    /* ── CARD ── */
-    .card-wrap {
-      flex:1; overflow-y:auto;
-      display:flex; flex-direction:column; align-items:center;
-      padding: 0 20px calc(20px + env(safe-area-inset-bottom, 0px));
-    }
-    .card {
-      width:100%; max-width:440px;
-      background:var(--white); border-radius:24px;
-      box-shadow:0 8px 40px rgba(26,127,232,.12);
-      padding:30px 28px 28px;
-      margin-top:-28px; position:relative; z-index:10;
-      animation: slideUp .4s cubic-bezier(.22,1,.36,1) both;
-    }
-    @keyframes slideUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:none; } }
-    .card-title { font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:5px; }
-    .card-hint  { font-size:12px; color:var(--text-sub); margin-bottom:24px; font-weight:500; }
-
-    /* ── CHAMPS ── */
-    .field { margin-bottom:18px; }
-    .field label {
-      display:block; font-size:10.5px; color:var(--text-sub);
-      font-weight:700; letter-spacing:.6px; text-transform:uppercase; margin-bottom:6px;
-    }
-    .field-row {
-      display:flex; align-items:center; gap:10px;
-      border:1.8px solid var(--blue-pale); border-radius:14px;
-      padding:12px 14px; background:#f5faff;
-      transition:border-color .2s, box-shadow .2s;
-    }
-    .field-row:focus-within {
-      border-color:var(--blue-mid);
-      box-shadow:0 0 0 4px rgba(30,144,232,.10);
-      background:var(--white);
-    }
-    .field-icon { flex-shrink:0; width:20px; display:flex; align-items:center; justify-content:center; color:#90c8e8; }
-    .field-row input {
-      border:none; outline:none; flex:1;
-      font-size:15px; font-family:'Sora',sans-serif;
-      color:var(--text-main); background:transparent; min-width:0;
-    }
-    .field-row input::placeholder { color:#b8d8f0; }
-    .eye-btn {
-      background:none; border:none; cursor:pointer;
-      color:#90c8e8; padding:0; line-height:1; flex-shrink:0;
-      display:flex; align-items:center;
-      transition:color .15s;
-    }
-    .eye-btn:hover { color:var(--blue-mid); }
-
-    /* Case à cocher CGU */
-    .checkbox-field {
+    .header-top {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 15px; color: #fff;
+    }
+    .user-name { color: #fff; font-size: 14px; font-weight: 500; }
+    .user-phone { color: rgba(255,255,255,0.7); font-size: 12px; }
+    .header-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .header-icon svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── BALANCE CARD ── */
+    .balance-card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 24px;
+      margin: 0 16px;
+      margin-top: -44px;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .balance-label { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 6px; }
+    .balance-amount { font-size: 36px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 16px; }
+    .add-money-btn {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      background: var(--blue); color: #fff;
+      border: none; border-radius: 10px;
+      padding: 12px; width: 100%;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .add-money-btn:hover { background: var(--blue-dark); }
+    .add-money-btn svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── SECTIONS ── */
+    .section { padding: 20px 16px 0; }
+    .section-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+
+    /* ── QUICK ACTIONS ── */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .action-item {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      cursor: pointer;
+    }
+    .action-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .action-icon:hover { background: #EFF6FF; }
+    .action-icon svg { width: 22px; height: 22px; stroke: var(--blue); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .action-label { font-size: 11px; font-weight: 500; color: var(--muted); }
+
+    /* ── SERVICES ── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin: 12px 0 20px 0;
     }
-    .checkbox-field input {
-      width: 18px;
-      height: 18px;
-      margin-top: 2px;
-      accent-color: var(--blue-mid);
-      cursor: pointer;
+    .service-item {
+      background: var(--card);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 14px 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      cursor: pointer; transition: box-shadow 0.15s;
     }
-    .checkbox-field label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-sub);
-      line-height: 1.4;
-      cursor: pointer;
+    .service-item:hover { box-shadow: 0 2px 12px rgba(21,101,192,0.12); }
+    .service-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
     }
-    .checkbox-field a {
-      color: var(--blue-mid);
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .checkbox-field a:hover { text-decoration: underline; }
+    .service-icon svg { width: 22px; height: 22px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .service-label { font-size: 11px; font-weight: 500; color: var(--muted); text-align: center; }
 
-    /* Messages */
-    .msg {
-      font-size:12px; border-radius:12px; padding:10px 14px;
-      text-align:center; font-weight:600; display:none; margin-bottom:14px;
+    /* ── TRANSACTIONS ── */
+    .tx-list { display: flex; flex-direction: column; gap: 2px; }
+    .tx-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border-radius: 12px;
+      padding: 12px 14px;
     }
-    .msg.err { color:var(--err); background:#fef2f2; border:1px solid #fecaca; }
-    .msg.ok  { color:#059669;    background:#ecfdf5; border:1px solid #a7f3d0; }
-
-    /* Bouton principal */
-    .btn-submit {
-      width:100%; padding:15px;
-      background:linear-gradient(90deg, #1a7fe8, #3ab0ff);
-      box-shadow:0 6px 24px rgba(26,127,232,.32);
-      color:#fff; border:none; border-radius:50px;
-      font-size:14px; font-weight:700; letter-spacing:1.2px;
-      font-family:'Sora',sans-serif; cursor:pointer;
-      transition:opacity .15s, transform .13s;
-      display:flex; align-items:center; justify-content:center; gap:8px;
+    .tx-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .btn-submit:hover { opacity:.9; }
-    .btn-submit:active { transform:scale(0.97); }
-    .btn-submit:disabled { opacity:.6; cursor:not-allowed; }
+    .tx-icon svg { width: 18px; height: 18px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .tx-info { flex: 1; }
+    .tx-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .tx-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .tx-amount { font-size: 14px; font-weight: 700; }
+    .tx-amount.credit { color: var(--green); }
+    .tx-amount.debit  { color: var(--red); }
 
-    /* Séparateur */
-    .divider { display:flex; align-items:center; gap:10px; margin:20px 0 16px; }
-    .divider-line { flex:1; height:1px; background:var(--blue-pale); }
-    .divider-txt  { font-size:11px; color:#a8cce0; white-space:nowrap; }
-
-    /* Boutons sociaux */
-    .btn-google {
-      width:100%; display:flex; align-items:center; justify-content:center;
-      gap:10px; padding:13px 16px; border-radius:14px;
-      background:#fff; border:1.5px solid #dadce0;
-      font-size:14px; font-weight:600; color:#3c4043;
-      font-family:'Sora',sans-serif; cursor:pointer;
-      box-shadow:0 1px 3px rgba(0,0,0,.08);
-      transition:background .15s, box-shadow .15s;
-      margin-bottom:12px;
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 480px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-around; align-items: center;
+      padding: 10px 0 16px;
+      z-index: 100;
     }
-    .btn-google:hover { background:#f8f9fa; box-shadow:0 2px 8px rgba(0,0,0,.12); }
-    .btn-google:active { transform:scale(0.98); }
-
-    .btn-facebook {
-      width:100%; display:flex; align-items:center; justify-content:center;
-      gap:10px; padding:13px 16px; border-radius:14px;
-      background:#1877F2; border:none;
-      font-size:14px; font-weight:600; color:#fff;
-      font-family:'Sora',sans-serif; cursor:pointer;
-      box-shadow:0 2px 8px rgba(24,119,242,.30);
-      transition:background .15s, box-shadow .15s;
-      margin-bottom:20px;
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      cursor: pointer; min-width: 56px;
     }
-    .btn-facebook:hover { background:#166fe5; }
-    .btn-facebook:active { transform:scale(0.98); }
+    .nav-item svg { width: 22px; height: 22px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-item span { font-size: 10px; font-weight: 500; }
+    .nav-item.active svg { stroke: var(--blue); }
+    .nav-item.active span { color: var(--blue); }
+    .nav-item:not(.active) svg { stroke: var(--muted); }
+    .nav-item:not(.active) span { color: var(--muted); }
 
-    .bottom-note { text-align:center; font-size:12px; color:var(--text-sub); font-weight:500; }
-    .bottom-note a { color:var(--blue-mid); font-weight:700; text-decoration:none; }
-
-    .legal { text-align:center; font-size:10.5px; color:#a8cce0; line-height:1.7; margin-top:14px; padding:0 4px; }
-    .legal a { color:var(--blue-mid); text-decoration:none; }
-
-    /* Spinner */
-    .spinner {
-      width:16px; height:16px; flex-shrink:0;
-      border:2px solid rgba(255,255,255,.4);
-      border-top-color:#fff; border-radius:50%;
-      animation:spin .6s linear infinite;
-    }
-    @keyframes spin { to { transform:rotate(360deg); } }
+    .spacer { height: 80px; }
   </style>
 </head>
 <body>
 
-<div class="page">
-
-  <!-- HERO (identique à la maquette) -->
-  <div class="hero">
-    <div class="deco deco1"></div>
-    <div class="deco deco2"></div>
-    <div class="hero-brand">
-      <svg width="54" height="50" viewBox="0 0 200 190" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="lg1" x1="100" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#a8e8ff"/></linearGradient>
-          <linearGradient id="lg2" x1="0" y1="100" x2="100" y2="190" gradientUnits="userSpaceOnUse"><stop stop-color="#a0c8f0"/><stop offset="1" stop-color="#4a90d8"/></linearGradient>
-          <linearGradient id="lg3" x1="200" y1="100" x2="100" y2="190" gradientUnits="userSpaceOnUse"><stop stop-color="#d8f0ff"/><stop offset="1" stop-color="#70c0f8"/></linearGradient>
-        </defs>
-        <path d="M100 8 L192 168 H8 Z" fill="rgba(0,20,60,0.3)"/>
-        <path d="M100 8 L116 38 L100 68 L84 38 Z" fill="url(#lg1)"/>
-        <path d="M100 8 L192 168 L160 168 L100 60 Z" fill="url(#lg3)"/>
-        <path d="M100 8 L8 168 L40 168 L100 60 Z" fill="url(#lg2)"/>
-        <path d="M8 168 L56 168 L100 144 L144 168 L192 168 L160 168 L100 120 L40 168 Z" fill="url(#lg3)"/>
-        <path d="M100 120 L160 168 L144 168 Z" fill="#c0e8ff" opacity="0.85"/>
-        <path d="M100 120 L40 168 L56 168 Z" fill="#88c8f0" opacity="0.85"/>
-      </svg>
-      <div class="brand-name">Mon<span>Revenu</span></div>
-      <div class="brand-sub">Vos finances, enfin sous contrôle</div>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="user-info">
+      <div class="avatar">MR</div>
+      <div>
+        <div class="user-name">Moussa Diallo</div>
+        <div class="user-phone">+221 77 000 00 00</div>
+      </div>
     </div>
-    <svg class="wave-svg" viewBox="0 0 400 56" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      <path d="M0 34 Q60 14 120 30 Q180 46 240 22 Q300 0 400 24 L400 56 L0 56 Z" fill="rgba(255,255,255,.18)"/>
-      <path d="M0 42 Q80 24 160 38 Q230 52 300 30 Q350 14 400 36 L400 56 L0 56 Z" fill="rgba(255,255,255,.30)"/>
-      <path d="M0 50 Q100 36 200 48 Q300 60 400 44 L400 56 L0 56 Z" fill="#f0f8ff"/>
-    </svg>
-  </div>
-
-  <!-- CARD INSCRIPTION -->
-  <div class="card-wrap">
-    <div class="card">
-      <div class="card-title">Créer un compte</div>
-      <div class="card-hint">Rejoignez MonRevenu et maîtrisez vos finances</div>
-
-      <!-- Champ Nom complet -->
-      <div class="field">
-        <label>Nom complet</label>
-        <div class="field-row">
-          <span class="field-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </span>
-          <input type="text" id="fullName" placeholder="Jean Dupont" autocomplete="name">
-        </div>
-      </div>
-
-      <!-- Champ Email -->
-      <div class="field">
-        <label>Adresse email</label>
-        <div class="field-row">
-          <span class="field-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="20" height="16" rx="2"/>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-            </svg>
-          </span>
-          <input type="email" id="email" placeholder="exemple@domaine.com" autocomplete="email">
-        </div>
-      </div>
-
-      <!-- Champ Téléphone -->
-      <div class="field">
-        <label>Numéro de téléphone</label>
-        <div class="field-row">
-          <span class="field-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </svg>
-          </span>
-          <input type="tel" id="phone" placeholder="77 000 00 00" autocomplete="tel">
-        </div>
-      </div>
-
-      <!-- Champ Mot de passe -->
-      <div class="field">
-        <label>Mot de passe</label>
-        <div class="field-row">
-          <span class="field-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-          </span>
-          <input type="password" id="password" placeholder="••••••••" autocomplete="new-password">
-          <button class="eye-btn" onclick="togglePassword('password', 'eyeOpenPwd', 'eyeOffPwd')" type="button" aria-label="Afficher/masquer">
-            <svg id="eyeOpenPwd" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <svg id="eyeOffPwd" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-              <line x1="1" y1="1" x2="23" y2="23"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Champ Confirmation mot de passe -->
-      <div class="field">
-        <label>Confirmer le mot de passe</label>
-        <div class="field-row">
-          <span class="field-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-            </svg>
-          </span>
-          <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="off">
-          <button class="eye-btn" onclick="togglePassword('confirmPassword', 'eyeOpenConfirm', 'eyeOffConfirm')" type="button" aria-label="Afficher/masquer">
-            <svg id="eyeOpenConfirm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <svg id="eyeOffConfirm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-              <line x1="1" y1="1" x2="23" y2="23"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Acceptation CGU -->
-      <div class="checkbox-field">
-        <input type="checkbox" id="acceptTerms">
-        <label for="acceptTerms">
-          J'accepte les <a href="#">conditions générales d'utilisation</a> et la <a href="#">politique de confidentialité</a>
-        </label>
-      </div>
-
-      <!-- Zone de message -->
-      <div id="registerErr" class="msg err"></div>
-      <div id="registerOk" class="msg ok"></div>
-
-      <!-- Bouton S'inscrire -->
-      <button class="btn-submit" id="btnRegister" onclick="handleRegister()">
-        S'INSCRIRE
-      </button>
-
-      <!-- Séparateur -->
-      <div class="divider">
-        <div class="divider-line"></div>
-        <span class="divider-txt">ou s'inscrire avec</span>
-        <div class="divider-line"></div>
-      </div>
-
-      <!-- Boutons sociaux -->
-      <button class="btn-google" onclick="signUpWithGoogle()">
-        <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-          <path fill="none" d="M0 0h48v48H0z"/>
-        </svg>
-        Continuer avec Google
-      </button>
-
-      <button class="btn-facebook" onclick="signUpWithFacebook()">
-        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#fff" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.93-1.956 1.886v2.265h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
-        </svg>
-        Continuer avec Facebook
-      </button>
-
-      <!-- Lien vers la page de connexion (optionnel mais pas de formulaire de connexion ici) -->
-      <div class="bottom-note">
-        Déjà un compte ? <a href="login.html">Se connecter</a>
-      </div>
-
-      <p class="legal">
-        En créant un compte, vous acceptez nos <a href="#">conditions d'utilisation</a>
-        et notre <a href="#">politique de confidentialité</a>
-      </p>
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </div>
   </div>
 </div>
 
-<script>
-  // Configuration (à adapter avec vos endpoints réels)
-  const CONFIG = {
-    GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
-    REGISTER_URL: 'register.php',           // URL de votre backend d'inscription classique
-    GOOGLE_REGISTER_URL: 'google_register.php',
-    DASHBOARD_URL: 'dashboard.php',
-  };
+<!-- BALANCE CARD -->
+<div class="balance-card">
+  <div class="balance-label">Solde disponible</div>
+  <div class="balance-amount">7 500,00 FCFA</div>
+  <button class="add-money-btn">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Ajouter de l'argent
+  </button>
+</div>
 
-  // Afficher/masquer mot de passe
-  function togglePassword(inputId, eyeOpenId, eyeOffId) {
-    const input = document.getElementById(inputId);
-    const eyeOpen = document.getElementById(eyeOpenId);
-    const eyeOff = document.getElementById(eyeOffId);
-    if (input.type === 'password') {
-      input.type = 'text';
-      eyeOpen.style.display = 'none';
-      eyeOff.style.display = 'block';
-    } else {
-      input.type = 'password';
-      eyeOpen.style.display = 'block';
-      eyeOff.style.display = 'none';
-    }
-  }
+<!-- QUICK ACTIONS -->
+<div class="section">
+  <div class="section-title">Actions rapides</div>
+  <div class="quick-actions">
+    <div class="action-item">
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <span class="action-label">Recharge</span>
+    </div>
+    <div class="action-item">
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <span class="action-label">Historique</span>
+    </div>
+    <div class="action-item">
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <span class="action-label">Transfert</span>
+    </div>
+    <div class="action-item">
+      <div class="action-icon">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
+      <span class="action-label">Parrainer</span>
+    </div>
+  </div>
+</div>
 
-  // Utilitaires d'affichage
-  function showMsg(el, txt, isError = true) {
-    el.textContent = txt;
-    el.style.display = 'block';
-    if (isError) {
-      document.getElementById('registerOk').style.display = 'none';
-    } else {
-      document.getElementById('registerErr').style.display = 'none';
-    }
-  }
+<!-- SERVICES -->
+<div class="section">
+  <div class="section-title">Services</div>
+  <div class="services-grid">
 
-  function setLoading(btn, on) {
-    if (on) {
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>Inscription...';
-    } else {
-      btn.disabled = false;
-      btn.innerHTML = "S'INSCRIRE";
-    }
-  }
+    <div class="service-item">
+      <div class="service-icon" style="background:#EFF6FF;">
+        <svg viewBox="0 0 24 24" style="stroke:#1565C0;"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
+      <span class="service-label">Prépayé</span>
+    </div>
 
-  // Validation des champs
-  function validateEmail(email) {
-    return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email);
-  }
-  function validatePhone(phone) {
-    return /^[\d\s\-+]{6,20}$/.test(phone);
-  }
-  function validateFullName(name) {
-    return name.trim().length >= 2;
-  }
+    <div class="service-item">
+      <div class="service-icon" style="background:#FFF7ED;">
+        <svg viewBox="0 0 24 24" style="stroke:#EA580C;"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <span class="service-label">Électricité</span>
+    </div>
 
-  // Gestion principale de l'inscription classique
-  function handleRegister() {
-    const errEl = document.getElementById('registerErr');
-    const okEl = document.getElementById('registerOk');
-    const btn = document.getElementById('btnRegister');
-    errEl.style.display = 'none';
-    okEl.style.display = 'none';
+    <div class="service-item">
+      <div class="service-icon" style="background:#F0FDF4;">
+        <svg viewBox="0 0 24 24" style="stroke:#16A34A;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <span class="service-label">Internet</span>
+    </div>
 
-    const fullName = document.getElementById('fullName').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const pwd = document.getElementById('password').value;
-    const confirmPwd = document.getElementById('confirmPassword').value;
-    const acceptTerms = document.getElementById('acceptTerms').checked;
+    <div class="service-item">
+      <div class="service-icon" style="background:#FFF1F2;">
+        <svg viewBox="0 0 24 24" style="stroke:#E11D48;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <span class="service-label">Transport</span>
+    </div>
 
-    if (!fullName) return showMsg(errEl, 'Veuillez indiquer votre nom complet.');
-    if (!validateFullName(fullName)) return showMsg(errEl, 'Nom complet trop court (minimum 2 caractères).');
-    if (!email) return showMsg(errEl, 'Adresse email requise.');
-    if (!validateEmail(email)) return showMsg(errEl, 'Format d\'email invalide (exemple@domaine.com).');
-    if (!phone) return showMsg(errEl, 'Numéro de téléphone requis.');
-    if (!validatePhone(phone)) return showMsg(errEl, 'Numéro de téléphone invalide (6 à 20 chiffres, espaces, +, -).');
-    if (!pwd) return showMsg(errEl, 'Mot de passe requis.');
-    if (pwd.length < 6) return showMsg(errEl, 'Le mot de passe doit contenir au moins 6 caractères.');
-    if (pwd !== confirmPwd) return showMsg(errEl, 'Les mots de passe ne correspondent pas.');
-    if (!acceptTerms) return showMsg(errEl, 'Vous devez accepter les conditions générales.');
+    <div class="service-item">
+      <div class="service-icon" style="background:#F5F3FF;">
+        <svg viewBox="0 0 24 24" style="stroke:#7C3AED;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <span class="service-label">Assurance</span>
+    </div>
 
-    setLoading(btn, true);
+    <div class="service-item">
+      <div class="service-icon" style="background:#EFF6FF;">
+        <svg viewBox="0 0 24 24" style="stroke:#1565C0;"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+      </div>
+      <span class="service-label">Eau</span>
+    </div>
 
-    // --- Exemple d'appel réel (décommentez et adaptez votre endpoint)
-    /*
-    fetch(CONFIG.REGISTER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        fullname: fullName,
-        email: email,
-        phone: phone,
-        password: pwd
-      })
-    })
-    .then(r => r.text())
-    .then(resp => {
-      if (resp.startsWith('redirect:')) {
-        showMsg(okEl, '✓ Compte créé avec succès ! Redirection...', false);
-        setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 800);
-      } else {
-        showMsg(errEl, resp.trim() || 'Erreur lors de l\'inscription.');
-        setLoading(btn, false);
-      }
-    })
-    .catch(() => { showMsg(errEl, 'Erreur réseau. Réessayez.'); setLoading(btn, false); });
-    */
+  </div>
+</div>
 
-    // Simulation de succès (à remplacer par l'appel réel)
-    setTimeout(() => {
-      showMsg(okEl, '✓ Inscription réussie ! Bienvenue sur MonRevenu.', false);
-      setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 1000);
-    }, 1200);
-  }
+<!-- TRANSACTIONS RÉCENTES -->
+<div class="section">
+  <div class="section-title">Transactions récentes</div>
+  <div class="tx-list">
 
-  // Inscription avec Google
-  function signUpWithGoogle() {
-    if (typeof google === 'undefined') {
-      showMsg(document.getElementById('registerErr'), 'Google Sign-In non disponible. Vérifiez votre connexion.');
-      return;
-    }
-    const client = google.accounts.oauth2.initTokenClient({
-      client_id: CONFIG.GOOGLE_CLIENT_ID,
-      scope: 'email profile openid',
-      callback: (tokenResponse) => {
-        if (tokenResponse.error) {
-          showMsg(document.getElementById('registerErr'), 'Erreur Google : ' + tokenResponse.error);
-          return;
-        }
-        sendGoogleRegisterToken(tokenResponse.access_token);
-      }
-    });
-    client.requestAccessToken();
-  }
+    <div class="tx-item">
+      <div class="tx-icon" style="background:#F0FDF4;">
+        <svg viewBox="0 0 24 24" style="stroke:#16A34A;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      </div>
+      <div class="tx-info">
+        <div class="tx-name">Dépôt reçu</div>
+        <div class="tx-date">Aujourd'hui, 14:32</div>
+      </div>
+      <div class="tx-amount credit">+5 000 F</div>
+    </div>
 
-  function sendGoogleRegisterToken(token) {
-    const errEl = document.getElementById('registerErr');
-    const okEl = document.getElementById('registerOk');
-    // --- Appel backend réel (décommentez)
-    /*
-    fetch(CONFIG.GOOGLE_REGISTER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ google_token: token })
-    })
-    .then(r => r.text())
-    .then(resp => {
-      if (resp.startsWith('redirect:')) {
-        showMsg(okEl, '✓ Inscription Google réussie !', false);
-        setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
-      } else {
-        showMsg(errEl, resp.trim() || 'Erreur lors de l\'inscription avec Google.');
-      }
-    })
-    .catch(() => showMsg(errEl, 'Erreur réseau.'));
-    */
-    // Simulation
-    showMsg(okEl, '✓ Inscription Google réussie (démo) !', false);
-    setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
-  }
+    <div class="tx-item">
+      <div class="tx-icon" style="background:#FFF7ED;">
+        <svg viewBox="0 0 24 24" style="stroke:#EA580C;"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div class="tx-info">
+        <div class="tx-name">Facture électricité</div>
+        <div class="tx-date">Hier, 09:15</div>
+      </div>
+      <div class="tx-amount debit">-2 500 F</div>
+    </div>
 
-  // Inscription avec Facebook
-  function signUpWithFacebook() {
-    const errEl = document.getElementById('registerErr');
-    if (typeof FB === 'undefined') {
-      showMsg(errEl, 'Facebook SDK non chargé. Ajoutez le SDK Facebook pour activer cette fonction.');
-      return;
-    }
-    FB.login(function(response) {
-      if (response.authResponse) {
-        // --- Appel backend réel
-        /*
-        fetch(CONFIG.REGISTER_URL.replace('register', 'facebook_register'), {
-          method: 'POST',
-          body: new URLSearchParams({ fb_token: response.authResponse.accessToken })
-        })
-        .then(r => r.text())
-        .then(resp => {
-          if (resp.startsWith('redirect:')) {
-            showMsg(document.getElementById('registerOk'), '✓ Inscription Facebook réussie !', false);
-            setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
-          } else {
-            showMsg(errEl, resp.trim() || 'Erreur Facebook.');
-          }
-        });
-        */
-        // Simulation
-        showMsg(document.getElementById('registerOk'), '✓ Inscription Facebook réussie (démo) !', false);
-        setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
-      } else {
-        showMsg(errEl, 'Connexion Facebook annulée ou refusée.');
-      }
-    }, { scope: 'public_profile,email' });
-  }
+    <div class="tx-item">
+      <div class="tx-icon" style="background:#EFF6FF;">
+        <svg viewBox="0 0 24 24" style="stroke:#1565C0;"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
+      <div class="tx-info">
+        <div class="tx-name">Recharge Orange</div>
+        <div class="tx-date">22 mai, 17:00</div>
+      </div>
+      <div class="tx-amount debit">-1 000 F</div>
+    </div>
 
-  // Soumission avec la touche Entrée
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      const active = document.activeElement;
-      if (active && active.tagName === 'INPUT' && !active.closest('.eye-btn')) {
-        handleRegister();
-      }
-    }
-  });
-</script>
+  </div>
+</div>
 
-<!-- (Optionnel) SDK Facebook – à décommenter et configurer avec votre App ID -->
-<!--
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v17.0&appId=VOTRE_APP_ID&autoLogAppEvents=1"></script>
--->
+<div class="spacer"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Accueil</span>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <span>Historique</span>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Support</span>
+  </div>
+  <div class="nav-item">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+    <span>Profil</span>
+  </div>
+</nav>
+
 </body>
 </html>
