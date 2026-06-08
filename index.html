@@ -7,118 +7,197 @@
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <title>MonRevenu</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <title>MonRevenu – Connexion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- Google Sign-In SDK -->
+  <!-- Remplacer YOUR_GOOGLE_CLIENT_ID par votre vrai Client ID depuis console.cloud.google.com -->
+  <meta name="google-signin-client_id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"/>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-    html, body { width: 100%; height: 100%; overflow: hidden; }
-    .app { width: 100vw; height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-    .hero { flex: 1; background: linear-gradient(160deg, #5bcfff 0%, #1e90e8 45%, #0a52b8 100%); position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: max(48px, env(safe-area-inset-top, 48px)); }
-    .bottom { flex-shrink: 0; background: #f0f8ff; padding: 2rem 1.8rem calc(2rem + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 14px; }
-    .btn-primary { background: linear-gradient(90deg, #1a7fe8, #3ab0ff); box-shadow: 0 6px 24px rgba(26,127,232,0.35); }
-    button { transition: transform 0.13s, opacity 0.15s; cursor: pointer; border: none; outline: none; }
-    button:active { transform: scale(0.97); }
-    .wave-svg { position: absolute; bottom: 0; left: 0; width: 100%; }
-    .sun { position: absolute; width: 56px; height: 56px; background: rgba(255,255,255,0.82); border-radius: 50%; left: 50%; transform: translateX(-50%); }
-
-    /* ── OVERLAY AUTH ── */
-    .auth-overlay {
-      display: none;
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(10,25,60,0.55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      align-items: flex-end;
-      justify-content: center;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue-dark:  #0a3470;
+      --blue-mid:   #1e90e8;
+      --blue-light: #3ab0ff;
+      --blue-pale:  #daeeff;
+      --bg:         #f0f8ff;
+      --white:      #ffffff;
+      --text-main:  #0a3470;
+      --text-sub:   #6aabcc;
+      --err:        #dc2626;
     }
-    .auth-overlay.open { display: flex; }
-
-    .auth-sheet {
-      background: #fff;
-      width: 100%;
-      max-width: 480px;
-      border-radius: 28px 28px 0 0;
-      max-height: 92dvh;
-      overflow-y: auto;
-      padding: 0 0 calc(2rem + env(safe-area-inset-bottom, 0px));
-      animation: slideUp 0.32s cubic-bezier(.22,1,.36,1);
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
     }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-    .sheet-handle { width: 40px; height: 4px; background: #d0e4f8; border-radius: 4px; margin: 14px auto 20px; }
-
-    /* Tabs */
-    .tab-bar { display: flex; border-bottom: 1.5px solid #daeeff; margin: 0 1.6rem 1.4rem; }
-    .tab-btn {
-      flex: 1; padding: 10px 0; font-size: 13px; font-weight: 700; letter-spacing: .08em;
-      text-transform: uppercase; background: none; border: none; cursor: pointer;
-      color: #90b8d8; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px;
-      transition: color .2s, border-color .2s;
+    .page {
+      width: 100vw; height: 100vh; height: 100dvh;
+      display: flex; flex-direction: column; overflow: hidden;
     }
-    .tab-btn.active { color: #0a52b8; border-bottom-color: #1e90e8; }
 
-    /* Form fields */
-    .form-body { padding: 0 1.6rem; display: flex; flex-direction: column; gap: 16px; }
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-size: 11px; color: #6aabcc; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; }
+    /* ── HERO ── */
+    .hero {
+      flex-shrink: 0;
+      background: linear-gradient(150deg, #5bcfff 0%, #1e90e8 50%, #0a52b8 100%);
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding-top: max(36px, env(safe-area-inset-top, 36px));
+      padding-bottom: 58px;
+      min-height: 200px;
+    }
+    .hero-brand {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+      position: relative; z-index: 5;
+      animation: fadeDown .5s ease both;
+    }
+    @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:none; } }
+    .brand-name { font-size: clamp(24px,5vw,32px); font-weight: 800; color:#fff; letter-spacing:-0.5px; }
+    .brand-name span { color: #a8e8ff; }
+    .brand-sub { font-size:13px; color:rgba(255,255,255,.72); font-weight:500; }
+    .deco { position:absolute; border-radius:50%; }
+    .deco1 { width:80px; height:80px; background:rgba(255,255,255,.18); right:-18px; top:16px; }
+    .deco2 { width:40px; height:40px; background:rgba(255,255,255,.13); left:20px; bottom:32px; }
+    .wave-svg { position:absolute; bottom:-1px; left:0; width:100%; }
+
+    /* ── CARD ── */
+    .card-wrap {
+      flex:1; overflow-y:auto;
+      display:flex; flex-direction:column; align-items:center;
+      padding: 0 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    }
+    .card {
+      width:100%; max-width:440px;
+      background:var(--white); border-radius:24px;
+      box-shadow:0 8px 40px rgba(26,127,232,.12);
+      padding:30px 28px 28px;
+      margin-top:-28px; position:relative; z-index:10;
+      animation: slideUp .4s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes slideUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:none; } }
+    .card-title { font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:5px; }
+    .card-hint  { font-size:12px; color:var(--text-sub); margin-bottom:24px; font-weight:500; }
+
+    /* ── FIELDS ── */
+    .field { margin-bottom:18px; }
+    .field label {
+      display:block; font-size:10.5px; color:var(--text-sub);
+      font-weight:700; letter-spacing:.6px; text-transform:uppercase; margin-bottom:6px;
+    }
     .field-row {
-      display: flex; align-items: center; gap: 10px;
-      border-bottom: 2px solid #c8e4f8; padding-bottom: 9px;
-      transition: border-color .2s;
+      display:flex; align-items:center; gap:10px;
+      border:1.8px solid var(--blue-pale); border-radius:14px;
+      padding:12px 14px; background:#f5faff;
+      transition:border-color .2s, box-shadow .2s;
     }
-    .field-row:focus-within { border-color: #1e90e8; }
-    .field-row span { font-size: 17px; color: #90c8e8; flex-shrink: 0; width: 22px; text-align: center; }
+    .field-row:focus-within {
+      border-color:var(--blue-mid);
+      box-shadow:0 0 0 4px rgba(30,144,232,.10);
+      background:var(--white);
+    }
+    .field-icon { flex-shrink:0; width:20px; display:flex; align-items:center; justify-content:center; color:#90c8e8; }
     .field-row input {
-      border: none; outline: none; flex: 1; font-size: 15px;
-      color: #0a3a70; background: transparent;
+      border:none; outline:none; flex:1;
+      font-size:15px; font-family:'Sora',sans-serif;
+      color:var(--text-main); background:transparent; min-width:0;
     }
-    .field-row input::placeholder { color: #b8d8f0; }
-    .eye-btn { background: none; border: none; cursor: pointer; color: #90c8e8; font-size: 15px; padding: 0; }
+    .field-row input::placeholder { color:#b8d8f0; }
+    .eye-btn {
+      background:none; border:none; cursor:pointer;
+      color:#90c8e8; padding:0; line-height:1; flex-shrink:0;
+      display:flex; align-items:center;
+      transition:color .15s;
+    }
+    .eye-btn:hover { color:var(--blue-mid); }
 
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .forgot-row { text-align:right; margin-top:-8px; margin-bottom:20px; }
+    .forgot-row a { font-size:12px; color:var(--blue-mid); font-weight:600; text-decoration:none; }
 
+    .msg {
+      font-size:12px; border-radius:12px; padding:10px 14px;
+      text-align:center; font-weight:600; display:none; margin-bottom:14px;
+    }
+    .msg.err { color:var(--err); background:#fef2f2; border:1px solid #fecaca; }
+    .msg.ok  { color:#059669;    background:#ecfdf5; border:1px solid #a7f3d0; }
+
+    /* ── BOUTON PRINCIPAL ── */
     .btn-submit {
-      background: linear-gradient(90deg, #1a7fe8, #3ab0ff);
-      box-shadow: 0 6px 24px rgba(26,127,232,0.3);
-      color: #fff; border: none; border-radius: 50px;
-      padding: 15px; font-size: 14px; font-weight: 700;
-      letter-spacing: 1.2px; cursor: pointer; width: 100%;
-      transition: opacity .15s, transform .13s;
+      width:100%; padding:15px;
+      background:linear-gradient(90deg, #1a7fe8, #3ab0ff);
+      box-shadow:0 6px 24px rgba(26,127,232,.32);
+      color:#fff; border:none; border-radius:50px;
+      font-size:14px; font-weight:700; letter-spacing:1.2px;
+      font-family:'Sora',sans-serif; cursor:pointer;
+      transition:opacity .15s, transform .13s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
     }
-    .btn-submit:active { transform: scale(0.97); }
-    .btn-submit:hover { opacity: .9; }
+    .btn-submit:hover { opacity:.9; }
+    .btn-submit:active { transform:scale(0.97); }
+    .btn-submit:disabled { opacity:.6; cursor:not-allowed; }
 
-    .msg { font-size: 12px; border-radius: 12px; padding: 10px 14px; text-align: center; font-weight: 500; display: none; }
-    .msg.err { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; }
-    .msg.ok  { color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; }
+    /* ── DIVIDER ── */
+    .divider { display:flex; align-items:center; gap:10px; margin:20px 0 16px; }
+    .divider-line { flex:1; height:1px; background:var(--blue-pale); }
+    .divider-txt  { font-size:11px; color:#a8cce0; white-space:nowrap; }
 
-    .divider { display: flex; align-items: center; gap: 10px; }
-    .divider-line { flex: 1; height: 1px; background: #c8e4f8; }
-    .divider-txt { font-size: 11px; color: #a8cce0; white-space: nowrap; }
-
-    .btn-social {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      gap: 7px; padding: 12px 10px; border-radius: 14px;
-      background: #f5faff; border: 1.5px solid #daeeff;
-      font-size: 13px; font-weight: 600; color: #2a5080; cursor: pointer;
-      transition: background .15s;
+    /* ── BOUTON GOOGLE (style officiel) ── */
+    .btn-google {
+      width:100%; display:flex; align-items:center; justify-content:center;
+      gap:10px; padding:13px 16px; border-radius:14px;
+      background:#fff; border:1.5px solid #dadce0;
+      font-size:14px; font-weight:600; color:#3c4043;
+      font-family:'Sora',sans-serif; cursor:pointer;
+      box-shadow:0 1px 3px rgba(0,0,0,.08);
+      transition:background .15s, box-shadow .15s;
+      margin-bottom:12px;
     }
-    .btn-social:hover { background: #e0f0ff; }
+    .btn-google:hover { background:#f8f9fa; box-shadow:0 2px 8px rgba(0,0,0,.12); }
+    .btn-google:active { transform:scale(0.98); }
 
-    .bottom-note { font-size: 11px; color: #90b8d8; text-align: center; line-height: 1.8; }
-    .bottom-note a { color: #1a7fe8; text-decoration: none; }
-    .switch-link { text-align: center; font-size: 13px; color: #7aaac8; }
-    .switch-link span { color: #1a7fe8; font-weight: 600; cursor: pointer; }
+    /* ── BOUTON FACEBOOK ── */
+    .btn-facebook {
+      width:100%; display:flex; align-items:center; justify-content:center;
+      gap:10px; padding:13px 16px; border-radius:14px;
+      background:#1877F2; border:none;
+      font-size:14px; font-weight:600; color:#fff;
+      font-family:'Sora',sans-serif; cursor:pointer;
+      box-shadow:0 2px 8px rgba(24,119,242,.30);
+      transition:background .15s, box-shadow .15s;
+      margin-bottom:20px;
+    }
+    .btn-facebook:hover { background:#166fe5; }
+    .btn-facebook:active { transform:scale(0.98); }
+
+    .bottom-note { text-align:center; font-size:12px; color:var(--text-sub); font-weight:500; }
+    .bottom-note a { color:var(--blue-mid); font-weight:700; text-decoration:none; }
+
+    .legal { text-align:center; font-size:10.5px; color:#a8cce0; line-height:1.7; margin-top:14px; padding:0 4px; }
+    .legal a { color:var(--blue-mid); text-decoration:none; }
+
+    /* ── SPINNER ── */
+    .spinner {
+      width:16px; height:16px; flex-shrink:0;
+      border:2px solid rgba(255,255,255,.4);
+      border-top-color:#fff; border-radius:50%;
+      animation:spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
   </style>
 </head>
 <body>
 
-<!-- ══════════ PAGE ACCUEIL ══════════ -->
-<div class="app">
+<div class="page">
+
+  <!-- ── HERO ── -->
   <div class="hero">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;z-index:10;">
-      <svg width="72" height="68" viewBox="0 0 200 190" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="deco deco1"></div>
+    <div class="deco deco2"></div>
+    <div class="hero-brand">
+      <svg width="54" height="50" viewBox="0 0 200 190" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="lg1" x1="100" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#a8e8ff"/></linearGradient>
           <linearGradient id="lg2" x1="0" y1="100" x2="100" y2="190" gradientUnits="userSpaceOnUse"><stop stop-color="#a0c8f0"/><stop offset="1" stop-color="#4a90d8"/></linearGradient>
@@ -132,214 +211,325 @@
         <path d="M100 120 L160 168 L144 168 Z" fill="#c0e8ff" opacity="0.85"/>
         <path d="M100 120 L40 168 L56 168 Z" fill="#88c8f0" opacity="0.85"/>
       </svg>
-      <span style="font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.5px;">Mon<span style="color:#a8e8ff;">Revenu</span></span>
+      <div class="brand-name">Mon<span>Revenu</span></div>
+      <div class="brand-sub">Vos finances, enfin sous contrôle</div>
     </div>
-    <div class="sun" style="bottom:clamp(100px,22%,180px);"></div>
-    <div style="position:absolute;bottom:clamp(52px,12%,110px);left:0;right:0;text-align:center;z-index:5;">
-      <p style="font-size:clamp(28px,6vw,42px);font-weight:700;color:#fff;">Bienvenue</p>
-      <p style="font-size:clamp(13px,2.5vw,17px);color:rgba(255,255,255,0.75);margin-top:6px;">Vos finances, enfin sous contrôle</p>
-    </div>
-    <svg class="wave-svg" viewBox="0 0 400 90" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      <path d="M0 50 Q50 20 100 42 Q150 64 200 38 Q250 12 300 38 Q350 60 400 32 L400 90 L0 90 Z" fill="rgba(255,255,255,0.18)"/>
-      <path d="M0 60 Q60 38 120 56 Q180 74 240 50 Q300 26 400 54 L400 90 L0 90 Z" fill="rgba(255,255,255,0.35)"/>
-      <path d="M0 72 Q80 54 160 68 Q230 82 290 62 Q340 46 400 68 L400 90 L0 90 Z" fill="#f0f8ff"/>
+    <svg class="wave-svg" viewBox="0 0 400 56" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 34 Q60 14 120 30 Q180 46 240 22 Q300 0 400 24 L400 56 L0 56 Z" fill="rgba(255,255,255,.18)"/>
+      <path d="M0 42 Q80 24 160 38 Q230 52 300 30 Q350 14 400 36 L400 56 L0 56 Z" fill="rgba(255,255,255,.30)"/>
+      <path d="M0 50 Q100 36 200 48 Q300 60 400 44 L400 56 L0 56 Z" fill="#f0f8ff"/>
     </svg>
   </div>
 
-  <div class="bottom">
-    <button onclick="openAuth('register')" class="btn-primary"
-      style="width:100%;padding:clamp(14px,3vh,18px) 20px;border-radius:50px;color:#fff;font-size:clamp(13px,2vw,15px);font-weight:700;letter-spacing:1.2px;">
-      CRÉER UN COMPTE
-    </button>
-    <button onclick="openAuth('login')"
-      style="width:100%;padding:clamp(14px,3vh,18px) 20px;border-radius:50px;background:#fff;color:#1a7fe8;font-size:clamp(13px,2vw,15px);font-weight:700;letter-spacing:1.2px;border:2px solid #b8deff;">
-      SE CONNECTER
-    </button>
-    <p style="font-size:11px;color:#90b8d8;text-align:center;line-height:1.8;margin-top:4px;">
-      En continuant, vous acceptez nos <a href="#" style="color:#1a7fe8;text-decoration:none;">conditions</a>
-      et notre <a href="#" style="color:#1a7fe8;text-decoration:none;">politique de confidentialité</a>
-    </p>
-  </div>
-</div>
+  <!-- ── CARD ── -->
+  <div class="card-wrap">
+    <div class="card">
+      <div class="card-title">Connexion</div>
+      <div class="card-hint">Entrez vos identifiants pour accéder à votre espace</div>
 
-
-<!-- ══════════ AUTH OVERLAY (inclure via PHP: include 'auth_modal.php') ══════════ -->
-<div id="authOverlay" class="auth-overlay" onclick="if(event.target===this)closeAuth()">
-  <div class="auth-sheet" id="authSheet">
-    <div class="sheet-handle"></div>
-
-    <!-- Tabs -->
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Connexion</button>
-      <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">Inscription</button>
-    </div>
-
-    <!-- ── FORMULAIRE CONNEXION (inclure via PHP: include 'form_login.php') ── -->
-    <div id="formLogin" class="form-body">
+      <!-- Identifiant -->
       <div class="field">
-        <label>Identifiant (Tél ou Email)</label>
+        <label>Numéro de téléphone ou Email</label>
         <div class="field-row">
-          <span>✉</span>
-          <input type="text" name="identifier" id="loginId" placeholder="Votre numéro ou email" autocomplete="username"/>
+          <span class="field-icon">
+            <!-- Icône enveloppe SVG -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </span>
+          <input type="text" id="loginId" placeholder="77 000 00 00 ou email@..." autocomplete="username" inputmode="text"/>
         </div>
       </div>
+
+      <!-- Mot de passe -->
       <div class="field">
         <label>Mot de passe</label>
         <div class="field-row">
-          <span>🔒</span>
-          <input type="password" name="password" id="loginPwd" placeholder="••••••••" autocomplete="current-password"/>
-          <button class="eye-btn" onclick="togglePwd('loginPwd',this)" type="button">👁</button>
+          <span class="field-icon">
+            <!-- Icône cadenas SVG -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input type="password" id="loginPwd" placeholder="••••••••" autocomplete="current-password"/>
+          <button class="eye-btn" id="eyeBtn" onclick="togglePwd()" type="button" aria-label="Afficher/masquer le mot de passe">
+            <!-- Icône œil SVG (ouvert) -->
+            <svg id="iconEyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <!-- Icône œil SVG (barré) -->
+            <svg id="iconEyeOff" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
         </div>
       </div>
-      <div style="text-align:right;">
-        <a href="#" style="font-size:13px;color:#1a7fe8;font-weight:500;text-decoration:none;">Mot de passe oublié ?</a>
+
+      <!-- Mot de passe oublié -->
+      <div class="forgot-row">
+        <a href="#">Mot de passe oublié ?</a>
       </div>
+
+      <!-- Messages -->
       <div id="loginErr" class="msg err"></div>
-      <div id="loginOk"  class="msg ok">✓ Connexion réussie…</div>
-      <button class="btn-submit" onclick="handleLogin()">SE CONNECTER</button>
-      <div class="divider"><div class="divider-line"></div><span class="divider-txt">ou continuer avec</span><div class="divider-line"></div></div>
-      <div style="display:flex;gap:12px;">
-        <button class="btn-social">
-          <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Google
-        </button>
-        <button class="btn-social">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          Facebook
-        </button>
+      <div id="loginOk"  class="msg ok"></div>
+
+      <!-- Bouton connexion -->
+      <button class="btn-submit" id="btnLogin" onclick="handleLogin()">
+        SE CONNECTER
+      </button>
+
+      <!-- Divider -->
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-txt">ou continuer avec</span>
+        <div class="divider-line"></div>
       </div>
-      <p class="switch-link">Pas encore de compte ? <span onclick="switchTab('register')">Créer un compte</span></p>
-      <p class="bottom-note">
-        <a href="#" onclick="closeAuth()">Fermer</a>
+
+      <!-- ══ BOUTON GOOGLE SIGN-IN ══ -->
+      <button class="btn-google" onclick="signInWithGoogle()">
+        <!-- Logo Google officiel SVG -->
+        <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          <path fill="none" d="M0 0h48v48H0z"/>
+        </svg>
+        Continuer avec Google
+      </button>
+
+      <!-- ══ BOUTON FACEBOOK ══ -->
+      <button class="btn-facebook" onclick="signInWithFacebook()">
+        <!-- Logo Facebook officiel SVG -->
+        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#fff" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.93-1.956 1.886v2.265h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+        </svg>
+        Continuer avec Facebook
+      </button>
+
+      <!-- Créer un compte -->
+      <div class="bottom-note">
+        Pas encore de compte ? <a href="register.html">Créer un compte</a>
+      </div>
+
+      <!-- Legal -->
+      <p class="legal">
+        En vous connectant, vous acceptez nos <a href="#">conditions d'utilisation</a>
+        et notre <a href="#">politique de confidentialité</a>
       </p>
     </div>
-
-    <!-- ── FORMULAIRE INSCRIPTION (inclure via PHP: include 'form_register.php') ── -->
-    <div id="formRegister" class="form-body" style="display:none;">
-      <div class="grid2">
-        <div class="field">
-          <label>Nom complet</label>
-          <div class="field-row">
-            <span>👤</span>
-            <input type="text" name="fullname" placeholder="Jean Dupont"/>
-          </div>
-        </div>
-        <div class="field">
-          <label>Téléphone</label>
-          <div class="field-row">
-            <span>📱</span>
-            <input type="tel" name="phone" placeholder="432 00 00"/>
-          </div>
-        </div>
-      </div>
-      <div class="field">
-        <label>Email</label>
-        <div class="field-row">
-          <span>✉</span>
-          <input type="email" name="email" id="regEmail" placeholder="jean@exemple.com"/>
-        </div>
-      </div>
-      <div class="field">
-        <label>Mot de passe</label>
-        <div class="field-row">
-          <span>🔒</span>
-          <input type="password" name="password" id="regPwd" placeholder="••••••••"/>
-          <button class="eye-btn" onclick="togglePwd('regPwd',this)" type="button">👁</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>Date de naissance</label>
-        <div class="field-row">
-          <span>📅</span>
-          <input type="date" name="birthdate"/>
-        </div>
-      </div>
-      <div id="regErr" class="msg err"></div>
-      <div id="regOk"  class="msg ok">✓ Compte créé avec succès !</div>
-      <button class="btn-submit" onclick="handleRegister()">CRÉER MON COMPTE</button>
-      <p class="switch-link">Déjà un compte ? <span onclick="switchTab('login')">Se connecter</span></p>
-      <p class="bottom-note"><a href="#" onclick="closeAuth()">Fermer</a></p>
-    </div>
-
   </div>
 </div>
 
 
-<!-- ══════════ JS (inclure via PHP: include 'auth.js' ou <script src="auth.js"></script>) ══════════ -->
 <script>
-  /* ── Ouvrir / Fermer ── */
-  function openAuth(tab) {
-    document.getElementById('authOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    switchTab(tab || 'login');
+/* ══════════════════════════════════════════
+   CONFIGURATION — À REMPLIR
+   ══════════════════════════════════════════ */
+const CONFIG = {
+  // Depuis Google Cloud Console → APIs → Identifiants → Créer un ID client OAuth 2.0
+  GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+  // URL de votre script backend qui reçoit le token Google
+  GOOGLE_BACKEND_URL: 'google_login.php',
+  // URL de votre backend normal
+  LOGIN_URL: 'login.php',
+  // Page après connexion réussie
+  DASHBOARD_URL: 'dashboard.php',
+};
+
+/* ══════════════════════════════════════════
+   TOGGLE MOT DE PASSE
+   ══════════════════════════════════════════ */
+function togglePwd() {
+  const inp = document.getElementById('loginPwd');
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  document.getElementById('iconEyeOpen').style.display = show ? 'none' : 'block';
+  document.getElementById('iconEyeOff').style.display  = show ? 'block' : 'none';
+}
+
+/* ══════════════════════════════════════════
+   CONNEXION CLASSIQUE (tél/email + mdp)
+   ══════════════════════════════════════════ */
+function validateIdentifier(val) {
+  if (!val) return false;
+  if (val.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  return /^[\d\s\-+]{6,20}$/.test(val);
+}
+
+function handleLogin() {
+  const errEl = document.getElementById('loginErr');
+  const okEl  = document.getElementById('loginOk');
+  const btn   = document.getElementById('btnLogin');
+  errEl.style.display = 'none';
+  okEl.style.display  = 'none';
+
+  const id  = document.getElementById('loginId').value.trim();
+  const pwd = document.getElementById('loginPwd').value;
+
+  if (!id || !pwd)              { showMsg(errEl, 'Veuillez renseigner tous les champs.'); return; }
+  if (!validateIdentifier(id))  { showMsg(errEl, 'Numéro de téléphone ou email invalide.'); return; }
+  if (pwd.length < 4)           { showMsg(errEl, 'Mot de passe trop court.'); return; }
+
+  setLoading(btn, true);
+
+  /* ── Décommentez pour le vrai backend ──
+  fetch(CONFIG.LOGIN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ identifier: id, password: pwd })
+  })
+  .then(r => r.text())
+  .then(resp => {
+    if (resp.startsWith('redirect:')) {
+      showMsg(okEl, '✓ Connexion réussie…');
+      setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
+    } else {
+      showMsg(errEl, resp.trim() || 'Identifiants incorrects.');
+      setLoading(btn, false);
+    }
+  })
+  .catch(() => { showMsg(errEl, 'Erreur réseau. Réessayez.'); setLoading(btn, false); });
+  */
+
+  // Démo
+  setTimeout(() => {
+    showMsg(okEl, '✓ Connexion réussie !');
+    setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
+  }, 1000);
+}
+
+/* ══════════════════════════════════════════
+   GOOGLE SIGN-IN
+   ══════════════════════════════════════════
+
+  Étapes pour activer :
+  1. Allez sur https://console.cloud.google.com
+  2. Créez un projet → APIs & Services → Identifiants
+  3. Créer un ID client OAuth 2.0 → Application Web
+  4. Ajoutez votre domaine dans "Origines JavaScript autorisées"
+     (ex: https://monrevenu.com)
+  5. Copiez l'ID client dans CONFIG.GOOGLE_CLIENT_ID ci-dessus
+  6. Votre backend (google_login.php) reçoit le "credential" (JWT)
+     et le vérifie avec la bibliothèque Google.
+   ══════════════════════════════════════════ */
+function signInWithGoogle() {
+  if (typeof google === 'undefined') {
+    showMsg(document.getElementById('loginErr'), 'Google Sign-In non disponible. Vérifiez votre connexion.');
+    return;
   }
-  function closeAuth() {
-    document.getElementById('authOverlay').classList.remove('open');
-    document.body.style.overflow = '';
+
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: CONFIG.GOOGLE_CLIENT_ID,
+    scope: 'email profile openid',
+    callback: (tokenResponse) => {
+      if (tokenResponse.error) {
+        showMsg(document.getElementById('loginErr'), 'Erreur Google : ' + tokenResponse.error);
+        return;
+      }
+      // Envoyer le token à votre backend
+      sendGoogleToken(tokenResponse.access_token);
+    }
+  });
+  client.requestAccessToken();
+}
+
+/* Alternative : utiliser One Tap (popup automatique Google)
+   Ajoutez ceci dans <body> pour activer la connexion One Tap :
+
+   <div id="g_id_onload"
+     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+     data-callback="handleGoogleCredential"
+     data-auto_prompt="false">
+   </div>
+
+   function handleGoogleCredential(response) {
+     sendGoogleToken(response.credential);
+   }
+*/
+
+function sendGoogleToken(token) {
+  const errEl = document.getElementById('loginErr');
+  const okEl  = document.getElementById('loginOk');
+
+  /* ── Décommentez pour le vrai backend ──
+  fetch(CONFIG.GOOGLE_BACKEND_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ google_token: token })
+  })
+  .then(r => r.text())
+  .then(resp => {
+    if (resp.startsWith('redirect:')) {
+      showMsg(okEl, '✓ Connecté avec Google !');
+      setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
+    } else {
+      showMsg(errEl, resp.trim() || 'Erreur Google. Réessayez.');
+    }
+  })
+  .catch(() => showMsg(errEl, 'Erreur réseau.'));
+  */
+
+  // Démo
+  showMsg(okEl, '✓ Connecté avec Google !');
+  setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
+}
+
+/* ══════════════════════════════════════════
+   FACEBOOK LOGIN
+   ══════════════════════════════════════════ */
+function signInWithFacebook() {
+  const errEl = document.getElementById('loginErr');
+  if (typeof FB === 'undefined') {
+    showMsg(errEl, 'Facebook SDK non chargé. Ajoutez le SDK Facebook dans votre page.');
+    return;
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
+  FB.login(function(response) {
+    if (response.authResponse) {
+      fetch(CONFIG.LOGIN_URL.replace('login', 'facebook_login'), {
+        method: 'POST',
+        body: new URLSearchParams({ fb_token: response.authResponse.accessToken })
+      })
+      .then(r => r.text())
+      .then(resp => {
+        if (resp.startsWith('redirect:')) {
+          showMsg(document.getElementById('loginOk'), '✓ Connecté avec Facebook !');
+          setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
+        } else {
+          showMsg(errEl, resp.trim() || 'Erreur Facebook.');
+        }
+      });
+    } else {
+      showMsg(errEl, 'Connexion Facebook annulée.');
+    }
+  }, { scope: 'public_profile,email' });
+}
 
-  /* ── Tabs ── */
-  function switchTab(tab) {
-    const isLogin = tab === 'login';
-    document.getElementById('formLogin').style.display    = isLogin ? 'flex' : 'none';
-    document.getElementById('formRegister').style.display = isLogin ? 'none' : 'flex';
-    document.getElementById('tabLogin').classList.toggle('active', isLogin);
-    document.getElementById('tabRegister').classList.toggle('active', !isLogin);
-    // Remonter en haut de la sheet
-    document.getElementById('authSheet').scrollTop = 0;
+/* ══════════════════════════════════════════
+   UTILS
+   ══════════════════════════════════════════ */
+function showMsg(el, txt) {
+  el.textContent = txt;
+  el.style.display = 'block';
+}
+
+function setLoading(btn, on) {
+  if (on) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Connexion…';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = 'SE CONNECTER';
   }
+}
 
-  /* ── Toggle mot de passe ── */
-  function togglePwd(inputId, btn) {
-    const inp = document.getElementById(inputId);
-    const show = inp.type === 'password';
-    inp.type = show ? 'text' : 'password';
-    btn.textContent = show ? '🙈' : '👁';
-  }
-
-  /* ── Connexion AJAX ── */
-  function handleLogin() {
-    const err = document.getElementById('loginErr');
-    const ok  = document.getElementById('loginOk');
-    err.style.display = 'none'; ok.style.display = 'none';
-    const id  = document.getElementById('loginId').value.trim();
-    const pwd = document.getElementById('loginPwd').value;
-    if (!id || !pwd) { showMsg(err, 'Veuillez renseigner tous les champs.'); return; }
-
-    // ── Remplacer par fetch('login.php', ...) ──
-    // fetch('login.php', { method:'POST', body: new URLSearchParams({identifier:id,password:pwd}) })
-    //   .then(r => r.text()).then(t => {
-    //     if (t.startsWith('redirect:')) { ok.style.display='block'; setTimeout(()=>window.location.href=t.slice(9),500); return; }
-    //     showMsg(err, t);
-    //   }).catch(() => showMsg(err, 'Erreur réseau.'));
-
-    // Démo
-    showMsg(ok, '✓ Connexion réussie…');
-    setTimeout(() => window.location.href = 'dashboard.php', 1000);
-  }
-
-  /* ── Inscription AJAX ── */
-  function handleRegister() {
-    const err = document.getElementById('regErr');
-    const ok  = document.getElementById('regOk');
-    err.style.display = 'none'; ok.style.display = 'none';
-
-    // ── Remplacer par fetch('registre_clients.php', ...) ──
-    // fetch('registre_clients.php', { method:'POST', body: new FormData(document.querySelector('#formRegister')) })
-    //   .then(r => r.text()).then(d => {
-    //     if (d.trim()==='success') { window.location.href='dashboard.php'; return; }
-    //     showMsg(err, d.trim());
-    //   }).catch(() => showMsg(err, 'Erreur réseau.'));
-
-    // Démo
-    showMsg(ok, '✓ Compte créé avec succès !');
-  }
-
-  function showMsg(el, txt) {
-    el.textContent = txt;
-    el.style.display = 'block';
-  }
+document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
 </script>
 
 </body>
