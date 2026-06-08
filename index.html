@@ -7,11 +7,10 @@
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <title>MonRevenu – Connexion</title>
+  <title>MonRevenu – Inscription</title>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 
-  <!-- Google Sign-In SDK -->
-  <!-- Remplacer YOUR_GOOGLE_CLIENT_ID par votre vrai Client ID depuis console.cloud.google.com -->
+  <!-- Google Sign-In SDK (optionnel pour l'inscription sociale) -->
   <meta name="google-signin-client_id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"/>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -38,7 +37,7 @@
       display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* ── HERO ── */
+    /* ── HERO (identique) ── */
     .hero {
       flex-shrink: 0;
       background: linear-gradient(150deg, #5bcfff 0%, #1e90e8 50%, #0a52b8 100%);
@@ -82,7 +81,7 @@
     .card-title { font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:5px; }
     .card-hint  { font-size:12px; color:var(--text-sub); margin-bottom:24px; font-weight:500; }
 
-    /* ── FIELDS ── */
+    /* ── CHAMPS ── */
     .field { margin-bottom:18px; }
     .field label {
       display:block; font-size:10.5px; color:var(--text-sub);
@@ -114,9 +113,35 @@
     }
     .eye-btn:hover { color:var(--blue-mid); }
 
-    .forgot-row { text-align:right; margin-top:-8px; margin-bottom:20px; }
-    .forgot-row a { font-size:12px; color:var(--blue-mid); font-weight:600; text-decoration:none; }
+    /* Case à cocher CGU */
+    .checkbox-field {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 12px 0 20px 0;
+    }
+    .checkbox-field input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--blue-mid);
+      cursor: pointer;
+    }
+    .checkbox-field label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-sub);
+      line-height: 1.4;
+      cursor: pointer;
+    }
+    .checkbox-field a {
+      color: var(--blue-mid);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .checkbox-field a:hover { text-decoration: underline; }
 
+    /* Messages */
     .msg {
       font-size:12px; border-radius:12px; padding:10px 14px;
       text-align:center; font-weight:600; display:none; margin-bottom:14px;
@@ -124,7 +149,7 @@
     .msg.err { color:var(--err); background:#fef2f2; border:1px solid #fecaca; }
     .msg.ok  { color:#059669;    background:#ecfdf5; border:1px solid #a7f3d0; }
 
-    /* ── BOUTON PRINCIPAL ── */
+    /* Bouton principal */
     .btn-submit {
       width:100%; padding:15px;
       background:linear-gradient(90deg, #1a7fe8, #3ab0ff);
@@ -139,12 +164,12 @@
     .btn-submit:active { transform:scale(0.97); }
     .btn-submit:disabled { opacity:.6; cursor:not-allowed; }
 
-    /* ── DIVIDER ── */
+    /* Séparateur */
     .divider { display:flex; align-items:center; gap:10px; margin:20px 0 16px; }
     .divider-line { flex:1; height:1px; background:var(--blue-pale); }
     .divider-txt  { font-size:11px; color:#a8cce0; white-space:nowrap; }
 
-    /* ── BOUTON GOOGLE (style officiel) ── */
+    /* Boutons sociaux */
     .btn-google {
       width:100%; display:flex; align-items:center; justify-content:center;
       gap:10px; padding:13px 16px; border-radius:14px;
@@ -158,7 +183,6 @@
     .btn-google:hover { background:#f8f9fa; box-shadow:0 2px 8px rgba(0,0,0,.12); }
     .btn-google:active { transform:scale(0.98); }
 
-    /* ── BOUTON FACEBOOK ── */
     .btn-facebook {
       width:100%; display:flex; align-items:center; justify-content:center;
       gap:10px; padding:13px 16px; border-radius:14px;
@@ -178,7 +202,7 @@
     .legal { text-align:center; font-size:10.5px; color:#a8cce0; line-height:1.7; margin-top:14px; padding:0 4px; }
     .legal a { color:var(--blue-mid); text-decoration:none; }
 
-    /* ── SPINNER ── */
+    /* Spinner */
     .spinner {
       width:16px; height:16px; flex-shrink:0;
       border:2px solid rgba(255,255,255,.4);
@@ -192,7 +216,7 @@
 
 <div class="page">
 
-  <!-- ── HERO ── -->
+  <!-- HERO (identique à la maquette) -->
   <div class="hero">
     <div class="deco deco1"></div>
     <div class="deco deco2"></div>
@@ -221,47 +245,70 @@
     </svg>
   </div>
 
-  <!-- ── CARD ── -->
+  <!-- CARD INSCRIPTION -->
   <div class="card-wrap">
     <div class="card">
-      <div class="card-title">Connexion</div>
-      <div class="card-hint">Entrez vos identifiants pour accéder à votre espace</div>
+      <div class="card-title">Créer un compte</div>
+      <div class="card-hint">Rejoignez MonRevenu et maîtrisez vos finances</div>
 
-      <!-- Identifiant -->
+      <!-- Champ Nom complet -->
       <div class="field">
-        <label>Numéro de téléphone ou Email</label>
+        <label>Nom complet</label>
         <div class="field-row">
           <span class="field-icon">
-            <!-- Icône enveloppe SVG -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <input type="text" id="fullName" placeholder="Jean Dupont" autocomplete="name">
+        </div>
+      </div>
+
+      <!-- Champ Email -->
+      <div class="field">
+        <label>Adresse email</label>
+        <div class="field-row">
+          <span class="field-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
               <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
             </svg>
           </span>
-          <input type="text" id="loginId" placeholder="77 000 00 00 ou email@..." autocomplete="username" inputmode="text"/>
+          <input type="email" id="email" placeholder="exemple@domaine.com" autocomplete="email">
         </div>
       </div>
 
-      <!-- Mot de passe -->
+      <!-- Champ Téléphone -->
+      <div class="field">
+        <label>Numéro de téléphone</label>
+        <div class="field-row">
+          <span class="field-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </span>
+          <input type="tel" id="phone" placeholder="77 000 00 00" autocomplete="tel">
+        </div>
+      </div>
+
+      <!-- Champ Mot de passe -->
       <div class="field">
         <label>Mot de passe</label>
         <div class="field-row">
           <span class="field-icon">
-            <!-- Icône cadenas SVG -->
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
             </svg>
           </span>
-          <input type="password" id="loginPwd" placeholder="••••••••" autocomplete="current-password"/>
-          <button class="eye-btn" id="eyeBtn" onclick="togglePwd()" type="button" aria-label="Afficher/masquer le mot de passe">
-            <!-- Icône œil SVG (ouvert) -->
-            <svg id="iconEyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <input type="password" id="password" placeholder="••••••••" autocomplete="new-password">
+          <button class="eye-btn" onclick="togglePassword('password', 'eyeOpenPwd', 'eyeOffPwd')" type="button" aria-label="Afficher/masquer">
+            <svg id="eyeOpenPwd" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
               <circle cx="12" cy="12" r="3"/>
             </svg>
-            <!-- Icône œil SVG (barré) -->
-            <svg id="iconEyeOff" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <svg id="eyeOffPwd" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
               <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
               <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
               <line x1="1" y1="1" x2="23" y2="23"/>
@@ -270,30 +317,57 @@
         </div>
       </div>
 
-      <!-- Mot de passe oublié -->
-      <div class="forgot-row">
-        <a href="#">Mot de passe oublié ?</a>
+      <!-- Champ Confirmation mot de passe -->
+      <div class="field">
+        <label>Confirmer le mot de passe</label>
+        <div class="field-row">
+          <span class="field-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input type="password" id="confirmPassword" placeholder="••••••••" autocomplete="off">
+          <button class="eye-btn" onclick="togglePassword('confirmPassword', 'eyeOpenConfirm', 'eyeOffConfirm')" type="button" aria-label="Afficher/masquer">
+            <svg id="eyeOpenConfirm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg id="eyeOffConfirm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <!-- Messages -->
-      <div id="loginErr" class="msg err"></div>
-      <div id="loginOk"  class="msg ok"></div>
+      <!-- Acceptation CGU -->
+      <div class="checkbox-field">
+        <input type="checkbox" id="acceptTerms">
+        <label for="acceptTerms">
+          J'accepte les <a href="#">conditions générales d'utilisation</a> et la <a href="#">politique de confidentialité</a>
+        </label>
+      </div>
 
-      <!-- Bouton connexion -->
-      <button class="btn-submit" id="btnLogin" onclick="handleLogin()">
-        SE CONNECTER
+      <!-- Zone de message -->
+      <div id="registerErr" class="msg err"></div>
+      <div id="registerOk" class="msg ok"></div>
+
+      <!-- Bouton S'inscrire -->
+      <button class="btn-submit" id="btnRegister" onclick="handleRegister()">
+        S'INSCRIRE
       </button>
 
-      <!-- Divider -->
+      <!-- Séparateur -->
       <div class="divider">
         <div class="divider-line"></div>
-        <span class="divider-txt">ou continuer avec</span>
+        <span class="divider-txt">ou s'inscrire avec</span>
         <div class="divider-line"></div>
       </div>
 
-      <!-- ══ BOUTON GOOGLE SIGN-IN ══ -->
-      <button class="btn-google" onclick="signInWithGoogle()">
-        <!-- Logo Google officiel SVG -->
+      <!-- Boutons sociaux -->
+      <button class="btn-google" onclick="signUpWithGoogle()">
         <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
           <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
           <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -304,233 +378,237 @@
         Continuer avec Google
       </button>
 
-      <!-- ══ BOUTON FACEBOOK ══ -->
-      <button class="btn-facebook" onclick="signInWithFacebook()">
-        <!-- Logo Facebook officiel SVG -->
+      <button class="btn-facebook" onclick="signUpWithFacebook()">
         <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path fill="#fff" d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.93-1.956 1.886v2.265h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
         </svg>
         Continuer avec Facebook
       </button>
 
-      <!-- Créer un compte -->
+      <!-- Lien vers la page de connexion (optionnel mais pas de formulaire de connexion ici) -->
       <div class="bottom-note">
-        Pas encore de compte ? <a href="register.html">Créer un compte</a>
+        Déjà un compte ? <a href="login.html">Se connecter</a>
       </div>
 
-      <!-- Legal -->
       <p class="legal">
-        En vous connectant, vous acceptez nos <a href="#">conditions d'utilisation</a>
+        En créant un compte, vous acceptez nos <a href="#">conditions d'utilisation</a>
         et notre <a href="#">politique de confidentialité</a>
       </p>
     </div>
   </div>
 </div>
 
-
 <script>
-/* ══════════════════════════════════════════
-   CONFIGURATION — À REMPLIR
-   ══════════════════════════════════════════ */
-const CONFIG = {
-  // Depuis Google Cloud Console → APIs → Identifiants → Créer un ID client OAuth 2.0
-  GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
-  // URL de votre script backend qui reçoit le token Google
-  GOOGLE_BACKEND_URL: 'google_login.php',
-  // URL de votre backend normal
-  LOGIN_URL: 'login.php',
-  // Page après connexion réussie
-  DASHBOARD_URL: 'dashboard.php',
-};
+  // Configuration (à adapter avec vos endpoints réels)
+  const CONFIG = {
+    GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+    REGISTER_URL: 'register.php',           // URL de votre backend d'inscription classique
+    GOOGLE_REGISTER_URL: 'google_register.php',
+    DASHBOARD_URL: 'dashboard.php',
+  };
 
-/* ══════════════════════════════════════════
-   TOGGLE MOT DE PASSE
-   ══════════════════════════════════════════ */
-function togglePwd() {
-  const inp = document.getElementById('loginPwd');
-  const show = inp.type === 'password';
-  inp.type = show ? 'text' : 'password';
-  document.getElementById('iconEyeOpen').style.display = show ? 'none' : 'block';
-  document.getElementById('iconEyeOff').style.display  = show ? 'block' : 'none';
-}
-
-/* ══════════════════════════════════════════
-   CONNEXION CLASSIQUE (tél/email + mdp)
-   ══════════════════════════════════════════ */
-function validateIdentifier(val) {
-  if (!val) return false;
-  if (val.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-  return /^[\d\s\-+]{6,20}$/.test(val);
-}
-
-function handleLogin() {
-  const errEl = document.getElementById('loginErr');
-  const okEl  = document.getElementById('loginOk');
-  const btn   = document.getElementById('btnLogin');
-  errEl.style.display = 'none';
-  okEl.style.display  = 'none';
-
-  const id  = document.getElementById('loginId').value.trim();
-  const pwd = document.getElementById('loginPwd').value;
-
-  if (!id || !pwd)              { showMsg(errEl, 'Veuillez renseigner tous les champs.'); return; }
-  if (!validateIdentifier(id))  { showMsg(errEl, 'Numéro de téléphone ou email invalide.'); return; }
-  if (pwd.length < 4)           { showMsg(errEl, 'Mot de passe trop court.'); return; }
-
-  setLoading(btn, true);
-
-  /* ── Décommentez pour le vrai backend ──
-  fetch(CONFIG.LOGIN_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ identifier: id, password: pwd })
-  })
-  .then(r => r.text())
-  .then(resp => {
-    if (resp.startsWith('redirect:')) {
-      showMsg(okEl, '✓ Connexion réussie…');
-      setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
+  // Afficher/masquer mot de passe
+  function togglePassword(inputId, eyeOpenId, eyeOffId) {
+    const input = document.getElementById(inputId);
+    const eyeOpen = document.getElementById(eyeOpenId);
+    const eyeOff = document.getElementById(eyeOffId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      eyeOpen.style.display = 'none';
+      eyeOff.style.display = 'block';
     } else {
-      showMsg(errEl, resp.trim() || 'Identifiants incorrects.');
-      setLoading(btn, false);
+      input.type = 'password';
+      eyeOpen.style.display = 'block';
+      eyeOff.style.display = 'none';
     }
-  })
-  .catch(() => { showMsg(errEl, 'Erreur réseau. Réessayez.'); setLoading(btn, false); });
-  */
-
-  // Démo
-  setTimeout(() => {
-    showMsg(okEl, '✓ Connexion réussie !');
-    setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
-  }, 1000);
-}
-
-/* ══════════════════════════════════════════
-   GOOGLE SIGN-IN
-   ══════════════════════════════════════════
-
-  Étapes pour activer :
-  1. Allez sur https://console.cloud.google.com
-  2. Créez un projet → APIs & Services → Identifiants
-  3. Créer un ID client OAuth 2.0 → Application Web
-  4. Ajoutez votre domaine dans "Origines JavaScript autorisées"
-     (ex: https://monrevenu.com)
-  5. Copiez l'ID client dans CONFIG.GOOGLE_CLIENT_ID ci-dessus
-  6. Votre backend (google_login.php) reçoit le "credential" (JWT)
-     et le vérifie avec la bibliothèque Google.
-   ══════════════════════════════════════════ */
-function signInWithGoogle() {
-  if (typeof google === 'undefined') {
-    showMsg(document.getElementById('loginErr'), 'Google Sign-In non disponible. Vérifiez votre connexion.');
-    return;
   }
 
-  const client = google.accounts.oauth2.initTokenClient({
-    client_id: CONFIG.GOOGLE_CLIENT_ID,
-    scope: 'email profile openid',
-    callback: (tokenResponse) => {
-      if (tokenResponse.error) {
-        showMsg(document.getElementById('loginErr'), 'Erreur Google : ' + tokenResponse.error);
-        return;
+  // Utilitaires d'affichage
+  function showMsg(el, txt, isError = true) {
+    el.textContent = txt;
+    el.style.display = 'block';
+    if (isError) {
+      document.getElementById('registerOk').style.display = 'none';
+    } else {
+      document.getElementById('registerErr').style.display = 'none';
+    }
+  }
+
+  function setLoading(btn, on) {
+    if (on) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Inscription...';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = "S'INSCRIRE";
+    }
+  }
+
+  // Validation des champs
+  function validateEmail(email) {
+    return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email);
+  }
+  function validatePhone(phone) {
+    return /^[\d\s\-+]{6,20}$/.test(phone);
+  }
+  function validateFullName(name) {
+    return name.trim().length >= 2;
+  }
+
+  // Gestion principale de l'inscription classique
+  function handleRegister() {
+    const errEl = document.getElementById('registerErr');
+    const okEl = document.getElementById('registerOk');
+    const btn = document.getElementById('btnRegister');
+    errEl.style.display = 'none';
+    okEl.style.display = 'none';
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const pwd = document.getElementById('password').value;
+    const confirmPwd = document.getElementById('confirmPassword').value;
+    const acceptTerms = document.getElementById('acceptTerms').checked;
+
+    if (!fullName) return showMsg(errEl, 'Veuillez indiquer votre nom complet.');
+    if (!validateFullName(fullName)) return showMsg(errEl, 'Nom complet trop court (minimum 2 caractères).');
+    if (!email) return showMsg(errEl, 'Adresse email requise.');
+    if (!validateEmail(email)) return showMsg(errEl, 'Format d\'email invalide (exemple@domaine.com).');
+    if (!phone) return showMsg(errEl, 'Numéro de téléphone requis.');
+    if (!validatePhone(phone)) return showMsg(errEl, 'Numéro de téléphone invalide (6 à 20 chiffres, espaces, +, -).');
+    if (!pwd) return showMsg(errEl, 'Mot de passe requis.');
+    if (pwd.length < 6) return showMsg(errEl, 'Le mot de passe doit contenir au moins 6 caractères.');
+    if (pwd !== confirmPwd) return showMsg(errEl, 'Les mots de passe ne correspondent pas.');
+    if (!acceptTerms) return showMsg(errEl, 'Vous devez accepter les conditions générales.');
+
+    setLoading(btn, true);
+
+    // --- Exemple d'appel réel (décommentez et adaptez votre endpoint)
+    /*
+    fetch(CONFIG.REGISTER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        fullname: fullName,
+        email: email,
+        phone: phone,
+        password: pwd
+      })
+    })
+    .then(r => r.text())
+    .then(resp => {
+      if (resp.startsWith('redirect:')) {
+        showMsg(okEl, '✓ Compte créé avec succès ! Redirection...', false);
+        setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 800);
+      } else {
+        showMsg(errEl, resp.trim() || 'Erreur lors de l\'inscription.');
+        setLoading(btn, false);
       }
-      // Envoyer le token à votre backend
-      sendGoogleToken(tokenResponse.access_token);
+    })
+    .catch(() => { showMsg(errEl, 'Erreur réseau. Réessayez.'); setLoading(btn, false); });
+    */
+
+    // Simulation de succès (à remplacer par l'appel réel)
+    setTimeout(() => {
+      showMsg(okEl, '✓ Inscription réussie ! Bienvenue sur MonRevenu.', false);
+      setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 1000);
+    }, 1200);
+  }
+
+  // Inscription avec Google
+  function signUpWithGoogle() {
+    if (typeof google === 'undefined') {
+      showMsg(document.getElementById('registerErr'), 'Google Sign-In non disponible. Vérifiez votre connexion.');
+      return;
+    }
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: CONFIG.GOOGLE_CLIENT_ID,
+      scope: 'email profile openid',
+      callback: (tokenResponse) => {
+        if (tokenResponse.error) {
+          showMsg(document.getElementById('registerErr'), 'Erreur Google : ' + tokenResponse.error);
+          return;
+        }
+        sendGoogleRegisterToken(tokenResponse.access_token);
+      }
+    });
+    client.requestAccessToken();
+  }
+
+  function sendGoogleRegisterToken(token) {
+    const errEl = document.getElementById('registerErr');
+    const okEl = document.getElementById('registerOk');
+    // --- Appel backend réel (décommentez)
+    /*
+    fetch(CONFIG.GOOGLE_REGISTER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ google_token: token })
+    })
+    .then(r => r.text())
+    .then(resp => {
+      if (resp.startsWith('redirect:')) {
+        showMsg(okEl, '✓ Inscription Google réussie !', false);
+        setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
+      } else {
+        showMsg(errEl, resp.trim() || 'Erreur lors de l\'inscription avec Google.');
+      }
+    })
+    .catch(() => showMsg(errEl, 'Erreur réseau.'));
+    */
+    // Simulation
+    showMsg(okEl, '✓ Inscription Google réussie (démo) !', false);
+    setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
+  }
+
+  // Inscription avec Facebook
+  function signUpWithFacebook() {
+    const errEl = document.getElementById('registerErr');
+    if (typeof FB === 'undefined') {
+      showMsg(errEl, 'Facebook SDK non chargé. Ajoutez le SDK Facebook pour activer cette fonction.');
+      return;
+    }
+    FB.login(function(response) {
+      if (response.authResponse) {
+        // --- Appel backend réel
+        /*
+        fetch(CONFIG.REGISTER_URL.replace('register', 'facebook_register'), {
+          method: 'POST',
+          body: new URLSearchParams({ fb_token: response.authResponse.accessToken })
+        })
+        .then(r => r.text())
+        .then(resp => {
+          if (resp.startsWith('redirect:')) {
+            showMsg(document.getElementById('registerOk'), '✓ Inscription Facebook réussie !', false);
+            setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
+          } else {
+            showMsg(errEl, resp.trim() || 'Erreur Facebook.');
+          }
+        });
+        */
+        // Simulation
+        showMsg(document.getElementById('registerOk'), '✓ Inscription Facebook réussie (démo) !', false);
+        setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
+      } else {
+        showMsg(errEl, 'Connexion Facebook annulée ou refusée.');
+      }
+    }, { scope: 'public_profile,email' });
+  }
+
+  // Soumission avec la touche Entrée
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const active = document.activeElement;
+      if (active && active.tagName === 'INPUT' && !active.closest('.eye-btn')) {
+        handleRegister();
+      }
     }
   });
-  client.requestAccessToken();
-}
-
-/* Alternative : utiliser One Tap (popup automatique Google)
-   Ajoutez ceci dans <body> pour activer la connexion One Tap :
-
-   <div id="g_id_onload"
-     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-     data-callback="handleGoogleCredential"
-     data-auto_prompt="false">
-   </div>
-
-   function handleGoogleCredential(response) {
-     sendGoogleToken(response.credential);
-   }
-*/
-
-function sendGoogleToken(token) {
-  const errEl = document.getElementById('loginErr');
-  const okEl  = document.getElementById('loginOk');
-
-  /* ── Décommentez pour le vrai backend ──
-  fetch(CONFIG.GOOGLE_BACKEND_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ google_token: token })
-  })
-  .then(r => r.text())
-  .then(resp => {
-    if (resp.startsWith('redirect:')) {
-      showMsg(okEl, '✓ Connecté avec Google !');
-      setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
-    } else {
-      showMsg(errEl, resp.trim() || 'Erreur Google. Réessayez.');
-    }
-  })
-  .catch(() => showMsg(errEl, 'Erreur réseau.'));
-  */
-
-  // Démo
-  showMsg(okEl, '✓ Connecté avec Google !');
-  setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 900);
-}
-
-/* ══════════════════════════════════════════
-   FACEBOOK LOGIN
-   ══════════════════════════════════════════ */
-function signInWithFacebook() {
-  const errEl = document.getElementById('loginErr');
-  if (typeof FB === 'undefined') {
-    showMsg(errEl, 'Facebook SDK non chargé. Ajoutez le SDK Facebook dans votre page.');
-    return;
-  }
-  FB.login(function(response) {
-    if (response.authResponse) {
-      fetch(CONFIG.LOGIN_URL.replace('login', 'facebook_login'), {
-        method: 'POST',
-        body: new URLSearchParams({ fb_token: response.authResponse.accessToken })
-      })
-      .then(r => r.text())
-      .then(resp => {
-        if (resp.startsWith('redirect:')) {
-          showMsg(document.getElementById('loginOk'), '✓ Connecté avec Facebook !');
-          setTimeout(() => window.location.href = CONFIG.DASHBOARD_URL, 600);
-        } else {
-          showMsg(errEl, resp.trim() || 'Erreur Facebook.');
-        }
-      });
-    } else {
-      showMsg(errEl, 'Connexion Facebook annulée.');
-    }
-  }, { scope: 'public_profile,email' });
-}
-
-/* ══════════════════════════════════════════
-   UTILS
-   ══════════════════════════════════════════ */
-function showMsg(el, txt) {
-  el.textContent = txt;
-  el.style.display = 'block';
-}
-
-function setLoading(btn, on) {
-  if (on) {
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Connexion…';
-  } else {
-    btn.disabled = false;
-    btn.innerHTML = 'SE CONNECTER';
-  }
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
 </script>
 
+<!-- (Optionnel) SDK Facebook – à décommenter et configurer avec votre App ID -->
+<!--
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v17.0&appId=VOTRE_APP_ID&autoLogAppEvents=1"></script>
+-->
 </body>
 </html>
