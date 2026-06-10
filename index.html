@@ -1,352 +1,1013 @@
+bash
+
+cat > /mnt/user-data/outputs/dashboard.php << 'PHPEOF'
+<?php
+session_start();
+// Protection : rediriger si non connecté
+// if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+//     header('Location: /monrevenu/index.php');
+//     exit();
+// }
+$user_fullname = $_SESSION['user_fullname'] ?? 'Utilisateur';
+$user_initials = strtoupper(substr($user_fullname, 0, 1));
+?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#1565C0"/>
-  <title>MonRevenu – Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <meta name="theme-color" content="#1246A0"/>
+  <meta name="description" content="MonRevenu – Services, Finances & Divertissement"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>MonRevenu</title>
+  <link rel="manifest" href="/monrevenu/manifest.json"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
+    /* ═══════════════════════════════════════════
+       TOKENS & RESET
+    ═══════════════════════════════════════════ */
     :root {
-      --blue:       #1565C0;
-      --blue-light: #1E88E5;
-      --blue-dark:  #0D47A1;
-      --bg:         #F0F4F8;
-      --card:       #FFFFFF;
-      --text:       #1A1A2E;
-      --muted:      #6B7280;
-      --border:     #E5E7EB;
-      --green:      #16A34A;
-      --red:        #DC2626;
+      --blue:        #1246A0;
+      --blue-mid:    #1A5FCC;
+      --blue-light:  #3B82F6;
+      --blue-soft:   #EEF4FF;
+      --accent:      #F59E0B;
+      --green:       #10B981;
+      --red:         #EF4444;
+      --purple:      #8B5CF6;
+      --pink:        #EC4899;
+      --orange:      #F97316;
+      --teal:        #14B8A6;
+
+      --bg:          #F1F5FB;
+      --card:        #FFFFFF;
+      --text:        #0F172A;
+      --text-2:      #475569;
+      --border:      #E2E8F0;
+      --shadow:      0 2px 16px rgba(18,70,160,0.08);
+      --shadow-lg:   0 8px 32px rgba(18,70,160,0.14);
+      --radius:      16px;
+      --radius-sm:   10px;
+      --nav-h:       70px;
+      --sidebar-w:   256px;
+    }
+    [data-theme="dark"] {
+      --bg:    #0B1120;
+      --card:  #141E33;
+      --text:  #F1F5F9;
+      --text-2:#94A3B8;
+      --border:#1E2D47;
+      --shadow:0 2px 16px rgba(0,0,0,0.4);
+      --blue-soft:#0F1D35;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:'Sora',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      transition:background .3s,color .3s;
+    }
+    a{text-decoration:none;color:inherit;}
+    button{font-family:'Sora',sans-serif;cursor:pointer;border:none;background:none;}
+    img{max-width:100%;}
+
+    /* ═══════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════ */
+    .layout{display:flex;min-height:100vh;}
+
+    /* ── SIDEBAR ── */
+    .sidebar{
+      width:var(--sidebar-w);
+      background:var(--blue);
+      position:fixed;top:0;left:0;bottom:0;
+      display:flex;flex-direction:column;
+      z-index:200;
+      transition:transform .3s;
+    }
+    .sidebar-logo{
+      padding:28px 24px 24px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .logo-mark{
+      width:36px;height:36px;border-radius:10px;
+      background:rgba(255,255,255,0.2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;font-weight:800;color:#fff;
+    }
+    .logo-text{font-size:18px;font-weight:700;color:#fff;}
+    .logo-text span{opacity:.55;font-weight:400;}
+
+    .sidebar-nav{flex:1;overflow-y:auto;padding:8px 0;}
+    .nav-group-label{
+      font-size:10px;font-weight:600;letter-spacing:.08em;
+      color:rgba(255,255,255,.35);
+      padding:16px 24px 6px;text-transform:uppercase;
+    }
+    .s-nav-item{
+      display:flex;align-items:center;gap:12px;
+      padding:11px 24px;
+      color:rgba(255,255,255,.65);
+      font-size:13.5px;font-weight:500;
+      border-left:3px solid transparent;
+      transition:all .15s;cursor:pointer;
+    }
+    .s-nav-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+    .s-nav-item.active{
+      background:rgba(255,255,255,.13);
+      color:#fff;border-left-color:#fff;
+    }
+    .s-nav-item svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+    .s-nav-badge{
+      margin-left:auto;background:var(--accent);
+      color:#fff;font-size:10px;font-weight:700;
+      padding:2px 7px;border-radius:20px;
     }
 
-    body {
-      font-family: 'Sora', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      max-width: 480px;
-      margin: 0 auto;
+    .sidebar-footer{
+      padding:20px 24px;
+      border-top:1px solid rgba(255,255,255,.1);
+      display:flex;align-items:center;gap:10px;
+    }
+    .sidebar-avatar{
+      width:36px;height:36px;border-radius:50%;
+      background:rgba(255,255,255,.2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;font-weight:700;color:#fff;flex-shrink:0;
+    }
+    .sidebar-user-name{font-size:13px;font-weight:600;color:#fff;}
+    .sidebar-user-role{font-size:11px;color:rgba(255,255,255,.5);}
+    .sidebar-logout{
+      margin-left:auto;
+      width:30px;height:30px;border-radius:8px;
+      background:rgba(255,255,255,.1);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;
+    }
+    .sidebar-logout svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+    /* ── MAIN ── */
+    .main{
+      margin-left:var(--sidebar-w);
+      flex:1;
+      display:flex;flex-direction:column;
+      min-height:100vh;
     }
 
-    /* ── HEADER ── */
-    .header {
-      background: var(--blue);
-      padding: 20px 20px 60px;
-      position: relative;
+    /* ── TOPBAR ── */
+    .topbar{
+      background:var(--card);
+      border-bottom:1px solid var(--border);
+      padding:0 32px;
+      height:64px;
+      display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:100;
     }
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
+    .topbar-title{font-size:16px;font-weight:700;color:var(--text);}
+    .topbar-right{display:flex;align-items:center;gap:8px;}
+    .topbar-btn{
+      width:38px;height:38px;border-radius:var(--radius-sm);
+      background:var(--bg);border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;position:relative;transition:background .15s;
     }
-    .user-info { display: flex; align-items: center; gap: 10px; }
-    .avatar {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: rgba(255,255,255,0.25);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 600; font-size: 15px; color: #fff;
+    .topbar-btn:hover{background:var(--blue-soft);}
+    .topbar-btn svg{width:18px;height:18px;fill:none;stroke:var(--text-2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .notif-dot{
+      position:absolute;top:6px;right:6px;
+      width:8px;height:8px;border-radius:50%;
+      background:var(--red);border:2px solid var(--card);
     }
-    .user-name { color: #fff; font-size: 14px; font-weight: 500; }
-    .user-phone { color: rgba(255,255,255,0.7); font-size: 12px; }
-    .header-icon {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
+    .theme-toggle{
+      width:38px;height:38px;border-radius:var(--radius-sm);
+      background:var(--bg);border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;transition:background .15s;
     }
-    .header-icon svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .theme-toggle svg{width:18px;height:18px;fill:none;stroke:var(--text-2);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .topbar-search{
+      display:flex;align-items:center;gap:8px;
+      background:var(--bg);border:1px solid var(--border);
+      border-radius:var(--radius-sm);padding:8px 14px;
+      font-size:13px;color:var(--text-2);
+      cursor:pointer;
+    }
+    .topbar-search svg{width:15px;height:15px;stroke:var(--text-2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-    /* ── BALANCE CARD ── */
-    .balance-card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 24px;
-      margin: 0 16px;
-      margin-top: -44px;
-      position: relative;
-      z-index: 10;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-    .balance-label { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 6px; }
-    .balance-amount { font-size: 36px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 16px; }
-    .add-money-btn {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      background: var(--blue); color: #fff;
-      border: none; border-radius: 10px;
-      padding: 12px; width: 100%;
-      font-family: 'Sora', sans-serif;
-      font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: background 0.2s;
-    }
-    .add-money-btn:hover { background: var(--blue-dark); }
-    .add-money-btn svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    /* ── CONTENT ── */
+    .content{padding:28px 32px;flex:1;}
 
-    /* ── SECTIONS ── */
-    .section { padding: 20px 16px 0; }
-    .section-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+    /* ── GREETING ── */
+    .greeting{margin-bottom:28px;}
+    .greeting h1{font-size:22px;font-weight:700;color:var(--text);}
+    .greeting p{font-size:14px;color:var(--text-2);margin-top:4px;}
 
-    /* ── QUICK ACTIONS ── */
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+    /* ── WALLET HERO ── */
+    .wallet-hero{
+      background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 60%,var(--blue-light) 100%);
+      border-radius:var(--radius);
+      padding:28px;
+      margin-bottom:24px;
+      position:relative;overflow:hidden;
+      box-shadow:var(--shadow-lg);
     }
-    .action-item {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      cursor: pointer;
+    .wallet-hero::before{
+      content:'';position:absolute;
+      top:-40px;right:-40px;
+      width:200px;height:200px;
+      border-radius:50%;
+      background:rgba(255,255,255,.06);
     }
-    .action-icon {
-      width: 52px; height: 52px; border-radius: 14px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
+    .wallet-hero::after{
+      content:'';position:absolute;
+      bottom:-60px;right:60px;
+      width:150px;height:150px;
+      border-radius:50%;
+      background:rgba(255,255,255,.04);
     }
-    .action-icon:hover { background: #EFF6FF; }
-    .action-icon svg { width: 22px; height: 22px; stroke: var(--blue); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .action-label { font-size: 11px; font-weight: 500; color: var(--muted); }
+    .wallet-label{font-size:12px;color:rgba(255,255,255,.7);margin-bottom:6px;}
+    .wallet-amount{font-size:38px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:20px;}
+    .wallet-amount span{font-size:16px;font-weight:500;opacity:.7;margin-left:4px;}
+    .wallet-actions{display:flex;gap:10px;flex-wrap:wrap;}
+    .w-btn{
+      display:flex;align-items:center;gap:7px;
+      background:rgba(255,255,255,.15);
+      border:1px solid rgba(255,255,255,.25);
+      border-radius:var(--radius-sm);
+      padding:10px 16px;
+      color:#fff;font-size:13px;font-weight:600;
+      transition:background .15s;cursor:pointer;
+    }
+    .w-btn:hover{background:rgba(255,255,255,.25);}
+    .w-btn.primary{background:#fff;color:var(--blue);border-color:#fff;}
+    .w-btn.primary:hover{background:#EEF4FF;}
+    .w-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-    /* ── SERVICES ── */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+    /* ── STATS ── */
+    .stats-row{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+      margin-bottom:24px;
     }
-    .service-item {
-      background: var(--card);
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 14px 8px;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      cursor: pointer; transition: box-shadow 0.15s;
+    .stat-card{
+      background:var(--card);
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      padding:18px;
+      box-shadow:var(--shadow);
     }
-    .service-item:hover { box-shadow: 0 2px 12px rgba(21,101,192,0.12); }
-    .service-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
+    .stat-icon{
+      width:40px;height:40px;border-radius:var(--radius-sm);
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:12px;
     }
-    .service-icon svg { width: 22px; height: 22px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .service-label { font-size: 11px; font-weight: 500; color: var(--muted); text-align: center; }
+    .stat-icon svg{width:20px;height:20px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .stat-label{font-size:11px;color:var(--text-2);margin-bottom:4px;}
+    .stat-value{font-size:20px;font-weight:700;color:var(--text);}
+    .stat-change{font-size:11px;margin-top:3px;display:flex;align-items:center;gap:3px;}
+    .stat-change.up{color:var(--green);}
+    .stat-change.down{color:var(--red);}
+
+    /* ── SECTION HEADER ── */
+    .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .sec-title{font-size:15px;font-weight:700;color:var(--text);}
+    .sec-link{font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;}
+
+    /* ── SERVICE CATEGORIES ── */
+    .categories-grid{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:14px;
+      margin-bottom:24px;
+    }
+    .cat-card{
+      background:var(--card);
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      padding:18px 12px;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      cursor:pointer;
+      transition:transform .2s,box-shadow .2s;
+      box-shadow:var(--shadow);
+    }
+    .cat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+    .cat-icon{
+      width:52px;height:52px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:24px;
+    }
+    .cat-name{font-size:11.5px;font-weight:600;color:var(--text);text-align:center;line-height:1.3;}
+    .cat-count{font-size:10px;color:var(--text-2);}
+
+    /* ── TWO-COL ── */
+    .two-col{display:grid;grid-template-columns:1fr 340px;gap:20px;}
 
     /* ── TRANSACTIONS ── */
-    .tx-list { display: flex; flex-direction: column; gap: 2px; }
-    .tx-item {
-      display: flex; align-items: center; gap: 12px;
-      background: var(--card); border-radius: 12px;
-      padding: 12px 14px;
+    .tx-card{
+      background:var(--card);border-radius:var(--radius);
+      border:1px solid var(--border);box-shadow:var(--shadow);
+      overflow:hidden;
     }
-    .tx-icon {
-      width: 40px; height: 40px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+    .tx-card-inner{padding:20px;}
+    .tx-list{display:flex;flex-direction:column;}
+    .tx-item{
+      display:flex;align-items:center;gap:12px;
+      padding:11px 0;
+      border-bottom:1px solid var(--border);
+      cursor:pointer;transition:background .1s;
     }
-    .tx-icon svg { width: 18px; height: 18px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .tx-info { flex: 1; }
-    .tx-name { font-size: 13px; font-weight: 600; color: var(--text); }
-    .tx-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .tx-amount { font-size: 14px; font-weight: 700; }
-    .tx-amount.credit { color: var(--green); }
-    .tx-amount.debit  { color: var(--red); }
+    .tx-item:last-child{border-bottom:none;}
+    .tx-icon{
+      width:40px;height:40px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .tx-icon svg{width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+    .tx-info{flex:1;}
+    .tx-name{font-size:13px;font-weight:600;color:var(--text);}
+    .tx-date{font-size:11px;color:var(--text-2);margin-top:2px;}
+    .tx-amount{font-size:14px;font-weight:700;}
+    .tx-amount.cr{color:var(--green);}
+    .tx-amount.db{color:var(--red);}
 
-    /* ── BOTTOM NAV ── */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-      width: 100%; max-width: 480px;
-      background: var(--card);
-      border-top: 1px solid var(--border);
-      display: flex; justify-content: space-around; align-items: center;
-      padding: 10px 0 16px;
-      z-index: 100;
-    }
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      cursor: pointer; min-width: 56px;
-    }
-    .nav-item svg { width: 22px; height: 22px; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .nav-item span { font-size: 10px; font-weight: 500; }
-    .nav-item.active svg { stroke: var(--blue); }
-    .nav-item.active span { color: var(--blue); }
-    .nav-item:not(.active) svg { stroke: var(--muted); }
-    .nav-item:not(.active) span { color: var(--muted); }
+    /* ── RIGHT COLUMN ── */
+    .right-col{display:flex;flex-direction:column;gap:16px;}
 
-    .spacer { height: 80px; }
+    /* ── QUICK ACTIONS ── */
+    .quick-card{
+      background:var(--card);border-radius:var(--radius);
+      border:1px solid var(--border);box-shadow:var(--shadow);
+      padding:20px;
+    }
+    .quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+    .q-btn{
+      display:flex;align-items:center;gap:10px;
+      background:var(--bg);border-radius:var(--radius-sm);
+      padding:12px 14px;cursor:pointer;
+      transition:background .15s;
+      border:1px solid var(--border);
+    }
+    .q-btn:hover{background:var(--blue-soft);}
+    .q-icon{
+      width:34px;height:34px;border-radius:9px;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .q-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+    .q-label{font-size:12px;font-weight:600;color:var(--text);}
+
+    /* ── GAMES ── */
+    .games-card{
+      background:linear-gradient(135deg,#1E1B4B,#312E81);
+      border-radius:var(--radius);
+      padding:20px;box-shadow:var(--shadow-lg);
+    }
+    .games-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;}
+    .game-item{
+      display:flex;align-items:center;gap:12px;
+      background:rgba(255,255,255,.08);
+      border-radius:var(--radius-sm);padding:12px;
+      margin-bottom:8px;cursor:pointer;
+      transition:background .15s;
+      border:1px solid rgba(255,255,255,.1);
+    }
+    .game-item:last-child{margin-bottom:0;}
+    .game-item:hover{background:rgba(255,255,255,.14);}
+    .game-icon{font-size:24px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border-radius:10px;}
+    .game-info{flex:1;}
+    .game-name{font-size:13px;font-weight:600;color:#fff;}
+    .game-desc{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;}
+    .game-play{
+      background:var(--accent);color:#fff;
+      font-size:11px;font-weight:700;
+      padding:6px 12px;border-radius:8px;
+    }
+
+    /* ═══════════════════════════════════════════
+       MOBILE BOTTOM NAV
+    ═══════════════════════════════════════════ */
+    .mobile-nav{display:none;}
+
+    /* ═══════════════════════════════════════════
+       MOBILE HEADER
+    ═══════════════════════════════════════════ */
+    .mobile-header{display:none;}
+
+    /* ═══════════════════════════════════════════
+       SEARCH OVERLAY
+    ═══════════════════════════════════════════ */
+    .search-overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.5);
+      z-index:500;
+      display:flex;align-items:flex-start;justify-content:center;
+      padding-top:80px;
+      opacity:0;pointer-events:none;
+      transition:opacity .2s;
+    }
+    .search-overlay.open{opacity:1;pointer-events:all;}
+    .search-box{
+      background:var(--card);border-radius:var(--radius);
+      width:100%;max-width:600px;
+      padding:20px;box-shadow:var(--shadow-lg);
+      transform:translateY(-10px);transition:transform .2s;
+    }
+    .search-overlay.open .search-box{transform:translateY(0);}
+    .search-input-wrap{
+      display:flex;align-items:center;gap:10px;
+      border:2px solid var(--blue);border-radius:var(--radius-sm);
+      padding:10px 16px;
+    }
+    .search-input-wrap svg{width:18px;height:18px;stroke:var(--blue);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+    .search-input-wrap input{
+      border:none;outline:none;background:none;
+      font-family:'Sora',sans-serif;font-size:15px;color:var(--text);flex:1;
+    }
+    .search-hints{margin-top:16px;}
+    .search-hint-label{font-size:11px;color:var(--text-2);font-weight:600;margin-bottom:8px;}
+    .search-tags{display:flex;flex-wrap:wrap;gap:8px;}
+    .search-tag{
+      background:var(--bg);border:1px solid var(--border);
+      border-radius:20px;padding:6px 14px;
+      font-size:12px;color:var(--text-2);cursor:pointer;
+      transition:background .15s;
+    }
+    .search-tag:hover{background:var(--blue-soft);color:var(--blue);}
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — TABLET
+    ═══════════════════════════════════════════ */
+    @media(max-width:1200px){
+      .stats-row{grid-template-columns:repeat(2,1fr);}
+      .categories-grid{grid-template-columns:repeat(5,1fr);}
+      .two-col{grid-template-columns:1fr;}
+      .right-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    }
+    @media(max-width:900px){
+      :root{--sidebar-w:0px;}
+      .sidebar{transform:translateX(-256px);}
+      .sidebar.open{transform:translateX(0);}
+      .main{margin-left:0;}
+      .topbar{padding:0 16px;}
+      .content{padding:16px;}
+      .categories-grid{grid-template-columns:repeat(4,1fr);}
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE — MOBILE
+    ═══════════════════════════════════════════ */
+    @media(max-width:640px){
+      .topbar{display:none;}
+      .content{padding:0 0 calc(var(--nav-h) + 8px);}
+      .greeting{display:none;}
+      .stats-row{
+        grid-template-columns:repeat(2,1fr);
+        gap:10px;padding:0 16px;margin-bottom:0;
+      }
+      .stat-card{padding:14px;}
+      .stat-value{font-size:16px;}
+      .categories-grid{
+        grid-template-columns:repeat(3,1fr);
+        gap:10px;padding:0 16px;
+      }
+      .cat-card{padding:14px 8px;}
+      .cat-icon{width:44px;height:44px;border-radius:12px;font-size:20px;}
+      .cat-name{font-size:10.5px;}
+      .two-col{grid-template-columns:1fr;}
+      .right-col{display:flex;flex-direction:column;}
+      .wallet-hero{border-radius:0;margin:0 0 16px;}
+      .wallet-amount{font-size:30px;}
+      .sec-hd{padding:0 16px;}
+      .tx-card-inner{padding:0 16px 16px;}
+
+      /* Mobile header */
+      .mobile-header{
+        display:flex;
+        background:var(--blue);
+        padding:16px 16px 64px;
+        align-items:center;justify-content:space-between;
+      }
+      .mob-user{display:flex;align-items:center;gap:10px;}
+      .mob-avatar{
+        width:38px;height:38px;border-radius:50%;
+        background:rgba(255,255,255,.25);
+        display:flex;align-items:center;justify-content:center;
+        font-size:14px;font-weight:700;color:#fff;
+      }
+      .mob-name{font-size:14px;font-weight:600;color:#fff;}
+      .mob-role{font-size:11px;color:rgba(255,255,255,.6);}
+      .mob-actions{display:flex;gap:8px;}
+      .mob-btn{
+        width:36px;height:36px;border-radius:50%;
+        background:rgba(255,255,255,.15);
+        display:flex;align-items:center;justify-content:center;
+      }
+      .mob-btn svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+
+      /* Mobile wallet floats over header */
+      .wallet-hero{
+        margin:-48px 16px 16px;
+        border-radius:var(--radius);
+        position:relative;z-index:10;
+      }
+
+      /* Mobile bottom nav */
+      .mobile-nav{
+        display:flex;
+        position:fixed;bottom:0;left:0;right:0;
+        background:var(--card);
+        border-top:1px solid var(--border);
+        height:var(--nav-h);
+        justify-content:space-around;align-items:center;
+        z-index:300;
+        padding-bottom:env(safe-area-inset-bottom);
+      }
+      .mob-nav-item{
+        display:flex;flex-direction:column;align-items:center;gap:4px;
+        cursor:pointer;flex:1;padding:6px 0;
+      }
+      .mob-nav-item svg{width:22px;height:22px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+      .mob-nav-item span{font-size:9.5px;font-weight:500;}
+      .mob-nav-item.active svg{stroke:var(--blue);}
+      .mob-nav-item.active span{color:var(--blue);}
+      .mob-nav-item:not(.active) svg{stroke:var(--text-2);}
+      .mob-nav-item:not(.active) span{color:var(--text-2);}
+      .mob-nav-center{
+        width:52px;height:52px;border-radius:50%;
+        background:var(--blue);
+        display:flex;align-items:center;justify-content:center;
+        box-shadow:0 4px 16px rgba(18,70,160,.4);
+        margin-top:-20px;
+      }
+      .mob-nav-center svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+      .games-card{margin:0 16px 16px;}
+    }
+
+    /* ═══════════════════════════════════════════
+       SIDEBAR OVERLAY (mobile)
+    ═══════════════════════════════════════════ */
+    .sidebar-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.5);
+      z-index:199;display:none;
+    }
+    .sidebar-overlay.visible{display:block;}
+
+    /* ═══════════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════════ */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .animate{animation:fadeUp .4s ease both;}
+    .animate:nth-child(1){animation-delay:.05s}
+    .animate:nth-child(2){animation-delay:.1s}
+    .animate:nth-child(3){animation-delay:.15s}
+    .animate:nth-child(4){animation-delay:.2s}
+    .animate:nth-child(5){animation-delay:.25s}
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-top">
-    <div class="user-info">
-      <div class="avatar">MR</div>
-      <div>
-        <div class="user-name">Moussa Diallo</div>
-        <div class="user-phone">+221 77 000 00 00</div>
-      </div>
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearch(event)">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher un service, prestataire..." id="searchInput" autofocus/>
     </div>
-    <div class="header-icon">
-      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <div class="search-hints">
+      <div class="search-hint-label">Recherches populaires</div>
+      <div class="search-tags">
+        <span class="search-tag">Mécanicien Dakar</span>
+        <span class="search-tag">Coiffeur à domicile</span>
+        <span class="search-tag">Location voiture</span>
+        <span class="search-tag">Électricien urgent</span>
+        <span class="search-tag">Livraison rapide</span>
+        <span class="search-tag">Appartement meublé</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- BALANCE CARD -->
-<div class="balance-card">
-  <div class="balance-label">Solde disponible</div>
-  <div class="balance-amount">7 500,00 FCFA</div>
-  <button class="add-money-btn">
-    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    Ajouter de l'argent
-  </button>
-</div>
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-<!-- QUICK ACTIONS -->
-<div class="section">
-  <div class="section-title">Actions rapides</div>
-  <div class="quick-actions">
-    <div class="action-item">
-      <div class="action-icon">
+<div class="layout">
+
+  <!-- ════ SIDEBAR ════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">M</div>
+      <div class="logo-text">Mon<span>Revenu</span></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Principal</div>
+      <div class="s-nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Accueil
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Recherche
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Services
+        <span class="s-nav-badge">10</span>
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Prestataires
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Messagerie
+        <span class="s-nav-badge">3</span>
+      </div>
+
+      <div class="nav-group-label">Finances</div>
+      <div class="s-nav-item">
         <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Portefeuille
       </div>
-      <span class="action-label">Recharge</span>
-    </div>
-    <div class="action-item">
-      <div class="action-icon">
+      <div class="s-nav-item">
         <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Transactions
       </div>
-      <span class="action-label">Historique</span>
-    </div>
-    <div class="action-item">
-      <div class="action-icon">
+      <div class="s-nav-item">
         <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Transfert
       </div>
-      <span class="action-label">Transfert</span>
-    </div>
-    <div class="action-item">
-      <div class="action-icon">
-        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+
+      <div class="nav-group-label">Divertissement</div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Jeux
       </div>
-      <span class="action-label">Parrainer</span>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Classement
+      </div>
+
+      <div class="nav-group-label">Compte</div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        Profil
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Paramètres
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-avatar"><?= $user_initials ?></div>
+      <div>
+        <div class="sidebar-user-name"><?= htmlspecialchars($user_fullname) ?></div>
+        <div class="sidebar-user-role">Client</div>
+      </div>
+      <a href="/monrevenu/logout.php" class="sidebar-logout">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </a>
     </div>
-  </div>
+  </aside>
+
+  <!-- ════ MAIN ════ -->
+  <main class="main">
+
+    <!-- TOPBAR (desktop) -->
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="topbar-btn" onclick="toggleSidebar()" id="menuBtn" style="display:none;">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-title">Tableau de bord</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-search" onclick="openSearch()">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Rechercher...
+        </div>
+        <div class="topbar-btn" style="position:relative;">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="notif-dot"></div>
+        </div>
+        <div class="theme-toggle" onclick="toggleTheme()">
+          <svg id="themeIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE HEADER -->
+    <div class="mobile-header">
+      <div class="mob-user">
+        <div class="mob-avatar"><?= $user_initials ?></div>
+        <div>
+          <div class="mob-name">Bonjour, <?= htmlspecialchars($user_fullname) ?> 👋</div>
+          <div class="mob-role">Bienvenue sur MonRevenu</div>
+        </div>
+      </div>
+      <div class="mob-actions">
+        <div class="mob-btn" onclick="openSearch()">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="mob-btn">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- GREETING (desktop) -->
+      <div class="greeting animate">
+        <h1>Bonjour, <?= htmlspecialchars($user_fullname) ?> 👋</h1>
+        <p>Voici un résumé de votre activité aujourd'hui.</p>
+      </div>
+
+      <!-- WALLET HERO -->
+      <div class="wallet-hero animate">
+        <div class="wallet-label">Solde disponible</div>
+        <div class="wallet-amount">7 500,00 <span>FCFA</span></div>
+        <div class="wallet-actions">
+          <button class="w-btn primary">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Déposer
+          </button>
+          <button class="w-btn">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Transférer
+          </button>
+          <button class="w-btn">
+            <svg viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            Retirer
+          </button>
+        </div>
+      </div>
+
+      <!-- STATS (desktop) -->
+      <div class="stats-row">
+        <div class="stat-card animate">
+          <div class="stat-icon" style="background:#EEF4FF;"><svg viewBox="0 0 24 24" style="stroke:#1246A0;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <div class="stat-label">Revenus ce mois</div>
+          <div class="stat-value">21 000 F</div>
+          <div class="stat-change up">↑ +12% vs mois dernier</div>
+        </div>
+        <div class="stat-card animate">
+          <div class="stat-icon" style="background:#FFF1F2;"><svg viewBox="0 0 24 24" style="stroke:#EF4444;"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></div>
+          <div class="stat-label">Dépenses ce mois</div>
+          <div class="stat-value">13 500 F</div>
+          <div class="stat-change down">↓ -3% vs mois dernier</div>
+        </div>
+        <div class="stat-card animate">
+          <div class="stat-icon" style="background:#F0FDF4;"><svg viewBox="0 0 24 24" style="stroke:#10B981;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="stat-label">Prestataires actifs</div>
+          <div class="stat-value">248</div>
+          <div class="stat-change up">↑ +18 cette semaine</div>
+        </div>
+        <div class="stat-card animate">
+          <div class="stat-icon" style="background:#FFF7ED;"><svg viewBox="0 0 24 24" style="stroke:#F97316;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="stat-label">Réservations</div>
+          <div class="stat-value">12</div>
+          <div class="stat-change up">↑ 3 en attente</div>
+        </div>
+      </div>
+
+      <!-- SERVICES CATEGORIES -->
+      <div class="sec-hd animate">
+        <div class="sec-title">Nos Services</div>
+        <div class="sec-link">Voir tout →</div>
+      </div>
+      <div class="categories-grid">
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#FFF7ED;">🔧</div>
+          <div class="cat-name">Mécanicien</div>
+          <div class="cat-count">42 pros</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#FFFBEB;">⚡</div>
+          <div class="cat-name">Électricien</div>
+          <div class="cat-count">31 pros</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#FDF4FF;">💇</div>
+          <div class="cat-name">Coiffeur</div>
+          <div class="cat-count">67 pros</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#EFF6FF;">👕</div>
+          <div class="cat-name">Lavage</div>
+          <div class="cat-count">24 pros</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#F0FDF4;">🚚</div>
+          <div class="cat-name">Livraison</div>
+          <div class="cat-count">88 pros</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#FFF1F2;">🚗</div>
+          <div class="cat-name">Location Auto</div>
+          <div class="cat-count">19 pros</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#F0FDF4;">🏠</div>
+          <div class="cat-name">Maisons</div>
+          <div class="cat-count">53 biens</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#EEF4FF;">🏢</div>
+          <div class="cat-name">Appartements</div>
+          <div class="cat-count">76 biens</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#F5F3FF;">💻</div>
+          <div class="cat-name">Informaticien</div>
+          <div class="cat-count">37 pros</div>
+        </div>
+        <div class="cat-card animate">
+          <div class="cat-icon" style="background:#F8FAFC;">🛠️</div>
+          <div class="cat-name">Autres</div>
+          <div class="cat-count">+ services</div>
+        </div>
+      </div>
+
+      <!-- TWO-COL -->
+      <div class="two-col">
+
+        <!-- TRANSACTIONS -->
+        <div>
+          <div class="sec-hd">
+            <div class="sec-title">Transactions récentes</div>
+            <div class="sec-link">Voir tout →</div>
+          </div>
+          <div class="tx-card">
+            <div class="tx-card-inner">
+              <div class="tx-list">
+                <div class="tx-item">
+                  <div class="tx-icon" style="background:#F0FDF4;"><svg viewBox="0 0 24 24" style="stroke:#10B981;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+                  <div class="tx-info"><div class="tx-name">Dépôt reçu</div><div class="tx-date">Aujourd'hui, 14:32</div></div>
+                  <div class="tx-amount cr">+5 000 F</div>
+                </div>
+                <div class="tx-item">
+                  <div class="tx-icon" style="background:#FFF7ED;"><svg viewBox="0 0 24 24" style="stroke:#F97316;"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                  <div class="tx-info"><div class="tx-name">Facture électricité</div><div class="tx-date">Hier, 09:15</div></div>
+                  <div class="tx-amount db">-2 500 F</div>
+                </div>
+                <div class="tx-item">
+                  <div class="tx-icon" style="background:#EEF4FF;"><svg viewBox="0 0 24 24" style="stroke:#1246A0;"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+                  <div class="tx-info"><div class="tx-name">Recharge Orange</div><div class="tx-date">22 mai, 17:00</div></div>
+                  <div class="tx-amount db">-1 000 F</div>
+                </div>
+                <div class="tx-item">
+                  <div class="tx-icon" style="background:#F0FDF4;"><svg viewBox="0 0 24 24" style="stroke:#10B981;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+                  <div class="tx-info"><div class="tx-name">Virement reçu — Mamadou</div><div class="tx-date">21 mai, 11:00</div></div>
+                  <div class="tx-amount cr">+16 000 F</div>
+                </div>
+                <div class="tx-item">
+                  <div class="tx-icon" style="background:#FDF4FF;"><svg viewBox="0 0 24 24" style="stroke:#8B5CF6;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+                  <div class="tx-info"><div class="tx-name">Réservation mécanicien</div><div class="tx-date">20 mai, 08:45</div></div>
+                  <div class="tx-amount db">-3 500 F</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right-col">
+
+          <!-- QUICK ACTIONS -->
+          <div class="quick-card">
+            <div class="sec-hd" style="margin-bottom:14px;">
+              <div class="sec-title">Actions rapides</div>
+            </div>
+            <div class="quick-grid">
+              <div class="q-btn">
+                <div class="q-icon" style="background:#EEF4FF;color:#1246A0;"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                <span class="q-label">Recharger</span>
+              </div>
+              <div class="q-btn">
+                <div class="q-icon" style="background:#F0FDF4;color:#10B981;"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                <span class="q-label">Transférer</span>
+              </div>
+              <div class="q-btn">
+                <div class="q-icon" style="background:#FFF7ED;color:#F97316;"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                <span class="q-label">Trouver pro</span>
+              </div>
+              <div class="q-btn">
+                <div class="q-icon" style="background:#FDF4FF;color:#8B5CF6;"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+                <span class="q-label">Parrainer</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAMES -->
+          <div class="games-card">
+            <div class="games-title">🎮 Divertissement</div>
+            <div class="game-item">
+              <div class="game-icon">🧠</div>
+              <div class="game-info">
+                <div class="game-name">Quiz MonRevenu</div>
+                <div class="game-desc">Testez vos connaissances</div>
+              </div>
+              <div class="game-play">Jouer</div>
+            </div>
+            <div class="game-item">
+              <div class="game-icon">🎯</div>
+              <div class="game-info">
+                <div class="game-name">Défi Fintech</div>
+                <div class="game-desc">Gagnez des points</div>
+              </div>
+              <div class="game-play">Jouer</div>
+            </div>
+            <div class="game-item">
+              <div class="game-icon">🏆</div>
+              <div class="game-info">
+                <div class="game-name">Classement</div>
+                <div class="game-desc">Vous êtes #12</div>
+              </div>
+              <div class="game-play">Voir</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+    <!-- MOBILE BOTTOM NAV -->
+    <nav class="mobile-nav">
+      <div class="mob-nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Accueil</span>
+      </div>
+      <div class="mob-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+        <span>Services</span>
+      </div>
+      <div class="mob-nav-item">
+        <div class="mob-nav-center">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <span style="margin-top:6px;">Payer</span>
+      </div>
+      <div class="mob-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Messages</span>
+      </div>
+      <div class="mob-nav-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        <span>Profil</span>
+      </div>
+    </nav>
+
+  </main>
 </div>
 
-<!-- SERVICES -->
-<div class="section">
-  <div class="section-title">Services</div>
-  <div class="services-grid">
+<script>
+  // Theme
+  function toggleTheme(){
+    const html=document.documentElement;
+    const dark=html.getAttribute('data-theme')==='dark';
+    html.setAttribute('data-theme',dark?'light':'dark');
+    localStorage.setItem('theme',dark?'light':'dark');
+  }
+  (function(){
+    const t=localStorage.getItem('theme');
+    if(t)document.documentElement.setAttribute('data-theme',t);
+  })();
 
-    <div class="service-item">
-      <div class="service-icon" style="background:#EFF6FF;">
-        <svg viewBox="0 0 24 24" style="stroke:#1565C0;"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-      </div>
-      <span class="service-label">Prépayé</span>
-    </div>
+  // Search
+  function openSearch(){
+    document.getElementById('searchOverlay').classList.add('open');
+    setTimeout(()=>document.getElementById('searchInput').focus(),100);
+  }
+  function closeSearch(e){
+    if(e.target===document.getElementById('searchOverlay'))
+      document.getElementById('searchOverlay').classList.remove('open');
+  }
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('searchOverlay').classList.remove('open');});
 
-    <div class="service-item">
-      <div class="service-icon" style="background:#FFF7ED;">
-        <svg viewBox="0 0 24 24" style="stroke:#EA580C;"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </div>
-      <span class="service-label">Électricité</span>
-    </div>
+  // Sidebar mobile
+  function toggleSidebar(){
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('visible');
+  }
+  function closeSidebar(){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('visible');
+  }
 
-    <div class="service-item">
-      <div class="service-icon" style="background:#F0FDF4;">
-        <svg viewBox="0 0 24 24" style="stroke:#16A34A;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      </div>
-      <span class="service-label">Internet</span>
-    </div>
-
-    <div class="service-item">
-      <div class="service-icon" style="background:#FFF1F2;">
-        <svg viewBox="0 0 24 24" style="stroke:#E11D48;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-      </div>
-      <span class="service-label">Transport</span>
-    </div>
-
-    <div class="service-item">
-      <div class="service-icon" style="background:#F5F3FF;">
-        <svg viewBox="0 0 24 24" style="stroke:#7C3AED;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      <span class="service-label">Assurance</span>
-    </div>
-
-    <div class="service-item">
-      <div class="service-icon" style="background:#EFF6FF;">
-        <svg viewBox="0 0 24 24" style="stroke:#1565C0;"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
-      </div>
-      <span class="service-label">Eau</span>
-    </div>
-
-  </div>
-</div>
-
-<!-- TRANSACTIONS RÉCENTES -->
-<div class="section">
-  <div class="section-title">Transactions récentes</div>
-  <div class="tx-list">
-
-    <div class="tx-item">
-      <div class="tx-icon" style="background:#F0FDF4;">
-        <svg viewBox="0 0 24 24" style="stroke:#16A34A;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-      </div>
-      <div class="tx-info">
-        <div class="tx-name">Dépôt reçu</div>
-        <div class="tx-date">Aujourd'hui, 14:32</div>
-      </div>
-      <div class="tx-amount credit">+5 000 F</div>
-    </div>
-
-    <div class="tx-item">
-      <div class="tx-icon" style="background:#FFF7ED;">
-        <svg viewBox="0 0 24 24" style="stroke:#EA580C;"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </div>
-      <div class="tx-info">
-        <div class="tx-name">Facture électricité</div>
-        <div class="tx-date">Hier, 09:15</div>
-      </div>
-      <div class="tx-amount debit">-2 500 F</div>
-    </div>
-
-    <div class="tx-item">
-      <div class="tx-icon" style="background:#EFF6FF;">
-        <svg viewBox="0 0 24 24" style="stroke:#1565C0;"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-      </div>
-      <div class="tx-info">
-        <div class="tx-name">Recharge Orange</div>
-        <div class="tx-date">22 mai, 17:00</div>
-      </div>
-      <div class="tx-amount debit">-1 000 F</div>
-    </div>
-
-  </div>
-</div>
-
-<div class="spacer"></div>
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <div class="nav-item active">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    <span>Accueil</span>
-  </div>
-  <div class="nav-item">
-    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    <span>Historique</span>
-  </div>
-  <div class="nav-item">
-    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <span>Support</span>
-  </div>
-  <div class="nav-item">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
-    <span>Profil</span>
-  </div>
-</nav>
-
+  // Show menu button on tablet/mobile
+  function checkLayout(){
+    const btn=document.getElementById('menuBtn');
+    if(window.innerWidth<=900)btn.style.display='flex';
+    else btn.style.display='none';
+  }
+  checkLayout();
+  window.addEventListener('resize',checkLayout);
+</script>
 </body>
 </html>
